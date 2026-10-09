@@ -146,6 +146,38 @@ public class ApiController {
         }
     }
 
+    @DeleteMapping("/documents/{id}")
+    public ResponseEntity<?> deleteDocument(@PathVariable Long id, Authentication auth) {
+        if (auth == null) return ResponseEntity.status(401).build();
+        User user = userRepository.findByEmail(auth.getName()).orElseThrow();
+
+        try {
+            boolean deleted = documentService.deleteDocument(id, user);
+            if (!deleted) {
+                return ResponseEntity.notFound().build();
+            }
+            auditLogRepository.save(new AuditLog(
+                    user.getEmail(),
+                    user.getRole().name(),
+                    "DOCUMENT_DELETE",
+                    "ALLOW",
+                    UUID.randomUUID().toString(),
+                    "Deleted document ID " + id
+            ));
+            return ResponseEntity.ok(Map.of("message", "Document deleted successfully", "id", id));
+        } catch (org.springframework.security.access.AccessDeniedException e) {
+            auditLogRepository.save(new AuditLog(
+                    user.getEmail(),
+                    user.getRole().name(),
+                    "DOCUMENT_DELETE",
+                    "DENY",
+                    UUID.randomUUID().toString(),
+                    "Unauthorized attempt to delete document ID " + id
+            ));
+            return ResponseEntity.status(403).body(Map.of("error", e.getMessage()));
+        }
+    }
+
     @PostMapping("/query")
     public ResponseEntity<?> query(@RequestBody QueryRequest req, Authentication auth) {
         if (auth == null) return ResponseEntity.status(401).build();

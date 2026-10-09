@@ -85,4 +85,24 @@ public class DocumentService {
         }
         return false;
     }
+
+    @org.springframework.transaction.annotation.Transactional
+    public boolean deleteDocument(Long id, User user) {
+        Document doc = documentRepository.findById(id).orElse(null);
+        if (doc == null) return false;
+
+        boolean canDelete = user.getRole() == Role.ADMIN ||
+                            user.getRole() == Role.HR_MANAGER ||
+                            (doc.getOwner() != null && doc.getOwner().getId().equals(user.getId()));
+        if (!canDelete) {
+            throw new org.springframework.security.access.AccessDeniedException("Unauthorized to delete this document");
+        }
+
+        List<DocumentChunk> chunks = chunkRepository.findByDocumentId(id);
+        if (chunks != null && !chunks.isEmpty()) {
+            chunkRepository.deleteAll(chunks);
+        }
+        documentRepository.delete(doc);
+        return true;
+    }
 }

@@ -22,6 +22,9 @@ class SecurityTests {
     @Autowired
     private RagService ragService;
 
+    @Autowired
+    private com.triguard.backend.repository.UserRepository userRepository;
+
     @Test
     void testPromptInjectionBlocked() {
         User employee = new User("emp@test.com", "pass", "Emp", Role.EMPLOYEE, "Engineering");
@@ -105,5 +108,24 @@ class SecurityTests {
         assertTrue(res.getDecisionTrace().isContextAuthorized(), "Context must be verified free of unauthorized chunks");
         assertNotNull(res.getRequestId());
         assertFalse(res.getDecisionTrace().getCompletedStages().isEmpty());
+    }
+
+    @Test
+    void testDocumentDeletionRbac() {
+        User hrMgr = userRepository.save(new User("hr_del@test.com", "pass", "HR Del", Role.HR_MANAGER, "HR"));
+        User emp = userRepository.save(new User("emp_del@test.com", "pass", "Emp Del", Role.EMPLOYEE, "Finance"));
+        User admin = userRepository.save(new User("admin_del@test.com", "pass", "Admin Del", Role.ADMIN, "IT"));
+
+        Document doc = documentService.ingestDocument("policy_to_delete.txt", "Some policy text for deletion test.", DocumentClassification.INTERNAL, "General", hrMgr);
+        assertNotNull(doc.getId());
+
+        // Unauthorized employee trying to delete HR's doc throws AccessDeniedException
+        assertThrows(org.springframework.security.access.AccessDeniedException.class, () -> {
+            documentService.deleteDocument(doc.getId(), emp);
+        });
+
+        // Authorized admin can delete successfully
+        boolean deleted = documentService.deleteDocument(doc.getId(), admin);
+        assertTrue(deleted, "Admin should be able to delete document");
     }
 }
