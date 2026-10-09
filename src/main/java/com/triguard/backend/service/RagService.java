@@ -37,13 +37,15 @@ public class RagService {
 
     public QueryResponse query(String query, User user) {
         String requestId = UUID.randomUUID().toString();
-        List<Double> queryEmb = llmService.getEmbedding(query);
         if (query.toLowerCase().contains("ignore previous") || query.toLowerCase().contains("reveal all") || query.toLowerCase().contains("bypass")) {
             securityEventRepository.save(new SecurityEvent("PROMPT_INJECTION", user.getEmail(), "BLOCKED", "Prompt injection attempt blocked."));
             return new QueryResponse("PROMPT_INJECTION_BLOCKED: Prompt injection blocked.", new ArrayList<>());
         }
+        
+        List<Double> queryEmb = llmService.getEmbedding(query);
 
-        List<DocumentChunk> allChunks = chunkRepository.findAll();
+        List<Document> authorizedDocs = documentService.getAuthorizedDocuments(user);
+        List<DocumentChunk> allChunks = authorizedDocs.isEmpty() ? new ArrayList<>() : chunkRepository.findByDocumentIn(authorizedDocs);
 
         List<VectorService.ScoredChunk> scoredChunks = new ArrayList<>();
         for (DocumentChunk chunk : allChunks) {
