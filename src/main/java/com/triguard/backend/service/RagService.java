@@ -22,15 +22,17 @@ public class RagService {
     private final VectorService vectorService;
     private final AuditLogRepository auditLogRepository;
     private final SecurityEventRepository securityEventRepository;
+    private final DocumentService documentService;
 
     public RagService(DocumentChunkRepository chunkRepository, LlmService llmService,
                       VectorService vectorService, AuditLogRepository auditLogRepository,
-                      SecurityEventRepository securityEventRepository) {
+                      SecurityEventRepository securityEventRepository, DocumentService documentService) {
         this.chunkRepository = chunkRepository;
         this.llmService = llmService;
         this.vectorService = vectorService;
         this.auditLogRepository = auditLogRepository;
         this.securityEventRepository = securityEventRepository;
+        this.documentService = documentService;
     }
 
     public QueryResponse query(String query, User user) {
@@ -60,7 +62,7 @@ public class RagService {
 
         for (VectorService.ScoredChunk sc : topChunks) {
             DocumentChunk chunk = sc.chunk;
-            if (canAccess(user, chunk.getDocument())) {
+            if (documentService.canAccess(user, chunk.getDocument())) {
                 authorizedChunks.add(chunk);
             } else {
                 accessRestricted = true;
@@ -99,18 +101,5 @@ public class RagService {
 
         auditLogRepository.save(new AuditLog(user.getEmail(), user.getRole().name(), "QUERY", "ALLOW", requestId, "Authorized context built with " + authorizedChunks.size() + " chunks."));
         return new QueryResponse(answer, citations);
-    }
-
-    private boolean canAccess(User user, Document doc) {
-        if (user.getRole() == Role.ADMIN) return true;
-        if (doc.getClassification() == DocumentClassification.PUBLIC) return true;
-        if (doc.getClassification() == DocumentClassification.INTERNAL) return true; // All authenticated users
-        if (doc.getClassification() == DocumentClassification.CONFIDENTIAL) {
-            return user.getRole() == Role.DEPARTMENT_MANAGER || user.getRole() == Role.HR_MANAGER;
-        }
-        if (doc.getClassification() == DocumentClassification.RESTRICTED) {
-            return user.getRole() == Role.HR_MANAGER;
-        }
-        return false;
     }
 }

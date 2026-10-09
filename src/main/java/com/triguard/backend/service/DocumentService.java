@@ -31,10 +31,25 @@ public class DocumentService {
         String[] chunks = content.split("\n\n");
         int page = 1;
         for (String chunkText : chunks) {
-            if (chunkText.trim().isEmpty()) continue;
+            chunkText = chunkText.trim();
+            if (chunkText.isEmpty()) continue;
+            
+            if (chunkText.startsWith("===PAGE ")) {
+                try {
+                    int endIdx = chunkText.indexOf("===", 8);
+                    if (endIdx != -1) {
+                        page = Integer.parseInt(chunkText.substring(8, endIdx).trim());
+                        chunkText = chunkText.substring(endIdx + 3).trim();
+                    }
+                } catch (Exception e) {
+                    // fallback
+                }
+            }
+            if (chunkText.isEmpty()) continue;
+
             List<Double> emb = llmService.getEmbedding(chunkText);
             String embStr = vectorService.serializeEmbedding(emb);
-            DocumentChunk chunk = new DocumentChunk(doc, chunkText, page++, embStr);
+            DocumentChunk chunk = new DocumentChunk(doc, chunkText, page, embStr);
             chunkRepository.save(chunk);
         }
 
@@ -42,7 +57,32 @@ public class DocumentService {
         return documentRepository.save(doc);
     }
 
-    public List<Document> getAllDocuments() {
-        return documentRepository.findAll();
+    public List<Document> getAuthorizedDocuments(User user) {
+        List<Document> allDocs = documentRepository.findAll();
+        List<Document> authDocs = new ArrayList<>();
+        for (Document doc : allDocs) {
+            if (canAccess(user, doc)) {
+                authDocs.add(doc);
+            }
+        }
+        return authDocs;
+    }
+
+    public boolean canAccess(User user, Document doc) {
+        if (user.getRole() == Role.ADMIN) return true;
+        
+        boolean isSameDepartment = user.getDepartment().equals(doc.getDepartment()) || "General".equalsIgnoreCase(doc.getDepartment());
+        
+        if (doc.getClassification() == DocumentClassification.PUBLIC) return true;
+        if (doc.getClassification() == DocumentClassification.INTERNAL) return isSameDepartment;
+        if (doc.getClassification() == DocumentClassification.CONFIDENTIAL) {
+            if (user.getRole() == Role.HR_MANAGER) return true;
+            if (user.getRole() == Role.DEPARTMENT_MANAGER && isSameDepartment) return true;
+            return false;
+        }
+        if (doc.getClassification() == DocumentClassification.RESTRICTED) {
+            return user.getRole() == Role.HR_MANAGER;
+        }
+        return false;
     }
 }

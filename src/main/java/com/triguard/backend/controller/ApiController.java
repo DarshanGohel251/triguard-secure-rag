@@ -18,6 +18,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import java.io.IOException;
 
+import com.triguard.backend.service.LlmService;
+
 import java.util.List;
 
 @RestController
@@ -26,15 +28,17 @@ public class ApiController {
 
     private final DocumentService documentService;
     private final RagService ragService;
+    private final LlmService llmService;
     private final UserRepository userRepository;
     private final AuditLogRepository auditLogRepository;
     private final SecurityEventRepository securityEventRepository;
 
-    public ApiController(DocumentService documentService, RagService ragService, 
+    public ApiController(DocumentService documentService, RagService ragService, LlmService llmService,
                          UserRepository userRepository, AuditLogRepository auditLogRepository,
                          SecurityEventRepository securityEventRepository) {
         this.documentService = documentService;
         this.ragService = ragService;
+        this.llmService = llmService;
         this.userRepository = userRepository;
         this.auditLogRepository = auditLogRepository;
         this.securityEventRepository = securityEventRepository;
@@ -48,8 +52,10 @@ public class ApiController {
     }
 
     @GetMapping("/documents")
-    public ResponseEntity<List<Document>> getDocuments() {
-        return ResponseEntity.ok(documentService.getAllDocuments());
+    public ResponseEntity<List<Document>> getDocuments(Authentication auth) {
+        if (auth == null) return ResponseEntity.status(401).build();
+        User user = userRepository.findByEmail(auth.getName()).orElseThrow();
+        return ResponseEntity.ok(documentService.getAuthorizedDocuments(user));
     }
 
     @PostMapping("/documents")
@@ -66,7 +72,16 @@ public class ApiController {
             if (file.getOriginalFilename() != null && file.getOriginalFilename().toLowerCase().endsWith(".pdf")) {
                 try (PDDocument document = PDDocument.load(file.getInputStream())) {
                     PDFTextStripper stripper = new PDFTextStripper();
-                    content = stripper.getText(document);
+                    StringBuilder sb = new StringBuilder();
+                    for (int page = 1; page <= document.getNumberOfPages(); page++) {
+                        stripper.setStartPage(page);
+                        stripper.setEndPage(page);
+                        String pageText = stripper.getText(document).trim();
+                        if (!pageText.isEmpty()) {
+                            sb.append("===PAGE ").append(page).append("===").append("\n").append(pageText).append("\n\n");
+                        }
+                    }
+                    content = sb.toString();
                 }
             } else {
                 content = new String(file.getBytes());
@@ -119,20 +134,6 @@ public class ApiController {
 
     @GetMapping("/diagnostics")
     public ResponseEntity<?> getDiagnostics() {
-        java.util.Map<String, Object> diag = new java.util.HashMap<>();
-        diag.put("provider", "Gemini");
-        
-        String key = null;
-        try {
-            key = (String) org.springframework.test.util.ReflectionTestUtils.getField(ragService, "llmService.apiKey");
-            // Workaround since ReflectionTestUtils might not be in classpath
-        } catch(Exception e) {}
-        
-        // Actually, let's just use an autowired approach or check environment
-        String envKey = System.getenv("GEMINI_API_KEY");
-        if (envKey == null) envKey = System.getProperty("gemini.api.key");
-        
-        // Simpler way: add a method to LlmService to get diagnostics.
-        return ResponseEntity.ok(diag);
+        return ResponseEntity.ok(llmService.getDiagnostics());
     }
 }
