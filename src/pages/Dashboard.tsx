@@ -21,8 +21,8 @@ export default function Dashboard() {
         ]);
         
         const allLogs = logs.data;
-        const queries = allLogs.filter((l: any) => l.action === 'RETRIEVAL' && l.decision === 'ALLOW').length;
-        const blocked = allLogs.filter((l: any) => l.action === 'RETRIEVAL' && l.decision === 'DENY').length;
+        const queries = allLogs.filter((l: any) => l.action === 'QUERY' && l.decision === 'ALLOW').length;
+        const blocked = allLogs.filter((l: any) => l.action === 'QUERY' && l.decision === 'DENY').length;
 
         setStats({
           documents: docs.data.length,
