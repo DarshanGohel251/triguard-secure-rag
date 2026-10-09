@@ -3,11 +3,13 @@ import { FileText, Shield, Lock, CheckCircle2 } from 'lucide-react';
 
 interface DocumentMeta {
   id?: number | string;
+  name?: string;
   filename?: string;
   classification?: string;
   department?: string;
   chunkCount?: number;
   uploadDate?: string;
+  uploadedAt?: string;
 }
 
 interface DocumentSecuritySpaceProps {
@@ -186,7 +188,7 @@ export default function DocumentSecuritySpace({
           <div className="flex items-center gap-3">
             {hoveredDoc && (
               <span className="hidden sm:inline-block text-xs font-mono text-cyan-300 bg-cyan-950/40 border border-cyan-500/30 px-2.5 py-0.5 rounded-full">
-                Inspecting: {hoveredDoc.filename} ({hoveredDoc.classification})
+                Inspecting: {hoveredDoc.name || hoveredDoc.filename} ({hoveredDoc.classification})
               </span>
             )}
             {selectedTier && (
@@ -222,8 +224,8 @@ export default function DocumentSecuritySpace({
                       <FileText className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-sm font-bold text-white truncate" title={doc.filename}>
-                        {doc.filename || 'Untitled Document'}
+                      <div className="text-sm font-bold text-white truncate" title={doc.name || doc.filename}>
+                        {doc.name || doc.filename || 'Untitled Document'}
                       </div>
                       <div className="text-[11px] text-slate-400 font-mono">
                         Dept: {doc.department || 'General'}

@@ -96,6 +96,7 @@ export default function Ask() {
   const [activeInspectorTab, setActiveInspectorTab] = useState<'evidence' | 'trace'>('trace');
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
   const [copiedSnippetIdx, setCopiedSnippetIdx] = useState<number | null>(null);
+  const [showPresets, setShowPresets] = useState(true);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -231,6 +232,19 @@ export default function Ask() {
           </div>
 
           <button
+            onClick={() => setShowPresets(!showPresets)}
+            className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
+              showPresets
+                ? 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30'
+                : 'bg-slate-900 text-slate-400 border-white/10 hover:text-white'
+            }`}
+            title={showPresets ? 'Collapse red-team presets panel' : 'Expand red-team presets panel'}
+          >
+            <Flame className="w-3.5 h-3.5 text-red-400" />
+            <span className="hidden md:inline">{showPresets ? 'Presets On' : 'Presets'}</span>
+          </button>
+
+          <button
             onClick={clearChat}
             className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/10 border border-transparent hover:border-white/10 transition-colors cursor-pointer text-xs flex items-center gap-1.5"
             title="Reset conversation"
@@ -244,9 +258,10 @@ export default function Ask() {
       {/* 3-Panel Main Workspace */}
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT PANEL: Red-Team Attack & Preset Scenarios (width ~300px) */}
-        <aside className="w-76 bg-[#060C1B] border-r border-white/10 flex flex-col shrink-0 hidden md:flex">
-          {/* Active Clearance Scope Card */}
-          <div className="p-4 border-b border-white/10 bg-[#08132B]/60">
+        {showPresets && (
+          <aside className="w-76 bg-[#060C1B] border-r border-white/10 flex flex-col shrink-0 hidden md:flex transition-all">
+            {/* Active Clearance Scope Card */}
+            <div className="p-4 border-b border-white/10 bg-[#08132B]/60">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
                 <User className="w-3.5 h-3.5 text-cyan-400" />
@@ -303,6 +318,7 @@ export default function Ask() {
             Deterministic prompt injection barrier & cross-tenant partition active.
           </div>
         </aside>
+        )}
 
         {/* CENTER PANEL: Chat Dialogue Stream & Prompt Composer */}
         <div className="flex-1 flex flex-col overflow-hidden bg-[#040814]">
@@ -510,73 +526,14 @@ export default function Ask() {
                   <span className="text-cyan-400">{activeMessage?.status || 'STANDBY'}</span>
                 </div>
 
-                <div className="overflow-hidden rounded-xl">
+                <div className="overflow-hidden">
                   <RetrievalPipelineVisual
+                    layout="vertical"
                     activeStage={activeMessage?.status === 'INJECTION_BLOCKED' ? 2 : activeMessage?.status === 'RESTRICTED' ? 3 : 6}
                     status={activeMessage?.status || 'AUTHORIZED'}
                     decisionTrace={activeMessage?.decisionTrace}
-                    interactive={false}
+                    interactive={true}
                   />
-                </div>
-
-                {/* 6-Stage Telemetry Details */}
-                <div className="space-y-2.5">
-                  <div className="p-3 rounded-xl bg-slate-900/80 border border-white/10">
-                    <div className="text-[10px] font-mono text-slate-400 uppercase">Stage 1: Subject Identity</div>
-                    <div className="text-xs font-bold text-white mt-0.5">
-                      {activeMessage?.decisionTrace?.identity || currentUser.email}
-                    </div>
-                    <div className="text-[11px] text-emerald-400 font-mono mt-0.5">JWT Signature Cryptographically Validated</div>
-                  </div>
-
-                  <div className="p-3 rounded-xl bg-slate-900/80 border border-white/10">
-                    <div className="text-[10px] font-mono text-slate-400 uppercase">Stage 2: Deterministic Policy Gate</div>
-                    <div className="text-xs font-bold text-cyan-300 mt-0.5">
-                      {activeMessage?.decisionTrace?.policyDecision || 'RBAC ENFORCED'}
-                    </div>
-                    <div className="text-[11px] text-slate-300 font-mono mt-0.5">
-                      Scope: {activeMessage?.decisionTrace?.permissionScope || currentUser.role}
-                    </div>
-                  </div>
-
-                  <div className="p-3 rounded-xl bg-slate-900/80 border border-white/10">
-                    <div className="text-[10px] font-mono text-slate-400 uppercase">Stage 3: Vector Sandbox Filtering</div>
-                    <div className="flex items-center justify-between mt-0.5">
-                      <span className="text-xs font-bold text-white">Candidates Scored:</span>
-                      <span className="text-xs font-mono text-cyan-300">
-                        {activeMessage?.decisionTrace?.candidatesScored ?? 0}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between text-xs mt-1">
-                      <span className="text-slate-400">Authorized Retrieved:</span>
-                      <span className="text-emerald-400 font-bold font-mono">
-                        {activeMessage?.decisionTrace?.authorizedChunksRetrieved ?? (activeMessage?.citations?.length || 0)}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-3 rounded-xl bg-slate-900/80 border border-white/10">
-                    <div className="text-[10px] font-mono text-slate-400 uppercase">Stage 4: Zero-Leak Quarantine Guard</div>
-                    <div className="flex items-center justify-between mt-0.5">
-                      <span className="text-xs font-bold text-white">Restricted Chunks Excluded:</span>
-                      <span className="text-xs font-mono text-amber-400 font-bold">
-                        {activeMessage?.decisionTrace?.restrictedChunksBlocked ?? 0}
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-slate-400 mt-0.5">
-                      0 restricted chunks leaked into LLM synthesis prompt.
-                    </div>
-                  </div>
-
-                  <div className="p-3 rounded-xl bg-slate-900/80 border border-white/10">
-                    <div className="text-[10px] font-mono text-slate-400 uppercase">Stage 5: Generative Synthesis Engine</div>
-                    <div className="text-xs font-bold text-purple-300 mt-0.5">
-                      {activeMessage?.decisionTrace?.llmModel || 'gemini-2.5-flash'}
-                    </div>
-                    <div className="text-[11px] text-slate-400 font-mono mt-0.5">
-                      Latency: {activeMessage?.executionTimeMs ?? 0} ms
-                    </div>
-                  </div>
                 </div>
               </div>
             ) : (

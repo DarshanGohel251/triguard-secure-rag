@@ -10,7 +10,8 @@ import {
   FileUp,
   Tag,
   Building,
-  Layers
+  Layers,
+  Trash2
 } from 'lucide-react';
 import api from '../services/api';
 import DocumentSecuritySpace from '../components/3d/DocumentSecuritySpace';
@@ -86,12 +87,29 @@ export default function Documents() {
     }
   };
 
+  const handleDeleteDocument = async (id: number | string, docName: string) => {
+    if (!window.confirm(`Are you sure you want to securely purge "${docName}" and all associated vector embeddings?`)) {
+      return;
+    }
+    setError('');
+    setSuccess('');
+    try {
+      await api.delete(`/documents/${id}`);
+      setSuccess(`Document "${docName}" and associated chunks purged from vector store.`);
+      fetchDocuments();
+    } catch (err: any) {
+      setError(err?.response?.data?.error || 'Failed to delete document. Ensure sufficient role clearance.');
+    }
+  };
+
   const filteredDocs = useMemo(() => {
     return documents.filter((doc) => {
-      const matchesSearch =
-        doc.filename?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doc.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doc.classification?.toLowerCase().includes(searchTerm.toLowerCase());
+      const title = (doc.name || doc.filename || '').toLowerCase();
+      const dept = (doc.department || '').toLowerCase();
+      const classification = (doc.classification || '').toLowerCase();
+      const term = searchTerm.toLowerCase();
+
+      const matchesSearch = title.includes(term) || dept.includes(term) || classification.includes(term);
       const matchesFilter = selectedFilter === 'ALL' || doc.classification === selectedFilter;
       return matchesSearch && matchesFilter;
     });
@@ -307,47 +325,69 @@ export default function Documents() {
                 <th className="py-3 px-4">Department</th>
                 <th className="py-3 px-4">Vector Chunks</th>
                 <th className="py-3 px-4">Upload Date</th>
+                <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
-              {filteredDocs.map((doc, idx) => (
-                <tr key={doc.id || idx} className="hover:bg-white/5 transition-colors">
-                  <td className="py-3.5 px-4 font-bold text-white flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
-                      <FileText className="w-4 h-4" />
-                    </div>
-                    <span className="truncate max-w-xs">{doc.filename}</span>
-                  </td>
-                  <td className="py-3.5 px-4">
-                    <span
-                      className={`text-[11px] font-mono font-bold px-2.5 py-1 rounded-md border ${
-                        doc.classification === 'RESTRICTED'
-                          ? 'bg-red-500/10 text-red-300 border-red-500/30'
-                          : doc.classification === 'CONFIDENTIAL'
-                          ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
-                          : doc.classification === 'INTERNAL'
-                          ? 'bg-blue-500/10 text-blue-300 border-blue-500/30'
-                          : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
-                      }`}
-                    >
-                      {doc.classification}
-                    </span>
-                  </td>
-                  <td className="py-3.5 px-4 text-slate-300 font-mono text-xs">
-                    {doc.department || 'General'}
-                  </td>
-                  <td className="py-3.5 px-4 text-cyan-300 font-mono text-xs">
-                    {doc.chunkCount || 3} Chunks
-                  </td>
-                  <td className="py-3.5 px-4 text-slate-400 text-xs font-mono">
-                    {doc.uploadDate ? new Date(doc.uploadDate).toLocaleDateString() : 'Active'}
-                  </td>
-                </tr>
-              ))}
+              {filteredDocs.map((doc, idx) => {
+                const canDelete =
+                  currentUser.role === 'ADMIN' ||
+                  currentUser.role === 'HR_MANAGER' ||
+                  (doc.owner && doc.owner.email === currentUser.email);
+                const docTitle = doc.name || doc.filename || 'Untitled Document';
+                const uploadTimestamp = doc.uploadedAt || doc.uploadDate;
+
+                return (
+                  <tr key={doc.id || idx} className="hover:bg-white/5 transition-colors">
+                    <td className="py-3.5 px-4 font-bold text-white flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
+                        <FileText className="w-4 h-4" />
+                      </div>
+                      <span className="truncate max-w-xs" title={docTitle}>{docTitle}</span>
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <span
+                        className={`text-[11px] font-mono font-bold px-2.5 py-1 rounded-md border ${
+                          doc.classification === 'RESTRICTED'
+                            ? 'bg-red-500/10 text-red-300 border-red-500/30'
+                            : doc.classification === 'CONFIDENTIAL'
+                            ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                            : doc.classification === 'INTERNAL'
+                            ? 'bg-blue-500/10 text-blue-300 border-blue-500/30'
+                            : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                        }`}
+                      >
+                        {doc.classification}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-4 text-slate-300 font-mono text-xs">
+                      {doc.department || 'General'}
+                    </td>
+                    <td className="py-3.5 px-4 text-cyan-300 font-mono text-xs">
+                      {doc.chunkCount || 3} Chunks
+                    </td>
+                    <td className="py-3.5 px-4 text-slate-400 text-xs font-mono">
+                      {uploadTimestamp ? new Date(uploadTimestamp).toLocaleDateString() : 'Active'}
+                    </td>
+                    <td className="py-3.5 px-4 text-right">
+                      {canDelete && (
+                        <button
+                          onClick={() => handleDeleteDocument(doc.id, docTitle)}
+                          className="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 border border-red-500/30 text-red-400 hover:text-red-300 transition-colors cursor-pointer inline-flex items-center gap-1 text-xs"
+                          title="Purge document & embeddings"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span className="hidden sm:inline font-mono">Purge</span>
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
 
               {filteredDocs.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-slate-500 text-sm">
+                  <td colSpan={6} className="py-8 text-center text-slate-500 text-sm">
                     No documents found matching the filter criteria.
                   </td>
                 </tr>
