@@ -3,6 +3,6 @@
 
 @layer base {
   body {
-    @apply bg-graphite text-gray-200 antialiased;
+    @apply bg-app-bg text-text-primary antialiased;
   }
 }

@@ -7,12 +7,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        graphite: '#1c1c1e',
-        graphite_light: '#2c2c2e',
-        cyan_ai: '#00f0ff',
-        emerald_auth: '#10b981',
-        amber_warn: '#f59e0b',
-        red_blocked: '#ef4444',
+        'app-bg': '#020814',
+        'nav-bg': '#030B18',
+        'card-bg': '#061426',
+        'raised-bg': '#0A1C35',
+        'primary': '#1260F5',
+        'cyan-accent': '#00D4E8',
+        'text-primary': '#EAF2FF',
+        'text-secondary': '#A5BAD5',
+        'status-success': '#00CCA3',
+        'status-warning': '#FFBC38',
+        'status-danger': '#FF4565',
       },
     },
   },
