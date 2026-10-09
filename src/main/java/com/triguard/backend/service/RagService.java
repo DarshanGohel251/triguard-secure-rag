@@ -18,16 +18,16 @@ import java.util.stream.Collectors;
 public class RagService {
 
     private final DocumentChunkRepository chunkRepository;
-    private final OpenAiService openAiService;
+    private final LlmService llmService;
     private final VectorService vectorService;
     private final AuditLogRepository auditLogRepository;
     private final SecurityEventRepository securityEventRepository;
 
-    public RagService(DocumentChunkRepository chunkRepository, OpenAiService openAiService,
+    public RagService(DocumentChunkRepository chunkRepository, LlmService llmService,
                       VectorService vectorService, AuditLogRepository auditLogRepository,
                       SecurityEventRepository securityEventRepository) {
         this.chunkRepository = chunkRepository;
-        this.openAiService = openAiService;
+        this.llmService = llmService;
         this.vectorService = vectorService;
         this.auditLogRepository = auditLogRepository;
         this.securityEventRepository = securityEventRepository;
@@ -35,7 +35,12 @@ public class RagService {
 
     public QueryResponse query(String query, User user) {
         String requestId = UUID.randomUUID().toString();
-        List<Double> queryEmb = openAiService.getEmbedding(query);
+        List<Double> queryEmb = llmService.getEmbedding(query);
+        if (query.toLowerCase().contains("ignore previous") || query.toLowerCase().contains("reveal all") || query.toLowerCase().contains("bypass")) {
+            securityEventRepository.save(new SecurityEvent("PROMPT_INJECTION", user.getEmail(), "BLOCKED", "Prompt injection attempt blocked."));
+            return new QueryResponse("PROMPT_INJECTION_BLOCKED: Prompt injection blocked.", new ArrayList<>());
+        }
+
         List<DocumentChunk> allChunks = chunkRepository.findAll();
 
         List<VectorService.ScoredChunk> scoredChunks = new ArrayList<>();
@@ -57,19 +62,19 @@ public class RagService {
             DocumentChunk chunk = sc.chunk;
             if (canAccess(user, chunk.getDocument())) {
                 authorizedChunks.add(chunk);
-                auditLogRepository.save(new AuditLog(user.getEmail(), user.getRole().name(), "RETRIEVAL", "ALLOW", requestId, "Accessed chunk from doc: " + chunk.getDocument().getName()));
             } else {
                 accessRestricted = true;
-                auditLogRepository.save(new AuditLog(user.getEmail(), user.getRole().name(), "RETRIEVAL", "DENY", requestId, "Blocked chunk from doc: " + chunk.getDocument().getName()));
-                securityEventRepository.save(new SecurityEvent("UNAUTHORIZED_RETRIEVAL", user.getEmail(), "BLOCKED", "Attempted to access restricted document: " + chunk.getDocument().getName()));
+                securityEventRepository.save(new SecurityEvent("UNAUTHORIZED_RETRIEVAL", user.getEmail(), "BLOCKED", "Unauthorized retrieval attempt blocked."));
             }
         }
 
         if (accessRestricted && authorizedChunks.isEmpty()) {
+            auditLogRepository.save(new AuditLog(user.getEmail(), user.getRole().name(), "QUERY", "DENY", requestId, "Access restricted by policy."));
             return new QueryResponse("ACCESS RESTRICTED: No authorized information was found for this request.", new ArrayList<>());
         }
         
         if (authorizedChunks.isEmpty()) {
+            auditLogRepository.save(new AuditLog(user.getEmail(), user.getRole().name(), "QUERY", "DENY", requestId, "No relevant information found."));
             return new QueryResponse("No relevant information found.", new ArrayList<>());
         }
 
@@ -82,11 +87,17 @@ public class RagService {
             citations.add(new CitationDto(chunk.getDocument().getName(), chunk.getPageNumber(), chunk.getId(), chunk.getText()));
         }
 
-        String prompt = "You are TriGuard AI. Answer the user query based ONLY on the provided context.\n\nContext:\n"
+        String prompt = "You are TriGuard AI. Answer the user query based ONLY on the provided context. If the context does not contain the answer, reply exactly with 'No relevant information found.'\n\nContext:\n"
                 + contextBuilder.toString() + "\n\nQuery: " + query + "\nAnswer:";
 
-        String answer = openAiService.generateCompletion(prompt);
+        String answer = llmService.generateCompletion(prompt);
 
+        if (answer.trim().contains("No relevant information found")) {
+            auditLogRepository.save(new AuditLog(user.getEmail(), user.getRole().name(), "QUERY", "DENY", requestId, accessRestricted ? "Access restricted by policy." : "No relevant information found."));
+            return new QueryResponse(accessRestricted ? "ACCESS RESTRICTED: No authorized information was found for this request." : "No relevant information found.", new ArrayList<>());
+        }
+
+        auditLogRepository.save(new AuditLog(user.getEmail(), user.getRole().name(), "QUERY", "ALLOW", requestId, "Authorized context built with " + authorizedChunks.size() + " chunks."));
         return new QueryResponse(answer, citations);
     }
 

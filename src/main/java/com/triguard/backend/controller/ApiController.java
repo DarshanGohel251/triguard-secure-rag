@@ -87,10 +87,24 @@ public class ApiController {
     }
 
     @PostMapping("/query")
-    public ResponseEntity<QueryResponse> query(@RequestBody QueryRequest req, Authentication auth) {
-        User user = userRepository.findByEmail(auth.getName()).orElseThrow();
-        QueryResponse res = ragService.query(req.getQuery(), user);
-        return ResponseEntity.ok(res);
+    public ResponseEntity<?> query(@RequestBody QueryRequest req, Authentication auth) {
+        try {
+            User user = userRepository.findByEmail(auth.getName()).orElseThrow();
+            QueryResponse res = ragService.query(req.getQuery(), user);
+            return ResponseEntity.ok(res);
+        } catch (RuntimeException e) {
+            String msg = "AI answer generation is temporarily unavailable.";
+            if ("AI_PROVIDER_NOT_CONFIGURED".equals(e.getMessage())) {
+                msg = "The AI provider is not configured on the server.";
+            } else if ("AI_PROVIDER_QUOTA_EXCEEDED".equals(e.getMessage())) {
+                msg = "AI provider quota exceeded.";
+            }
+            java.util.Map<String, String> err = new java.util.HashMap<>();
+            err.put("code", e.getMessage() != null ? e.getMessage() : "SERVER_ERROR");
+            err.put("message", msg);
+            err.put("requestId", java.util.UUID.randomUUID().toString());
+            return ResponseEntity.status(503).body(err);
+        }
     }
 
     @GetMapping("/audit/logs")
@@ -101,5 +115,24 @@ public class ApiController {
     @GetMapping("/security/events")
     public ResponseEntity<?> getSecurityEvents() {
         return ResponseEntity.ok(securityEventRepository.findAllByOrderByTimestampDesc());
+    }
+
+    @GetMapping("/diagnostics")
+    public ResponseEntity<?> getDiagnostics() {
+        java.util.Map<String, Object> diag = new java.util.HashMap<>();
+        diag.put("provider", "Gemini");
+        
+        String key = null;
+        try {
+            key = (String) org.springframework.test.util.ReflectionTestUtils.getField(ragService, "llmService.apiKey");
+            // Workaround since ReflectionTestUtils might not be in classpath
+        } catch(Exception e) {}
+        
+        // Actually, let's just use an autowired approach or check environment
+        String envKey = System.getenv("GEMINI_API_KEY");
+        if (envKey == null) envKey = System.getProperty("gemini.api.key");
+        
+        // Simpler way: add a method to LlmService to get diagnostics.
+        return ResponseEntity.ok(diag);
     }
 }

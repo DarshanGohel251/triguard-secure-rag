@@ -12,14 +12,14 @@ import java.util.List;
 public class DocumentService {
     private final DocumentRepository documentRepository;
     private final DocumentChunkRepository chunkRepository;
-    private final OpenAiService openAiService;
+    private final LlmService llmService;
     private final VectorService vectorService;
 
     public DocumentService(DocumentRepository documentRepository, DocumentChunkRepository chunkRepository,
-                           OpenAiService openAiService, VectorService vectorService) {
+                           LlmService llmService, VectorService vectorService) {
         this.documentRepository = documentRepository;
         this.chunkRepository = chunkRepository;
-        this.openAiService = openAiService;
+        this.llmService = llmService;
         this.vectorService = vectorService;
     }
 
@@ -32,7 +32,7 @@ public class DocumentService {
         int page = 1;
         for (String chunkText : chunks) {
             if (chunkText.trim().isEmpty()) continue;
-            List<Double> emb = openAiService.getEmbedding(chunkText);
+            List<Double> emb = llmService.getEmbedding(chunkText);
             String embStr = vectorService.serializeEmbedding(emb);
             DocumentChunk chunk = new DocumentChunk(doc, chunkText, page++, embStr);
             chunkRepository.save(chunk);
