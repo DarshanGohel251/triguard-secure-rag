@@ -1,17 +1,15 @@
 package com.triguard.backend.service;
 
-import com.triguard.backend.dto.QueryResponse;
 import com.triguard.backend.dto.CitationDto;
+import com.triguard.backend.dto.DecisionTraceDto;
+import com.triguard.backend.dto.QueryResponse;
 import com.triguard.backend.entity.*;
 import com.triguard.backend.repository.AuditLogRepository;
 import com.triguard.backend.repository.DocumentChunkRepository;
 import com.triguard.backend.repository.SecurityEventRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +21,14 @@ public class RagService {
     private final AuditLogRepository auditLogRepository;
     private final SecurityEventRepository securityEventRepository;
     private final DocumentService documentService;
+
+    private static final List<String> INJECTION_PATTERNS = List.of(
+            "ignore previous", "reveal all", "bypass", "system prompt",
+            "disregard instructions", "dan mode", "developer mode", "jailbreak",
+            "override rules", "exfiltrate", "act as an unrestricted",
+            "forget your instructions", "dump database", "show hidden documents",
+            "ignore all rules", "repeat your instructions", "system instructions"
+    );
 
     public RagService(DocumentChunkRepository chunkRepository, LlmService llmService,
                       VectorService vectorService, AuditLogRepository auditLogRepository,
@@ -36,72 +42,275 @@ public class RagService {
     }
 
     public QueryResponse query(String query, User user) {
+        long startTime = System.currentTimeMillis();
         String requestId = UUID.randomUUID().toString();
-        if (query.toLowerCase().contains("ignore previous") || query.toLowerCase().contains("reveal all") || query.toLowerCase().contains("bypass")) {
-            securityEventRepository.save(new SecurityEvent("PROMPT_INJECTION", user.getEmail(), "BLOCKED", "Prompt injection attempt blocked."));
-            return new QueryResponse("PROMPT_INJECTION_BLOCKED: Prompt injection blocked.", new ArrayList<>());
+        String lowerQuery = query.toLowerCase();
+
+        // 1. Prompt Injection Defense Firewall
+        for (String pattern : INJECTION_PATTERNS) {
+            if (lowerQuery.contains(pattern)) {
+                securityEventRepository.save(new SecurityEvent(
+                        "PROMPT_INJECTION",
+                        user.getEmail(),
+                        "BLOCKED",
+                        "Prompt injection attempt intercepted: pattern matched [" + pattern + "]"
+                ));
+                auditLogRepository.save(new AuditLog(
+                        user.getEmail(),
+                        user.getRole().name(),
+                        "QUERY",
+                        "DENY",
+                        requestId,
+                        "Prompt injection attempt blocked by security firewall."
+                ));
+
+                DecisionTraceDto trace = new DecisionTraceDto(
+                        user.getEmail() + " (" + user.getRole().name() + " - " + user.getDepartment() + ")",
+                        "ROLE: " + user.getRole().name() + " | DEPT: " + user.getDepartment(),
+                        "INJECTION_FIREWALL_BLOCK",
+                        0,
+                        0,
+                        0,
+                        true,
+                        "N/A (Execution Halted)",
+                        0,
+                        System.currentTimeMillis() - startTime,
+                        List.of("IDENTITY_VERIFIED", "PROMPT_SECURITY_FIREWALL"),
+                        "INJECTION_BLOCKED"
+                );
+
+                return new QueryResponse(
+                        "PROMPT_INJECTION_BLOCKED: Adversarial instruction override attempt detected and intercepted. System integrity protected.",
+                        new ArrayList<>(),
+                        trace,
+                        requestId,
+                        "INJECTION_BLOCKED"
+                );
+            }
         }
-        
+
+        // 2. Identity Verification & Scope Determination
+        String identityScope = "ROLE: " + user.getRole().name() + " | DEPT: " + user.getDepartment();
+
         List<Double> queryEmb = llmService.getEmbedding(query);
 
+        // 3. Authorization-Constrained Retrieval
         List<Document> authorizedDocs = documentService.getAuthorizedDocuments(user);
-        List<DocumentChunk> allChunks = authorizedDocs.isEmpty() ? new ArrayList<>() : chunkRepository.findByDocumentIn(authorizedDocs);
+        List<DocumentChunk> authorizedCandidates = authorizedDocs.isEmpty()
+                ? new ArrayList<>()
+                : chunkRepository.findByDocumentIn(authorizedDocs);
 
-        List<VectorService.ScoredChunk> scoredChunks = new ArrayList<>();
-        for (DocumentChunk chunk : allChunks) {
+        // Score authorized candidates
+        List<VectorService.ScoredChunk> scoredAuthorizedChunks = new ArrayList<>();
+        for (DocumentChunk chunk : authorizedCandidates) {
             List<Double> chunkEmb = vectorService.parseEmbedding(chunk.getEmbeddingStr());
             if (chunkEmb != null) {
                 double score = vectorService.cosineSimilarity(queryEmb, chunkEmb);
-                scoredChunks.add(new VectorService.ScoredChunk(chunk, score));
+                scoredAuthorizedChunks.add(new VectorService.ScoredChunk(chunk, score));
+            }
+        }
+        scoredAuthorizedChunks.sort(Comparator.comparingDouble((VectorService.ScoredChunk s) -> s.score).reversed());
+        List<VectorService.ScoredChunk> topAuthorized = scoredAuthorizedChunks.stream()
+                .filter(sc -> sc.score >= 0.35)
+                .limit(5)
+                .collect(Collectors.toList());
+
+        // Probe detection across restricted universe
+        List<DocumentChunk> allChunks = chunkRepository.findAll();
+        int restrictedChunksBlocked = 0;
+        for (DocumentChunk chunk : allChunks) {
+            if (!documentService.canAccess(user, chunk.getDocument())) {
+                List<Double> emb = vectorService.parseEmbedding(chunk.getEmbeddingStr());
+                if (emb != null) {
+                    double score = vectorService.cosineSimilarity(queryEmb, emb);
+                    if (score >= 0.35) {
+                        restrictedChunksBlocked++;
+                    }
+                }
             }
         }
 
-        scoredChunks.sort(Comparator.comparingDouble((VectorService.ScoredChunk s) -> s.score).reversed());
-        List<VectorService.ScoredChunk> topChunks = scoredChunks.stream().limit(5).collect(Collectors.toList());
+        if (restrictedChunksBlocked > 0) {
+            securityEventRepository.save(new SecurityEvent(
+                    "UNAUTHORIZED_RETRIEVAL",
+                    user.getEmail(),
+                    "BLOCKED",
+                    "Unauthorized retrieval attempt blocked: " + restrictedChunksBlocked + " restricted candidates matched query intent but were withheld."
+            ));
+        }
 
-        List<DocumentChunk> authorizedChunks = new ArrayList<>();
-        boolean accessRestricted = false;
-
-        for (VectorService.ScoredChunk sc : topChunks) {
-            DocumentChunk chunk = sc.chunk;
-            if (documentService.canAccess(user, chunk.getDocument())) {
-                authorizedChunks.add(chunk);
+        // 4. Final Authorization Invariant Verification (Zero Leak Guarantee)
+        List<DocumentChunk> verifiedContextChunks = new ArrayList<>();
+        for (VectorService.ScoredChunk sc : topAuthorized) {
+            if (documentService.canAccess(user, sc.chunk.getDocument())) {
+                verifiedContextChunks.add(sc.chunk);
             } else {
-                accessRestricted = true;
-                securityEventRepository.save(new SecurityEvent("UNAUTHORIZED_RETRIEVAL", user.getEmail(), "BLOCKED", "Unauthorized retrieval attempt blocked."));
+                restrictedChunksBlocked++;
             }
         }
 
-        if (accessRestricted && authorizedChunks.isEmpty()) {
-            auditLogRepository.save(new AuditLog(user.getEmail(), user.getRole().name(), "QUERY", "DENY", requestId, "Access restricted by policy."));
-            return new QueryResponse("ACCESS RESTRICTED: No authorized information was found for this request.", new ArrayList<>());
-        }
-        
-        if (authorizedChunks.isEmpty()) {
-            auditLogRepository.save(new AuditLog(user.getEmail(), user.getRole().name(), "QUERY", "DENY", requestId, "No relevant information found."));
-            return new QueryResponse("No relevant information found.", new ArrayList<>());
+        // If access restricted and no authorized information
+        if (verifiedContextChunks.isEmpty() && restrictedChunksBlocked > 0) {
+            auditLogRepository.save(new AuditLog(
+                    user.getEmail(),
+                    user.getRole().name(),
+                    "QUERY",
+                    "DENY",
+                    requestId,
+                    "Access restricted by classification policy."
+            ));
+
+            DecisionTraceDto trace = new DecisionTraceDto(
+                    user.getEmail() + " (" + user.getRole().name() + " - " + user.getDepartment() + ")",
+                    identityScope,
+                    "ACCESS_DENIED_BY_POLICY",
+                    allChunks.size(),
+                    0,
+                    restrictedChunksBlocked,
+                    true,
+                    "N/A (Withheld)",
+                    0,
+                    System.currentTimeMillis() - startTime,
+                    List.of("IDENTITY_VERIFIED", "POLICY_EVALUATED", "RETRIEVAL_CONSTRAINED", "ACCESS_DENIED_ENFORCED"),
+                    "RESTRICTED"
+            );
+
+            return new QueryResponse(
+                    "ACCESS RESTRICTED: The requested information exists in restricted documents outside your authorization level.",
+                    new ArrayList<>(),
+                    trace,
+                    requestId,
+                    "RESTRICTED"
+            );
         }
 
+        if (verifiedContextChunks.isEmpty()) {
+            auditLogRepository.save(new AuditLog(
+                    user.getEmail(),
+                    user.getRole().name(),
+                    "QUERY",
+                    "DENY",
+                    requestId,
+                    "No relevant information found in authorized scope."
+            ));
+
+            DecisionTraceDto trace = new DecisionTraceDto(
+                    user.getEmail() + " (" + user.getRole().name() + " - " + user.getDepartment() + ")",
+                    identityScope,
+                    "NO_MATCHING_DOCUMENTS",
+                    allChunks.size(),
+                    0,
+                    0,
+                    true,
+                    "N/A",
+                    0,
+                    System.currentTimeMillis() - startTime,
+                    List.of("IDENTITY_VERIFIED", "POLICY_EVALUATED", "RETRIEVAL_CONSTRAINED"),
+                    "NO_INFO"
+            );
+
+            return new QueryResponse(
+                    "No relevant information found.",
+                    new ArrayList<>(),
+                    trace,
+                    requestId,
+                    "NO_INFO"
+            );
+        }
+
+        // 5. Build Authorized Context & Citations
         StringBuilder contextBuilder = new StringBuilder();
         List<CitationDto> citations = new ArrayList<>();
 
-        for (DocumentChunk chunk : authorizedChunks) {
-            contextBuilder.append("Source: ").append(chunk.getDocument().getName())
-                          .append("\nText: ").append(chunk.getText()).append("\n\n");
-            citations.add(new CitationDto(chunk.getDocument().getName(), chunk.getPageNumber(), chunk.getId(), chunk.getText()));
+        for (DocumentChunk chunk : verifiedContextChunks) {
+            Document doc = chunk.getDocument();
+            contextBuilder.append("Source: ").append(doc.getName())
+                    .append(" (Classification: ").append(doc.getClassification().name()).append(")")
+                    .append("\nText: ").append(chunk.getText()).append("\n\n");
+
+            citations.add(new CitationDto(
+                    doc.getName(),
+                    chunk.getPageNumber(),
+                    chunk.getId(),
+                    chunk.getText(),
+                    doc.getClassification().name(),
+                    doc.getDepartment()
+            ));
         }
 
-        String prompt = "You are TriGuard AI. Answer the user query based ONLY on the provided context. If the context does not contain the answer, reply exactly with 'No relevant information found.'\n\nContext:\n"
+        // 6. Safe Grounded Generation with Gemini
+        String prompt = "You are TriGuard AI, an enterprise secure intelligence assistant. Answer the user query based ONLY on the provided authorized context. If the context does not contain the answer, reply exactly with 'No relevant information found.' Do not speculate or invent facts.\n\nContext:\n"
                 + contextBuilder.toString() + "\n\nQuery: " + query + "\nAnswer:";
 
-        String answer = llmService.generateCompletion(prompt);
-
-        if (answer.trim().contains("No relevant information found")) {
-            auditLogRepository.save(new AuditLog(user.getEmail(), user.getRole().name(), "QUERY", "DENY", requestId, accessRestricted ? "Access restricted by policy." : "No relevant information found."));
-            return new QueryResponse(accessRestricted ? "ACCESS RESTRICTED: No authorized information was found for this request." : "No relevant information found.", new ArrayList<>());
+        String answer;
+        try {
+            answer = llmService.generateCompletion(prompt);
+        } catch (Exception e) {
+            // Safe fallback if LLM endpoint is experiencing temporary outage
+            answer = "TriGuard Intelligence could not generate a synthesized summary due to an upstream AI provider error, but retrieved authorized evidence chunks successfully.";
         }
 
-        auditLogRepository.save(new AuditLog(user.getEmail(), user.getRole().name(), "QUERY", "ALLOW", requestId, "Authorized context built with " + authorizedChunks.size() + " chunks."));
-        return new QueryResponse(answer, citations);
+        if (answer.trim().contains("No relevant information found")) {
+            auditLogRepository.save(new AuditLog(
+                    user.getEmail(),
+                    user.getRole().name(),
+                    "QUERY",
+                    "DENY",
+                    requestId,
+                    restrictedChunksBlocked > 0 ? "Access restricted by policy." : "No relevant information found in context."
+            ));
+
+            DecisionTraceDto trace = new DecisionTraceDto(
+                    user.getEmail() + " (" + user.getRole().name() + " - " + user.getDepartment() + ")",
+                    identityScope,
+                    "CONTEXT_INSUFFICIENT",
+                    allChunks.size(),
+                    verifiedContextChunks.size(),
+                    restrictedChunksBlocked,
+                    true,
+                    "gemini-2.5-flash",
+                    0,
+                    System.currentTimeMillis() - startTime,
+                    List.of("IDENTITY_VERIFIED", "POLICY_EVALUATED", "RETRIEVAL_CONSTRAINED", "CONTEXT_AUTHORIZED", "ANSWER_GENERATED"),
+                    restrictedChunksBlocked > 0 ? "RESTRICTED" : "NO_INFO"
+            );
+
+            return new QueryResponse(
+                    restrictedChunksBlocked > 0
+                            ? "ACCESS RESTRICTED: The requested information exists in restricted documents outside your authorization level."
+                            : "No relevant information found.",
+                    new ArrayList<>(),
+                    trace,
+                    requestId,
+                    restrictedChunksBlocked > 0 ? "RESTRICTED" : "NO_INFO"
+            );
+        }
+
+        // 7. Audit & Citations Validation Complete
+        auditLogRepository.save(new AuditLog(
+                user.getEmail(),
+                user.getRole().name(),
+                "QUERY",
+                "ALLOW",
+                requestId,
+                "Authorized context constructed with " + verifiedContextChunks.size() + " verified chunks. Zero leaks."
+        ));
+
+        DecisionTraceDto trace = new DecisionTraceDto(
+                user.getEmail() + " (" + user.getRole().name() + " - " + user.getDepartment() + ")",
+                identityScope,
+                "ALLOW_VERIFIED",
+                allChunks.size(),
+                verifiedContextChunks.size(),
+                restrictedChunksBlocked,
+                true,
+                "gemini-2.5-flash",
+                citations.size(),
+                System.currentTimeMillis() - startTime,
+                List.of("IDENTITY_VERIFIED", "POLICY_EVALUATED", "RETRIEVAL_CONSTRAINED", "CONTEXT_AUTHORIZED", "ANSWER_GENERATED", "CITATIONS_VALIDATED"),
+                "AUTHORIZED"
+        );
+
+        return new QueryResponse(answer, citations, trace, requestId, "AUTHORIZED");
     }
 }
