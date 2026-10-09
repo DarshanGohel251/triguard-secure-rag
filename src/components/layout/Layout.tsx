@@ -1,6 +1,5 @@
 import { Outlet, Navigate, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-  Shield,
   LayoutDashboard,
   MessageSquare,
   FileText,
@@ -9,24 +8,27 @@ import {
   LogOut,
   ChevronDown,
   UserCheck,
-  Sparkles
+  Sparkles,
+  Menu,
+  X
 } from 'lucide-react';
 import { useState } from 'react';
 import api from '../../services/api';
+import TriGuardLogo from '../brand/TriGuardLogo';
 
 const NAV_ITEMS = [
-  { path: '/dashboard', label: 'Command Center', icon: LayoutDashboard },
-  { path: '/ask', label: 'Ask TriGuard (RAG)', icon: MessageSquare, badge: 'AI' },
-  { path: '/documents', label: 'Knowledge Base', icon: FileText },
-  { path: '/security', label: 'Threat Center', icon: ShieldAlert },
-  { path: '/audit', label: 'Audit Ledger', icon: Activity },
+  { path: '/dashboard', label: 'Command Center', icon: LayoutDashboard, desc: 'Overview & Telemetry' },
+  { path: '/ask', label: 'Ask TriGuard', icon: MessageSquare, badge: 'AI RAG', desc: 'Secure Intelligence' },
+  { path: '/documents', label: 'Knowledge Base', icon: FileText, desc: 'Classified Corpus' },
+  { path: '/security', label: 'Threat Center', icon: ShieldAlert, desc: 'Firewall & Radar' },
+  { path: '/audit', label: 'Audit Ledger', icon: Activity, desc: 'Immutable Log' },
 ];
 
 const DEMO_PERSONAS = [
-  { role: 'EMPLOYEE', label: 'Ravi (Employee - Finance)', email: 'employee@triguard.com' },
-  { role: 'DEPARTMENT_MANAGER', label: 'Bob (Manager - Finance)', email: 'manager@triguard.com' },
-  { role: 'HR_MANAGER', label: 'Alice (HR Manager)', email: 'hr@triguard.com' },
-  { role: 'ADMIN', label: 'Eve (IT Admin)', email: 'admin@triguard.com' }
+  { role: 'EMPLOYEE', label: 'Ravi Employee', email: 'employee@triguard.com', dept: 'Finance', badge: 'Public & Internal' },
+  { role: 'DEPARTMENT_MANAGER', label: 'Bob Manager', email: 'manager@triguard.com', dept: 'Finance', badge: 'Confidential Dept' },
+  { role: 'HR_MANAGER', label: 'Alice HR', email: 'hr@triguard.com', dept: 'HR', badge: 'Restricted Executive' },
+  { role: 'ADMIN', label: 'Eve Admin', email: 'admin@triguard.com', dept: 'IT', badge: 'Full Clearance' }
 ];
 
 export default function Layout() {
@@ -34,6 +36,7 @@ export default function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [showPersonaMenu, setShowPersonaMenu] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [switching, setSwitching] = useState(false);
 
   if (!token) {
@@ -72,73 +75,89 @@ export default function Layout() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#040711] text-slate-100 font-sans overflow-hidden">
+    <div className="flex flex-col h-screen bg-[#040814] text-slate-100 font-sans overflow-hidden">
       {/* Top Enterprise Command Header */}
-      <header className="h-16 bg-[#070d1d] border-b border-white/10 flex items-center justify-between px-6 shrink-0 z-20">
-        <div className="flex items-center gap-6">
-          <Link to="/dashboard" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition-transform shadow-lg shadow-cyan-500/10">
-              <Shield className="w-4 h-4" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-black text-lg tracking-wider text-white">
-                TRI<span className="text-cyan-400">GUARD</span>
-              </span>
-              <span className="text-[9px] text-slate-400 font-mono -mt-1 tracking-tight">
-                Secure Intelligence Platform
-              </span>
-            </div>
+      <header className="h-18 bg-[#060D1E] border-b border-white/10 flex items-center justify-between px-5 sm:px-8 shrink-0 z-30 shadow-lg">
+        {/* Left: Mobile Toggle & Brand Logo */}
+        <div className="flex items-center gap-4 sm:gap-6">
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+            aria-label="Toggle mobile navigation"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+
+          <Link to="/dashboard" className="flex items-center gap-3 group">
+            <TriGuardLogo variant="horizontal" size="md" showSubtitle={true} />
           </Link>
 
-          <div className="hidden xl:flex items-center gap-2 text-slate-400 text-xs border-l border-white/10 pl-6 font-medium">
-            <span>Ask the knowledge</span>
-            <span className="w-1 h-1 rounded-full bg-cyan-400/50"></span>
-            <span>Verify the access</span>
-            <span className="w-1 h-1 rounded-full bg-cyan-400/50"></span>
-            <span className="text-cyan-400 font-mono">PS-01 RAG</span>
+          {/* Mission & Problem Statement Tag */}
+          <div className="hidden xl:flex items-center gap-2.5 text-slate-300 text-xs border-l border-white/10 pl-6 font-mono">
+            <span className="flex items-center gap-1.5 text-cyan-400 font-bold">
+              <Sparkles className="w-3.5 h-3.5" />
+              PS-01 RAG
+            </span>
+            <span className="text-slate-600">•</span>
+            <span className="text-slate-400">Deterministic RBAC</span>
+            <span className="text-slate-600">•</span>
+            <span className="text-slate-400">Zero Leakage</span>
           </div>
         </div>
 
-        {/* Right Session Controls & Quick Persona Switcher */}
-        <div className="flex items-center gap-4">
+        {/* Right: Security Status Pill & Persona Switcher */}
+        <div className="flex items-center gap-3 sm:gap-4">
+          {/* Live Defense Status Badge */}
+          <div className="hidden lg:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-semibold">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+            <span>PERIMETER SECURE</span>
+          </div>
+
           {/* Quick Persona Switcher for Hackathon Live Demo */}
           <div className="relative">
             <button
               onClick={() => setShowPersonaMenu(!showPersonaMenu)}
               disabled={switching}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 hover:border-cyan-400/30 text-xs transition-all cursor-pointer"
+              className="flex items-center gap-3 px-3.5 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-white/10 hover:border-cyan-400/40 text-sm transition-all cursor-pointer shadow-md"
             >
-              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
               <div className="flex flex-col text-left">
-                <span className="text-[11px] font-bold text-white truncate max-w-[120px] sm:max-w-[160px]">
+                <span className="text-xs sm:text-sm font-bold text-white truncate max-w-[130px] sm:max-w-[180px]">
                   {userObj.name}
                 </span>
-                <span className="text-[9px] text-cyan-300 font-mono uppercase">
+                <span className="text-[11px] text-cyan-300 font-mono uppercase tracking-tight">
                   {userObj.role.replace('_', ' ')} • {userObj.department}
                 </span>
               </div>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+              <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
             </button>
 
             {/* Persona Switch Dropdown */}
             {showPersonaMenu && (
-              <div className="absolute right-0 mt-2 w-64 bg-[#0a1124] border border-white/10 rounded-2xl shadow-2xl p-2 z-50">
-                <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-white/5">
-                  Switch Persona (Instant Auth)
+              <div className="absolute right-0 mt-2 w-72 bg-[#091224] border border-cyan-500/30 rounded-2xl shadow-2xl p-2.5 z-50 backdrop-blur-2xl">
+                <div className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-300 border-b border-white/10 flex items-center justify-between">
+                  <span>Switch Live Persona</span>
+                  <span className="text-[10px] text-cyan-400 font-mono">1-Click Auth</span>
                 </div>
-                <div className="space-y-1 mt-1">
+                <div className="space-y-1.5 mt-2">
                   {DEMO_PERSONAS.map((p) => (
                     <button
                       key={p.email}
                       onClick={() => handleQuickSwitch(p.email)}
-                      className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition-colors cursor-pointer ${
+                      className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs flex flex-col gap-0.5 transition-all cursor-pointer ${
                         userObj.email === p.email
-                          ? 'bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30'
-                          : 'text-slate-300 hover:bg-white/5'
+                          ? 'bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/40'
+                          : 'text-slate-300 hover:bg-white/5 hover:text-white'
                       }`}
                     >
-                      <span>{p.label}</span>
-                      {userObj.email === p.email && <UserCheck className="w-3.5 h-3.5 text-cyan-400" />}
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-sm text-white">{p.label}</span>
+                        {userObj.email === p.email && <UserCheck className="w-4 h-4 text-cyan-400" />}
+                      </div>
+                      <div className="flex items-center justify-between text-[11px] text-slate-400">
+                        <span>{p.dept} Department</span>
+                        <span className="text-cyan-400 font-mono text-[10px]">{p.badge}</span>
+                      </div>
                     </button>
                   ))}
                 </div>
@@ -146,22 +165,43 @@ export default function Layout() {
             )}
           </div>
 
+          {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
-            title="Sign out"
+            className="p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/10 transition-colors cursor-pointer"
+            title="Sign out of TriGuard"
+            aria-label="Sign out"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-5 h-5" />
           </button>
         </div>
       </header>
 
       {/* Main Workspace Body */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <aside className="w-64 bg-[#060b18] border-r border-white/5 flex flex-col shrink-0">
-          <nav className="flex-1 overflow-y-auto py-6">
-            <ul className="space-y-1.5 px-3">
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Sidebar Navigation (Desktop) */}
+        <aside
+          className={`fixed inset-y-0 left-0 z-40 w-68 bg-[#060D1E] border-r border-white/10 flex flex-col transition-transform duration-300 md:static md:translate-x-0 ${
+            mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          {/* Mobile Close Button in Drawer Header */}
+          <div className="p-4 border-b border-white/10 flex items-center justify-between md:hidden">
+            <TriGuardLogo variant="horizontal" size="sm" />
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-1.5 text-slate-400 hover:text-white rounded-lg"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Navigation Links */}
+          <nav className="flex-1 overflow-y-auto py-6 px-3">
+            <div className="px-3 mb-2 text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">
+              Navigation
+            </div>
+            <ul className="space-y-1.5">
               {NAV_ITEMS.map((item) => {
                 const isActive = location.pathname.startsWith(item.path);
                 const Icon = item.icon;
@@ -169,18 +209,22 @@ export default function Layout() {
                   <li key={item.path}>
                     <Link
                       to={item.path}
-                      className={`flex items-center justify-between px-3.5 py-3 rounded-xl text-xs font-bold transition-all ${
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
                         isActive
-                          ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 shadow-[0_0_15px_rgba(0,240,255,0.15)]'
-                          : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
+                          ? 'bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border border-cyan-400/30 shadow-[0_0_20px_rgba(0,229,255,0.15)] font-bold'
+                          : 'text-slate-300 hover:text-white hover:bg-white/5 border border-transparent'
                       }`}
                     >
-                      <div className="flex items-center gap-3">
-                        <Icon className={`w-4 h-4 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
-                        <span>{item.label}</span>
+                      <div className="flex items-center gap-3.5">
+                        <Icon className={`w-5 h-5 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
+                        <div>
+                          <div>{item.label}</div>
+                          <div className="text-[11px] text-slate-400 font-normal font-sans">{item.desc}</div>
+                        </div>
                       </div>
                       {item.badge && (
-                        <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-cyan-400/20 text-cyan-300 border border-cyan-400/30">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-400/20 text-cyan-300 border border-cyan-400/30">
                           {item.badge}
                         </span>
                       )}
@@ -191,22 +235,35 @@ export default function Layout() {
             </ul>
           </nav>
 
-          {/* Sidebar Footer Badge */}
-          <div className="p-4 border-t border-white/5 bg-slate-950/60">
-            <div className="p-3 rounded-xl bg-slate-900/80 border border-white/5">
-              <div className="flex items-center gap-1.5 text-cyan-400 text-xs font-bold mb-1">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Gemini 2.5 Active</span>
+          {/* Sidebar Footer Security Architecture Card */}
+          <div className="p-4 border-t border-white/10 bg-[#040814]/80">
+            <div className="p-3.5 rounded-xl bg-slate-900/90 border border-white/10">
+              <div className="flex items-center justify-between text-cyan-400 text-xs font-bold mb-1.5">
+                <span className="flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-cyan-400" />
+                  Gemini 2.5 Active
+                </span>
+                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.2 rounded border border-emerald-500/20">
+                  ONLINE
+                </span>
               </div>
-              <p className="text-[10px] text-slate-400 leading-relaxed">
-                Deterministic RBAC pre-retrieval enforcement with page-level citations.
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Deterministic pre-retrieval clearance with page-level verifiable citations.
               </p>
             </div>
           </div>
         </aside>
 
+        {/* Backdrop for Mobile Drawer */}
+        {mobileMenuOpen && (
+          <div
+            onClick={() => setMobileMenuOpen(false)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 md:hidden"
+          />
+        )}
+
         {/* Dynamic Outlet Main Screen */}
-        <main className="flex-1 overflow-y-auto bg-[#040711] p-6 lg:p-8 relative">
+        <main className="flex-1 overflow-y-auto bg-[#040814] p-6 lg:p-8 relative">
           <Outlet />
         </main>
       </div>

@@ -2,12 +2,13 @@ import { useState, useEffect, useMemo } from 'react';
 import {
   Activity,
   Check,
-  X,
   Search,
   RefreshCw,
   User,
   Copy,
-  CheckCheck
+  CheckCheck,
+  Lock,
+  CheckCircle2
 } from 'lucide-react';
 import api from '../services/api';
 
@@ -45,6 +46,7 @@ export default function Audit() {
     return logs.filter((log) => {
       const matchesSearch =
         log.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        log.userEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         log.requestId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         log.details?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         log.action?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -56,159 +58,206 @@ export default function Audit() {
     });
   }, [logs, searchTerm, actionFilter, decisionFilter]);
 
+  const stats = useMemo(() => {
+    const allows = logs.filter((l) => l.decision === 'ALLOW').length;
+    const denies = logs.filter((l) => l.decision === 'DENY').length;
+    return { total: logs.length, allows, denies };
+  }, [logs]);
+
   return (
-    <div className="flex flex-col gap-6 max-w-7xl mx-auto font-sans">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="flex flex-col gap-8 max-w-7xl mx-auto font-sans pb-12">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
-            <Activity className="w-6 h-6 text-cyan-400" />
-            Compliance & Audit Ledger
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-wider mb-2">
+            <Activity className="w-3.5 h-3.5 text-cyan-400" />
+            Immutable Enterprise Compliance Ledger
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            Security & Access Audit Ledger
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Immutable trace of all authentication events, retrieval decisions, and document operations.
+          <p className="text-sm sm:text-base text-slate-300 mt-1 max-w-2xl">
+            Tamper-evident record of all identity authentications, retrieval queries, and policy gate decisions.
           </p>
         </div>
 
         <button
           onClick={fetchAuditLogs}
           disabled={loading}
-          className="px-3.5 py-2 rounded-xl bg-slate-900 border border-white/10 hover:border-cyan-400/30 text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 transition-all cursor-pointer"
+          className="px-4 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 hover:border-cyan-400/40 text-slate-300 hover:text-white text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer self-start sm:self-auto"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`w-4 h-4 text-cyan-400 ${loading ? 'animate-spin' : ''}`} />
           <span>Refresh Ledger</span>
         </button>
       </div>
 
-      {/* Main Ledger Card */}
-      <div className="bg-[#070d1d] border border-white/10 rounded-2xl shadow-xl overflow-hidden flex flex-col">
-        {/* Toolbar */}
-        <div className="p-4 border-b border-white/5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-slate-900/40">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+      {/* KPI Overview Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div className="p-6 rounded-2xl bg-[#060D1E]/90 border border-white/10 shadow-xl">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+              Total Recorded Actions
+            </span>
+            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+              <Activity className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="text-3xl sm:text-4xl font-black text-white mt-4 tracking-tight">
+            {stats.total}
+          </div>
+          <div className="text-xs text-slate-400 mt-1 font-mono">
+            Cryptographically logged events
+          </div>
+        </div>
+
+        <div className="p-6 rounded-2xl bg-[#060D1E]/90 border border-emerald-500/30 shadow-xl">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
+              Authorized Decisions
+            </span>
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+              <CheckCircle2 className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="text-3xl sm:text-4xl font-black text-white mt-4 tracking-tight">
+            {stats.allows}
+          </div>
+          <div className="text-xs text-emerald-400 mt-1 font-mono">
+            Passed deterministic policy gate
+          </div>
+        </div>
+
+        <div className="p-6 rounded-2xl bg-[#060D1E]/90 border border-amber-500/30 shadow-xl">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+              Blocked / Denied Decisions
+            </span>
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+              <Lock className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="text-3xl sm:text-4xl font-black text-white mt-4 tracking-tight">
+            {stats.denies}
+          </div>
+          <div className="text-xs text-amber-400 mt-1 font-mono">
+            Zero unauthorized chunks leaked
+          </div>
+        </div>
+      </div>
+
+      {/* Main Ledger Table & Filter Controls */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-[#060D1E]/90 border border-white/10 shadow-2xl backdrop-blur-xl space-y-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="relative flex-1 max-w-md">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search user, action, or request ID..."
-              className="w-full bg-slate-950/60 border border-white/10 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+              placeholder="Search user, action, details, request ID..."
+              className="w-full bg-[#091326] border border-white/15 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
             />
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            {/* Action Filter */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Action:</span>
-              {['ALL', 'QUERY', 'LOGIN', 'DOCUMENT_UPLOAD'].map((act) => (
-                <button
-                  key={act}
-                  onClick={() => setActionFilter(act)}
-                  className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-all cursor-pointer ${
-                    actionFilter === act
-                      ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  {act}
-                </button>
-              ))}
-            </div>
+            <select
+              value={actionFilter}
+              onChange={(e) => setActionFilter(e.target.value)}
+              className="bg-[#091326] border border-white/15 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-300 focus:outline-none focus:border-cyan-400 cursor-pointer"
+            >
+              <option value="ALL">All Actions</option>
+              <option value="QUERY">Query</option>
+              <option value="LOGIN">Login</option>
+              <option value="UPLOAD">Upload</option>
+            </select>
 
-            {/* Decision Filter */}
-            <div className="flex items-center gap-1.5 pl-3 border-l border-white/10">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Decision:</span>
-              {['ALL', 'ALLOW', 'DENY'].map((dec) => (
-                <button
-                  key={dec}
-                  onClick={() => setDecisionFilter(dec)}
-                  className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-all cursor-pointer ${
-                    decisionFilter === dec
-                      ? dec === 'ALLOW'
-                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                        : 'bg-red-500/20 text-red-300 border border-red-500/40'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  {dec}
-                </button>
-              ))}
-            </div>
+            <select
+              value={decisionFilter}
+              onChange={(e) => setDecisionFilter(e.target.value)}
+              className="bg-[#091326] border border-white/15 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-300 focus:outline-none focus:border-cyan-400 cursor-pointer"
+            >
+              <option value="ALL">All Decisions</option>
+              <option value="ALLOW">Allow</option>
+              <option value="DENY">Deny</option>
+            </select>
           </div>
         </div>
 
         {/* Ledger Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-white/5 bg-slate-900/60 text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                <th className="py-3 px-5">Timestamp</th>
-                <th className="py-3 px-5">Actor</th>
-                <th className="py-3 px-5">Role Scope</th>
-                <th className="py-3 px-5">Action</th>
-                <th className="py-3 px-5">Security Decision</th>
-                <th className="py-3 px-5">Request ID</th>
-                <th className="py-3 px-5">Details</th>
+              <tr className="border-b border-white/10 text-xs font-mono uppercase tracking-wider text-slate-400 bg-slate-900/40">
+                <th className="py-3 px-4">Decision</th>
+                <th className="py-3 px-4">Action</th>
+                <th className="py-3 px-4">Subject User</th>
+                <th className="py-3 px-4">Operation Details</th>
+                <th className="py-3 px-4">Request ID</th>
+                <th className="py-3 px-4">Timestamp</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5 text-xs text-slate-300">
-              {filteredLogs.map((log) => (
-                <tr key={log.id} className="hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3.5 px-5 font-mono text-[11px] text-slate-400 whitespace-nowrap">
-                    {new Date(log.timestamp).toLocaleString()}
-                  </td>
-                  <td className="py-3.5 px-5 font-medium text-white flex items-center gap-2">
-                    <User className="w-3.5 h-3.5 text-slate-500" />
-                    <span>{log.username}</span>
-                  </td>
-                  <td className="py-3.5 px-5">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-slate-800 text-slate-300 border border-white/5">
-                      {log.role}
+            <tbody className="divide-y divide-white/5">
+              {filteredLogs.map((log, idx) => (
+                <tr key={log.id || idx} className="hover:bg-white/5 transition-colors">
+                  <td className="py-3.5 px-4 font-mono">
+                    <span
+                      className={`text-xs font-bold px-2.5 py-1 rounded-md border flex items-center gap-1.5 w-fit ${
+                        log.decision === 'ALLOW'
+                          ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                          : 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                      }`}
+                    >
+                      {log.decision === 'ALLOW' ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                          ALLOW
+                        </>
+                      ) : (
+                        <>
+                          <Lock className="w-3.5 h-3.5 text-amber-400" />
+                          DENY
+                        </>
+                      )}
                     </span>
                   </td>
-                  <td className="py-3.5 px-5 font-semibold text-cyan-300">
+                  <td className="py-3.5 px-4 font-mono text-xs font-bold text-cyan-300">
                     {log.action}
                   </td>
-                  <td className="py-3.5 px-5 whitespace-nowrap">
-                    {log.decision === 'ALLOW' ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 px-2 py-0.5 rounded bg-emerald-950/40 border border-emerald-500/30">
-                        <Check className="w-3 h-3" />
-                        ALLOW
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-red-400 px-2 py-0.5 rounded bg-red-950/40 border border-red-500/30">
-                        <X className="w-3 h-3" />
-                        DENY
-                      </span>
-                    )}
+                  <td className="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                    <User className="w-3.5 h-3.5 text-slate-400" />
+                    <span>{log.username || log.userEmail || 'System'}</span>
                   </td>
-                  <td className="py-3.5 px-5 font-mono text-[11px] text-slate-400 whitespace-nowrap">
+                  <td className="py-3.5 px-4 text-xs text-slate-300 max-w-sm truncate font-mono">
+                    {log.details || 'N/A'}
+                  </td>
+                  <td className="py-3.5 px-4">
                     {log.requestId ? (
                       <button
                         onClick={() => copyRequestId(log.requestId)}
-                        className="inline-flex items-center gap-1 hover:text-cyan-300 transition-colors cursor-pointer group"
-                        title="Click to copy full request ID"
+                        className="px-2 py-1 rounded bg-slate-900 border border-white/10 hover:border-cyan-400/40 text-[11px] font-mono text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                        title="Copy Request ID"
                       >
-                        <span>{log.requestId.substring(0, 8)}...</span>
+                        <span className="truncate max-w-[80px]">{log.requestId}</span>
                         {copiedId === log.requestId ? (
                           <CheckCheck className="w-3 h-3 text-emerald-400" />
                         ) : (
-                          <Copy className="w-3 h-3 opacity-40 group-hover:opacity-100" />
+                          <Copy className="w-3 h-3" />
                         )}
                       </button>
                     ) : (
-                      'N/A'
+                      <span className="text-[11px] font-mono text-slate-600">—</span>
                     )}
                   </td>
-                  <td className="py-3.5 px-5 text-slate-400 max-w-xs text-xs truncate">
-                    {log.details}
+                  <td className="py-3.5 px-4 text-xs font-mono text-slate-400">
+                    {log.timestamp ? new Date(log.timestamp).toLocaleString() : 'Recent'}
                   </td>
                 </tr>
               ))}
 
               {filteredLogs.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-xs text-slate-500">
-                    No audit records match the current criteria.
+                  <td colSpan={6} className="py-8 text-center text-slate-500 text-sm">
+                    No audit records matching filter criteria.
                   </td>
                 </tr>
               )}
