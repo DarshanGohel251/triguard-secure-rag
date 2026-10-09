@@ -6,7 +6,7 @@ export default function Documents() {
   const [documents, setDocuments] = useState<any[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const [classification, setClassification] = useState('INTERNAL');
-  const [department, setDepartment] = useState('General');
+  const [department] = useState('General');
   const [loading, setLoading] = useState(false);
 
   const fetchDocuments = async () => {

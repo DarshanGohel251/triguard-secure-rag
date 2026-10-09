@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Shield, FileText, Activity, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { Shield, FileText, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import api from '../services/api';
 
 export default function Dashboard() {

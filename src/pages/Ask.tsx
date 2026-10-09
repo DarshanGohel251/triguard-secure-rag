@@ -58,11 +58,18 @@ export default function Ask() {
       };
       
       setMessages(prev => [...prev, assistantMessage]);
-    } catch (error) {
+    } catch (error: any) {
+      let errorMsg = "Error connecting to TriGuard Intelligence. Please try again later.";
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMsg = error.response.data.message;
+        if (error.response.data.requestId) {
+          errorMsg += ` (Request ID: ${error.response.data.requestId})`;
+        }
+      }
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: "Error connecting to TriGuard Intelligence. Please try again later.",
+        content: errorMsg,
         isError: true
       }]);
     } finally {
