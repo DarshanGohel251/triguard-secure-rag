@@ -8,13 +8,13 @@
 
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #07240F;
+    background-color: #080D16;
     background-image: 
-      radial-gradient(ellipse 90% 70% at 50% -15%, rgba(59, 54, 100, 0.55), transparent 70%),
-      radial-gradient(ellipse 80% 60% at 85% 90%, rgba(9, 187, 200, 0.10), transparent 65%),
-      radial-gradient(circle at 15% 50%, rgba(7, 36, 15, 0.9), transparent 80%);
+      radial-gradient(ellipse 90% 70% at 50% -15%, rgba(59, 54, 100, 0.45), transparent 70%),
+      radial-gradient(ellipse 80% 60% at 85% 90%, rgba(9, 187, 200, 0.12), transparent 65%),
+      radial-gradient(circle at 15% 50%, rgba(7, 36, 15, 0.45), transparent 80%);
     background-attachment: fixed;
-    color: #D9FCED;
+    color: #F8FAFC;
     letter-spacing: -0.012em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

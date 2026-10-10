@@ -12,4 +12,15 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Stale or invalid JWT token
+      console.warn('Session expired or unauthorized. Token cleared.');
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;

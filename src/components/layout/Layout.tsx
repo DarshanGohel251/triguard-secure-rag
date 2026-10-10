@@ -76,7 +76,7 @@ export default function Layout() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#07240F] text-[#D9FCED] font-sans overflow-hidden">
+    <div className="flex flex-col h-screen bg-[#080D16] text-[#F8FAFC] font-sans overflow-hidden">
       {/* Top Enterprise Command Header */}
       <header className="h-18 bg-[#3B3664]/35 border-b border-[#09BBC8]/20 flex items-center justify-between px-5 sm:px-8 shrink-0 z-30 shadow-2xl backdrop-blur-xl">
         {/* Left: Mobile Toggle & Apex Brand Logo */}
