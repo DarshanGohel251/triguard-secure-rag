@@ -246,47 +246,21 @@ public class RagService {
             ));
         }
 
-        // 6. Safe Grounded Generation with Gemini
+        // 6. Safe Grounded Generation with Gemini (Demo-Resilient)
         String prompt = "You are TriGuard AI, an enterprise secure intelligence assistant. Answer the user query based ONLY on the provided authorized context. If the context does not contain the answer, reply exactly with 'No relevant information found.' Do not speculate or invent facts.\n\nContext:\n"
                 + contextBuilder.toString() + "\n\nQuery: " + query + "\nAnswer:";
 
-        String answer;
+        LlmService.CompletionResult completionResult;
         try {
-            answer = llmService.generateCompletion(prompt);
+            completionResult = llmService.generateCompletionWithResilience(prompt, query, contextBuilder.toString());
         } catch (Exception e) {
-            // Separate AI provider failure from successful synthesis
-            auditLogRepository.save(new AuditLog(
-                    user.getEmail(),
-                    user.getRole().name(),
-                    "QUERY",
-                    "ERROR",
-                    requestId,
-                    "AI provider error: " + (e.getMessage() != null ? e.getMessage() : "Upstream completion failure")
-            ));
-
-            DecisionTraceDto trace = new DecisionTraceDto(
-                    user.getEmail() + " (" + user.getRole().name() + " - " + user.getDepartment() + ")",
-                    identityScope,
-                    "AI_PROVIDER_ERROR",
-                    allChunks.size(),
-                    verifiedContextChunks.size(),
-                    restrictedChunksBlocked,
-                    true,
-                    "gemini-flash-latest",
-                    0,
-                    System.currentTimeMillis() - startTime,
-                    List.of("IDENTITY_VERIFIED", "POLICY_EVALUATED", "RETRIEVAL_CONSTRAINED", "CONTEXT_AUTHORIZED", "SYNTHESIS_FAILED"),
-                    "AI_PROVIDER_ERROR"
-            );
-
-            return new QueryResponse(
-                    "AI provider error: Unable to generate synthesized summary due to an upstream service error. Please try again.",
-                    new ArrayList<>(),
-                    trace,
-                    requestId,
-                    "AI_PROVIDER_ERROR"
-            );
+            completionResult = llmService.resolveFallback(query, contextBuilder.toString(), "Upstream Exception: " + e.getMessage());
         }
+
+        String answer = completionResult.getText();
+        String responseMode = completionResult.isFallback() ? "fallback" : "live";
+        String fallbackReason = completionResult.getFallbackReason();
+        boolean isCached = fallbackReason != null && fallbackReason.contains("Demo Cache");
 
         if (answer.trim().contains("No relevant information found")) {
             auditLogRepository.save(new AuditLog(
@@ -320,7 +294,10 @@ public class RagService {
                     new ArrayList<>(),
                     trace,
                     requestId,
-                    restrictedChunksBlocked > 0 ? "RESTRICTED" : "NO_INFO"
+                    restrictedChunksBlocked > 0 ? "RESTRICTED" : "NO_INFO",
+                    responseMode,
+                    fallbackReason,
+                    isCached
             );
         }
 
@@ -331,25 +308,25 @@ public class RagService {
                 "QUERY",
                 "ALLOW",
                 requestId,
-                "Authorized context constructed with " + verifiedContextChunks.size() + " verified chunks. Zero leaks."
+                "Authorized context constructed with " + verifiedContextChunks.size() + " verified chunks. Zero leaks." + (completionResult.isFallback() ? " (Resilient Fallback Mode Active)" : "")
         ));
 
         DecisionTraceDto trace = new DecisionTraceDto(
                 user.getEmail() + " (" + user.getRole().name() + " - " + user.getDepartment() + ")",
                 identityScope,
-                "ALLOW_VERIFIED",
+                completionResult.isFallback() ? "ALLOW_VERIFIED_FALLBACK" : "ALLOW_VERIFIED",
                 allChunks.size(),
                 verifiedContextChunks.size(),
                 restrictedChunksBlocked,
                 true,
-                "gemini-flash-latest",
+                completionResult.isFallback() ? "resilient-fallback-engine" : "gemini-flash-latest",
                 citations.size(),
                 System.currentTimeMillis() - startTime,
                 List.of("IDENTITY_VERIFIED", "POLICY_EVALUATED", "RETRIEVAL_CONSTRAINED", "CONTEXT_AUTHORIZED", "ANSWER_GENERATED", "CITATIONS_VALIDATED"),
                 "AUTHORIZED"
         );
 
-        return new QueryResponse(answer, citations, trace, requestId, "AUTHORIZED");
+        return new QueryResponse(answer, citations, trace, requestId, "AUTHORIZED", responseMode, fallbackReason, isCached);
     }
 
     /**

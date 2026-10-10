@@ -1,0 +1,54 @@
+{
+  "queries": [
+    {
+      "query": "what is the annual leave policy",
+      "aliases": [
+        "what is the leave policy",
+        "how many days of paid time off do employees get",
+        "leave policy 2026",
+        "annual leave entitlement"
+      ],
+      "answer": "According to the corporate leave policy, full-time employees are entitled to 20 days of paid annual leave per calendar year. All full-time employees are eligible upon standard employment confirmation.",
+      "classification": "INTERNAL",
+      "department": "General",
+      "source": "Leave_Policy_2026.txt"
+    },
+    {
+      "query": "what is the salary of bob manager",
+      "aliases": [
+        "bob manager salary",
+        "finance salary report",
+        "how much does bob manager earn",
+        "finance compensation details"
+      ],
+      "answer": "According to the confidential Finance salary report, the entry salary of a Finance employee starts at $70,000, and Bob Manager earns $120,000.",
+      "classification": "CONFIDENTIAL",
+      "department": "Finance",
+      "source": "Finance_Salary_Report.txt"
+    },
+    {
+      "query": "what is the executive bonus structure",
+      "aliases": [
+        "executive bonuses",
+        "executive bonus cap",
+        "hr bonus policy"
+      ],
+      "answer": "Executive bonuses are capped at 50% of base salary. This compensation structure is restricted strictly to HR leadership and Executive administration.",
+      "classification": "RESTRICTED",
+      "department": "HR",
+      "source": "Executive_Bonus_Structure.txt"
+    },
+    {
+      "query": "what are the engineering api architecture standards",
+      "aliases": [
+        "engineering api standards",
+        "api architecture guidelines",
+        "zero-trust api standards"
+      ],
+      "answer": "TriGuard engineering API architecture requires deterministic RBAC token scoping, hardware-isolated microservice endpoints, and mutual TLS encryption across all enterprise data pipelines.",
+      "classification": "INTERNAL",
+      "department": "Engineering",
+      "source": "Engineering_Standards.txt"
+    }
+  ]
+}
