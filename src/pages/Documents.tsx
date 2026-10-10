@@ -5,7 +5,6 @@ import {
   CheckCircle2,
   Search,
   Shield,
-  Loader2,
   AlertCircle,
   FileUp,
   Tag,
@@ -17,6 +16,7 @@ import {
 } from 'lucide-react';
 import api from '../services/api';
 import SpatialKnowledgeVault3D, { type DocumentAsset } from '../components/3d/SpatialKnowledgeVault3D';
+import GeneratingLoader from '../components/ui/GeneratingLoader';
 
 const CLASSIFICATIONS = [
   { value: 'PUBLIC', label: 'Public', desc: 'Accessible by all authenticated personas', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' },
@@ -284,23 +284,24 @@ export default function Documents() {
             </div>
           )}
 
-          <div className="flex justify-end">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            {loading ? (
+              <div className="w-full sm:max-w-md">
+                <GeneratingLoader
+                  text="Ingesting"
+                  subtitle="Extracting text, chunking, and calculating vector embeddings..."
+                  size="sm"
+                />
+              </div>
+            ) : <div />}
+
             <button
               type="submit"
               disabled={loading || !file}
-              className="py-3.5 px-6 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-cyan-500/25 flex items-center gap-2 transition-all disabled:opacity-40 cursor-pointer"
+              className="py-3.5 px-6 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-cyan-500/25 flex items-center gap-2 transition-all disabled:opacity-40 cursor-pointer self-end"
             >
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Processing & Indexing Embeddings...</span>
-                </>
-              ) : (
-                <>
-                  <FileUp className="w-4 h-4" />
-                  <span>Ingest & Quarantine Document</span>
-                </>
-              )}
+              <FileUp className="w-4 h-4" />
+              <span>Ingest & Quarantine Document</span>
             </button>
           </div>
         </form>

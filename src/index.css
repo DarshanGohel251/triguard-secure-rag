@@ -134,3 +134,72 @@
 .animate-beam-flow {
   animation: beam-flow 2.5s ease-in-out infinite;
 }
+
+/* =========================================================================
+   TRIGUARD GENERATING LOADER (Inspired by Uiverse.io by dexter-st)
+   Brand-adapted: Cyan (#00f0ff), Icy Blue (#38bdf8), Violet (#8b5cf6)
+   Cycle: ~0.8s responsive micro-animation
+   ========================================================================= */
+
+@keyframes triguard-letter-glow {
+  0%, 100% {
+    opacity: 0.28;
+    color: #94a3b8;
+    text-shadow: none;
+    transform: translateY(0px) scale(0.98);
+  }
+  35% {
+    opacity: 1;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.9), 0 0 20px rgba(56, 189, 248, 0.6), 0 0 30px rgba(139, 92, 246, 0.4);
+    transform: translateY(-2px) scale(1.06);
+  }
+  70% {
+    opacity: 0.7;
+    color: #38bdf8;
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+    transform: translateY(0px) scale(1);
+  }
+}
+
+@keyframes triguard-scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes triguard-radial-pulse {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.04);
+  }
+}
+
+.animate-triguard-letter-glow {
+  animation-name: triguard-letter-glow;
+}
+
+.animate-triguard-scanline {
+  animation: triguard-scanline 0.8s linear infinite;
+}
+
+.animate-triguard-radial-pulse {
+  animation: triguard-radial-pulse 0.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-triguard-letter-glow,
+  .animate-triguard-scanline,
+  .animate-triguard-radial-pulse {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

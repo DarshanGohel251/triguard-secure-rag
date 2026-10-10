@@ -17,6 +17,7 @@ import {
 import api from '../services/api';
 import RetrievalPipelineVisual from '../components/3d/RetrievalPipelineVisual';
 import TriGuardLogo from '../components/brand/TriGuardLogo';
+import GeneratingLoader from '../components/ui/GeneratingLoader';
 
 type Citation = {
   documentName: string;
@@ -49,7 +50,7 @@ type Message = {
   citations?: Citation[];
   decisionTrace?: DecisionTrace;
   requestId?: string;
-  status?: 'AUTHORIZED' | 'RESTRICTED' | 'INJECTION_BLOCKED' | 'NO_INFO' | 'ERROR';
+  status?: 'AUTHORIZED' | 'RESTRICTED' | 'INJECTION_BLOCKED' | 'NO_INFO' | 'AI_PROVIDER_ERROR' | 'ERROR';
   executionTimeMs?: number;
 };
 
@@ -407,17 +408,23 @@ export default function Ask() {
                         className={`px-3.5 py-1 rounded-full text-xs font-mono font-bold uppercase border ${
                           msg.status === 'AUTHORIZED'
                             ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40'
+                            : msg.status === 'NO_INFO'
+                            ? 'bg-sky-500/15 text-sky-300 border-sky-500/40'
                             : msg.status === 'RESTRICTED'
                             ? 'bg-amber-500/15 text-amber-300 border-amber-500/40'
                             : msg.status === 'INJECTION_BLOCKED'
                             ? 'bg-red-500/15 text-red-300 border-red-500/40'
+                            : msg.status === 'AI_PROVIDER_ERROR'
+                            ? 'bg-rose-500/15 text-rose-300 border-rose-500/40'
                             : 'bg-slate-800 text-slate-300 border-slate-700'
                         }`}
                       >
                         {msg.status === 'AUTHORIZED' && '✓ GROUNDED SYNTHESIS'}
-                        {msg.status === 'RESTRICTED' && '⚠ ACCESS RESTRICTED'}
-                        {msg.status === 'INJECTION_BLOCKED' && '⛔ INJECTION INTERCEPTED'}
-                        {msg.status === 'ERROR' && '✕ GATE FAULT'}
+                        {msg.status === 'NO_INFO' && 'ℹ INSUFFICIENT EVIDENCE'}
+                        {msg.status === 'RESTRICTED' && '🔒 ACCESS RESTRICTED'}
+                        {msg.status === 'INJECTION_BLOCKED' && '🛡 INJECTION INTERCEPTED'}
+                        {msg.status === 'AI_PROVIDER_ERROR' && '⚡ AI PROVIDER ERROR'}
+                        {msg.status === 'ERROR' && '✕ SYSTEM FAULT'}
                       </span>
                     </div>
 
@@ -426,8 +433,30 @@ export default function Ask() {
                       {msg.content}
                     </div>
 
-                    {/* Citations Footer Chips */}
-                    {msg.citations && msg.citations.length > 0 && (
+                    {/* AI Provider Error Retry Action Banner */}
+                    {msg.status === 'AI_PROVIDER_ERROR' && (
+                      <div className="mt-4 p-3.5 rounded-xl bg-rose-950/40 border border-rose-500/30 flex items-center justify-between gap-3">
+                        <span className="text-xs text-rose-200 font-mono">
+                          Upstream AI endpoint was temporarily unreachable or rate-limited.
+                        </span>
+                        <button
+                          onClick={() => {
+                            // Find the preceding user prompt
+                            const msgIdx = messages.findIndex((m) => m.id === msg.id);
+                            if (msgIdx > 0 && messages[msgIdx - 1]?.role === 'user') {
+                              executeQuery(messages[msgIdx - 1].content);
+                            }
+                          }}
+                          className="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 border border-rose-400/40 text-xs text-rose-200 font-mono font-bold transition-all cursor-pointer flex items-center gap-1.5"
+                        >
+                          <RotateCcw className="w-3.5 h-3.5" />
+                          <span>Retry Query</span>
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Citations Footer Chips - Only shown for genuine AUTHORIZED grounded synthesis */}
+                    {msg.status === 'AUTHORIZED' && msg.citations && msg.citations.length > 0 && (
                       <div className="mt-6 pt-4 border-t border-white/10 flex flex-wrap items-center gap-2">
                         <span className="text-xs font-mono text-slate-400 font-semibold flex items-center gap-1.5">
                           <FileText className="w-3.5 h-3.5 text-cyan-400" />
@@ -449,13 +478,14 @@ export default function Ask() {
               </div>
             ))}
 
-            {/* Loading Indicator */}
+            {/* Custom Generating Loader (Uiverse.io inspired with ~0.8s cycle) */}
             {loading && (
-              <div className="flex items-center gap-3 p-4 rounded-2xl bg-slate-900/80 border border-cyan-500/40 w-fit shadow-lg">
-                <Loader2 className="w-5 h-5 text-cyan-400 animate-spin" />
-                <span className="text-sm font-mono text-cyan-300">
-                  Executing 6-Stage Deterministic RAG Verification Pipeline...
-                </span>
+              <div className="max-w-xl">
+                <GeneratingLoader
+                  text="Generating"
+                  subtitle="Executing 6-Stage Deterministic RAG Verification Pipeline..."
+                  size="md"
+                />
               </div>
             )}
 
@@ -545,7 +575,11 @@ export default function Ask() {
                           ? 3
                           : 6
                       }
-                      status={activeMessage?.status || 'AUTHORIZED'}
+                      status={
+                        activeMessage?.status === 'AI_PROVIDER_ERROR'
+                          ? 'ERROR'
+                          : (activeMessage?.status || 'AUTHORIZED')
+                      }
                       decisionTrace={activeMessage?.decisionTrace}
                       interactive={true}
                     />
