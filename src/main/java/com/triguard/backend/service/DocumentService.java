@@ -61,7 +61,7 @@ public class DocumentService {
         List<Document> allDocs = documentRepository.findAll();
         List<Document> authDocs = new ArrayList<>();
         for (Document doc : allDocs) {
-            if (canAccess(user, doc)) {
+            if (canAccess(user, doc) || (doc.getOwner() != null && doc.getOwner().getId().equals(user.getId()))) {
                 authDocs.add(doc);
             }
         }
