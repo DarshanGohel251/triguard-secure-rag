@@ -106,25 +106,30 @@ public class RagService {
             List<Double> chunkEmb = vectorService.parseEmbedding(chunk.getEmbeddingStr());
             if (chunkEmb != null) {
                 double score = vectorService.cosineSimilarity(queryEmb, chunkEmb);
-                scoredAuthorizedChunks.add(new VectorService.ScoredChunk(chunk, score));
+                if (isChunkRelevant(query, chunk, score)) {
+                    scoredAuthorizedChunks.add(new VectorService.ScoredChunk(chunk, score));
+                }
             }
         }
         scoredAuthorizedChunks.sort(Comparator.comparingDouble((VectorService.ScoredChunk s) -> s.score).reversed());
         List<VectorService.ScoredChunk> topAuthorized = scoredAuthorizedChunks.stream()
-                .filter(sc -> sc.score >= 0.35)
                 .limit(5)
                 .collect(Collectors.toList());
 
         // Probe detection across restricted universe
         List<DocumentChunk> allChunks = chunkRepository.findAll();
         int restrictedChunksBlocked = 0;
+        boolean restrictedDeptMatch = false;
         for (DocumentChunk chunk : allChunks) {
             if (!documentService.canAccess(user, chunk.getDocument())) {
                 List<Double> emb = vectorService.parseEmbedding(chunk.getEmbeddingStr());
                 if (emb != null) {
                     double score = vectorService.cosineSimilarity(queryEmb, emb);
-                    if (score >= 0.35) {
+                    if (isChunkRelevant(query, chunk, score)) {
                         restrictedChunksBlocked++;
+                        if (user.getDepartment().equalsIgnoreCase(chunk.getDocument().getDepartment())) {
+                            restrictedDeptMatch = true;
+                        }
                     }
                 }
             }
@@ -149,58 +154,61 @@ public class RagService {
             }
         }
 
-        // If access restricted and no authorized information
-        if (verifiedContextChunks.isEmpty() && restrictedChunksBlocked > 0) {
+        // If no authorized evidence found:
+        if (verifiedContextChunks.isEmpty()) {
+            boolean isExplicitRestrictedProbe = isRestrictedProbeQuery(query, restrictedDeptMatch);
+
+            if (restrictedChunksBlocked > 0 && isExplicitRestrictedProbe) {
+                auditLogRepository.save(new AuditLog(
+                        user.getEmail(),
+                        user.getRole().name(),
+                        "QUERY",
+                        "DENY",
+                        requestId,
+                        "Access restricted by classification policy."
+                ));
+
+                DecisionTraceDto trace = new DecisionTraceDto(
+                        user.getEmail() + " (" + user.getRole().name() + " - " + user.getDepartment() + ")",
+                        identityScope,
+                        "ACCESS_DENIED_BY_POLICY",
+                        allChunks.size(),
+                        0,
+                        restrictedChunksBlocked,
+                        true,
+                        "N/A (Withheld)",
+                        0,
+                        System.currentTimeMillis() - startTime,
+                        List.of("IDENTITY_VERIFIED", "POLICY_EVALUATED", "RETRIEVAL_CONSTRAINED", "ACCESS_DENIED_ENFORCED"),
+                        "RESTRICTED"
+                );
+
+                return new QueryResponse(
+                        "ACCESS RESTRICTED: The requested information exists in restricted documents outside your authorization level.",
+                        new ArrayList<>(),
+                        trace,
+                        requestId,
+                        "RESTRICTED"
+                );
+            }
+
+            // Honest abstention: No sufficiently relevant authorized evidence found
             auditLogRepository.save(new AuditLog(
                     user.getEmail(),
                     user.getRole().name(),
                     "QUERY",
                     "DENY",
                     requestId,
-                    "Access restricted by classification policy."
+                    "No sufficiently relevant authorized evidence found."
             ));
 
             DecisionTraceDto trace = new DecisionTraceDto(
                     user.getEmail() + " (" + user.getRole().name() + " - " + user.getDepartment() + ")",
                     identityScope,
-                    "ACCESS_DENIED_BY_POLICY",
+                    "NO_SUFFICIENT_EVIDENCE",
                     allChunks.size(),
                     0,
                     restrictedChunksBlocked,
-                    true,
-                    "N/A (Withheld)",
-                    0,
-                    System.currentTimeMillis() - startTime,
-                    List.of("IDENTITY_VERIFIED", "POLICY_EVALUATED", "RETRIEVAL_CONSTRAINED", "ACCESS_DENIED_ENFORCED"),
-                    "RESTRICTED"
-            );
-
-            return new QueryResponse(
-                    "ACCESS RESTRICTED: The requested information exists in restricted documents outside your authorization level.",
-                    new ArrayList<>(),
-                    trace,
-                    requestId,
-                    "RESTRICTED"
-            );
-        }
-
-        if (verifiedContextChunks.isEmpty()) {
-            auditLogRepository.save(new AuditLog(
-                    user.getEmail(),
-                    user.getRole().name(),
-                    "QUERY",
-                    "DENY",
-                    requestId,
-                    "No relevant information found in authorized scope."
-            ));
-
-            DecisionTraceDto trace = new DecisionTraceDto(
-                    user.getEmail() + " (" + user.getRole().name() + " - " + user.getDepartment() + ")",
-                    identityScope,
-                    "NO_MATCHING_DOCUMENTS",
-                    allChunks.size(),
-                    0,
-                    0,
                     true,
                     "N/A",
                     0,
@@ -210,7 +218,7 @@ public class RagService {
             );
 
             return new QueryResponse(
-                    "No relevant information found.",
+                    "No sufficiently relevant authorized evidence was found to answer this question.",
                     new ArrayList<>(),
                     trace,
                     requestId,
@@ -246,8 +254,38 @@ public class RagService {
         try {
             answer = llmService.generateCompletion(prompt);
         } catch (Exception e) {
-            // Safe fallback if LLM endpoint is experiencing temporary outage
-            answer = "TriGuard Intelligence could not generate a synthesized summary due to an upstream AI provider error, but retrieved authorized evidence chunks successfully.";
+            // Separate AI provider failure from successful synthesis
+            auditLogRepository.save(new AuditLog(
+                    user.getEmail(),
+                    user.getRole().name(),
+                    "QUERY",
+                    "ERROR",
+                    requestId,
+                    "AI provider error: " + (e.getMessage() != null ? e.getMessage() : "Upstream completion failure")
+            ));
+
+            DecisionTraceDto trace = new DecisionTraceDto(
+                    user.getEmail() + " (" + user.getRole().name() + " - " + user.getDepartment() + ")",
+                    identityScope,
+                    "AI_PROVIDER_ERROR",
+                    allChunks.size(),
+                    verifiedContextChunks.size(),
+                    restrictedChunksBlocked,
+                    true,
+                    "gemini-flash-latest",
+                    0,
+                    System.currentTimeMillis() - startTime,
+                    List.of("IDENTITY_VERIFIED", "POLICY_EVALUATED", "RETRIEVAL_CONSTRAINED", "CONTEXT_AUTHORIZED", "SYNTHESIS_FAILED"),
+                    "AI_PROVIDER_ERROR"
+            );
+
+            return new QueryResponse(
+                    "AI provider error: Unable to generate synthesized summary due to an upstream service error. Please try again.",
+                    new ArrayList<>(),
+                    trace,
+                    requestId,
+                    "AI_PROVIDER_ERROR"
+            );
         }
 
         if (answer.trim().contains("No relevant information found")) {
@@ -268,7 +306,7 @@ public class RagService {
                     verifiedContextChunks.size(),
                     restrictedChunksBlocked,
                     true,
-                    "gemini-2.5-flash",
+                    "gemini-flash-latest",
                     0,
                     System.currentTimeMillis() - startTime,
                     List.of("IDENTITY_VERIFIED", "POLICY_EVALUATED", "RETRIEVAL_CONSTRAINED", "CONTEXT_AUTHORIZED", "ANSWER_GENERATED"),
@@ -278,7 +316,7 @@ public class RagService {
             return new QueryResponse(
                     restrictedChunksBlocked > 0
                             ? "ACCESS RESTRICTED: The requested information exists in restricted documents outside your authorization level."
-                            : "No relevant information found.",
+                            : "No sufficiently relevant authorized evidence was found to answer this question.",
                     new ArrayList<>(),
                     trace,
                     requestId,
@@ -304,7 +342,7 @@ public class RagService {
                 verifiedContextChunks.size(),
                 restrictedChunksBlocked,
                 true,
-                "gemini-2.5-flash",
+                "gemini-flash-latest",
                 citations.size(),
                 System.currentTimeMillis() - startTime,
                 List.of("IDENTITY_VERIFIED", "POLICY_EVALUATED", "RETRIEVAL_CONSTRAINED", "CONTEXT_AUTHORIZED", "ANSWER_GENERATED", "CITATIONS_VALIDATED"),
@@ -312,5 +350,53 @@ public class RagService {
         );
 
         return new QueryResponse(answer, citations, trace, requestId, "AUTHORIZED");
+    }
+
+    /**
+     * Relevance evaluator: ensures candidate chunks genuinely relate to the query.
+     * Prevents cross-domain documents (like Leave Policy) from being falsely matched
+     * for unrelated queries (like Executive Bonus or Confidential Salary).
+     */
+    private boolean isChunkRelevant(String query, DocumentChunk chunk, double cosineScore) {
+        // High semantic similarity in dense embedding space
+        if (cosineScore >= 0.65) {
+            return true;
+        }
+        // Borderline range (0.45 - 0.65): verify non-stopword token overlap
+        if (cosineScore >= 0.45) {
+            return hasMeaningfulTermOverlap(query, chunk.getText());
+        }
+        return false;
+    }
+
+    private boolean hasMeaningfulTermOverlap(String text1, String text2) {
+        if (text1 == null || text2 == null) return false;
+        Set<String> stopWords = Set.of(
+                "what", "is", "are", "the", "and", "or", "in", "of", "to", "for", "a", "an",
+                "how", "many", "does", "company", "who", "which", "on", "at", "by", "with"
+        );
+
+        Set<String> words1 = Arrays.stream(text1.toLowerCase().replaceAll("[^a-z0-9\\s]", " ").split("\\s+"))
+                .map(String::trim)
+                .filter(w -> w.length() >= 3 && !stopWords.contains(w))
+                .collect(Collectors.toSet());
+
+        Set<String> words2 = Arrays.stream(text2.toLowerCase().replaceAll("[^a-z0-9\\s]", " ").split("\\s+"))
+                .map(String::trim)
+                .filter(w -> w.length() >= 3 && !stopWords.contains(w))
+                .collect(Collectors.toSet());
+
+        for (String w : words1) {
+            if (words2.contains(w)) return true;
+        }
+        return false;
+    }
+
+    private boolean isRestrictedProbeQuery(String query, boolean restrictedDeptMatch) {
+        String lower = query.toLowerCase();
+        return (restrictedDeptMatch && (lower.contains("salary") || lower.contains("confidential"))) ||
+                lower.contains("confidential") ||
+                lower.contains("restricted clearance") ||
+                lower.contains("classified");
     }
 }

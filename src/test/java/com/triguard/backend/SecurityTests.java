@@ -128,4 +128,26 @@ class SecurityTests {
         boolean deleted = documentService.deleteDocument(doc.getId(), admin);
         assertTrue(deleted, "Admin should be able to delete document");
     }
+
+    @Test
+    void testIrrelevantQuestionAbstention() {
+        User employee = new User("emp_irrel@test.com", "pass", "Emp Irrel", Role.EMPLOYEE, "Finance");
+        QueryResponse res = ragService.query("What is the executive bonus structure and compensation cap?", employee);
+
+        assertEquals("NO_INFO", res.getStatus(), "Irrelevant question should return NO_INFO abstention");
+        assertTrue(res.getCitations().isEmpty(), "No unrelated documents should be cited as evidence");
+        assertTrue(res.getAnswer().contains("No sufficiently relevant authorized evidence was found"),
+                "Answer must clearly state lack of relevant authorized evidence");
+    }
+
+    @Test
+    void testConfidentialSalaryProbeRestricted() {
+        User employee = new User("emp_conf@test.com", "pass", "Emp Conf", Role.EMPLOYEE, "Finance");
+        QueryResponse res = ragService.query("What is Bob Manager confidential salary in the Finance department?", employee);
+
+        assertEquals("RESTRICTED", res.getStatus(), "Confidential probe by employee should return RESTRICTED");
+        assertTrue(res.getCitations().isEmpty(), "Restricted documents must never be cited or leaked");
+        assertTrue(res.getAnswer().contains("ACCESS RESTRICTED"),
+                "Answer must clearly state access restriction without leaking data");
+    }
 }
