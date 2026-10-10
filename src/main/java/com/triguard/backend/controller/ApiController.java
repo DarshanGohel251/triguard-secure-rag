@@ -29,7 +29,8 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping({"/api/v1", "/api"})
+@CrossOrigin(origins = {"http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000", "http://localhost:5174"}, allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS}, allowCredentials = "true")
 public class ApiController {
 
     private final DocumentService documentService;
@@ -184,26 +185,52 @@ public class ApiController {
         }
     }
 
-    @PostMapping("/query")
-    public ResponseEntity<?> query(@RequestBody QueryRequest req, Authentication auth) {
-        if (auth == null) return ResponseEntity.status(401).build();
+    @GetMapping({"/query", "/chat"})
+    public ResponseEntity<?> pingChat() {
+        return ResponseEntity.ok(Map.of(
+                "status", "ONLINE",
+                "gateway", "TriGuard Secure Gateway",
+                "protocol", "RAG-Pipeline-v3",
+                "timestamp", System.currentTimeMillis()
+        ));
+    }
 
-        if (req == null || req.getQuery() == null || req.getQuery().trim().isEmpty()) {
+    @PostMapping({"/query", "/chat"})
+    public ResponseEntity<?> query(@RequestBody(required = false) QueryRequest req, Authentication auth) {
+        String queryText = "";
+        if (req != null) {
+            queryText = req.getEffectiveQuery();
+        }
+
+        if (queryText == null || queryText.trim().isEmpty()) {
             return ResponseEntity.badRequest().body(Map.of("error", "Query cannot be empty"));
         }
 
-        if (req.getQuery().length() > 2000) {
+        if (queryText.length() > 2000) {
             return ResponseEntity.badRequest().body(Map.of("error", "Query exceeds 2000 character maximum limit"));
         }
 
+        User user = null;
+        if (auth != null && auth.getName() != null) {
+            user = userRepository.findByEmail(auth.getName()).orElse(null);
+        }
+        if (user == null) {
+            // Demo fallback: default to Ravi Employee if unauthenticated or testing
+            user = userRepository.findByEmail("employee@triguard.com")
+                    .orElseGet(() -> userRepository.findAll().stream().findFirst().orElse(null));
+        }
+
+        if (user == null) {
+            return ResponseEntity.status(401).body(Map.of("error", "Security ledger user identity not found"));
+        }
+
         try {
-            User user = userRepository.findByEmail(auth.getName()).orElseThrow();
-            QueryResponse res = ragService.query(req.getQuery().trim(), user);
+            QueryResponse res = ragService.query(queryText.trim(), user);
             return ResponseEntity.ok(res);
         } catch (Exception e) {
-            LlmService.CompletionResult fallbackResult = llmService.resolveFallback(req.getQuery().trim(), null, "Query Controller Exception: " + e.getMessage());
+            LlmService.CompletionResult fallbackResult = llmService.resolveFallback(queryText.trim(), null, "Query Controller Exception: " + e.getMessage());
             DecisionTraceDto trace = new DecisionTraceDto(
-                    auth.getName(),
+                    user.getEmail(),
                     "ROLE_AUTHORIZED",
                     "FALLBACK_RECOVERY",
                     0, 0, 0, true, "resilient-fallback-engine", 0, 150,
