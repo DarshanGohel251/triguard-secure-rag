@@ -59,7 +59,7 @@ export default function TypingReveal({
       <span className="whitespace-pre-wrap">{content}</span>
       {isTyping && (
         <span
-          className="inline-block w-1.5 h-4 ml-0.5 bg-[#09BBC8] animate-pulse align-middle"
+          className="inline-block w-1.5 h-4 ml-0.5 bg-[#C9F36A] animate-pulse align-middle"
           aria-hidden="true"
         />
       )}
@@ -67,7 +67,7 @@ export default function TypingReveal({
       {isTyping && (
         <button
           onClick={handleSkip}
-          className="ml-2 text-[10px] font-mono text-[#09BBC8]/60 hover:text-[#09BBC8] underline cursor-pointer select-none"
+          className="ml-2 text-[10px] font-mono text-[#C9F36A]/60 hover:text-[#C9F36A] underline cursor-pointer select-none"
         >
           Skip typing
         </button>

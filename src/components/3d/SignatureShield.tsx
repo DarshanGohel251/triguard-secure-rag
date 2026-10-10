@@ -38,10 +38,10 @@ export default function SignatureShield({ size = 'md', status = 'secure' }: Sign
 
   const colors = {
     secure: {
-      primary: '#00f0ff',
-      secondary: '#10b981',
-      glow: 'rgba(0, 240, 255, 0.35)',
-      ringGlow: 'rgba(16, 185, 129, 0.25)'
+      primary: '#C4A878',
+      secondary: '#C9F36A',
+      glow: 'rgba(196, 168, 120, 0.3)',
+      ringGlow: 'rgba(201, 243, 106, 0.2)'
     },
     warning: {
       primary: '#f59e0b',
@@ -95,10 +95,10 @@ export default function SignatureShield({ size = 'md', status = 'secure' }: Sign
             opacity="0.6"
           />
           {/* Orbital Nodes */}
-          <circle cx="100" cy="12" r="3.5" fill={colors.primary} className="drop-shadow-[0_0_8px_#00f0ff]" />
-          <circle cx="188" cy="100" r="3" fill={colors.secondary} className="drop-shadow-[0_0_8px_#10b981]" />
-          <circle cx="12" cy="100" r="3" fill={colors.secondary} className="drop-shadow-[0_0_8px_#10b981]" />
-          <circle cx="100" cy="188" r="3.5" fill={colors.primary} className="drop-shadow-[0_0_8px_#00f0ff]" />
+          <circle cx="100" cy="12" r="3.5" fill={colors.primary} className="drop-shadow-[0_0_8px_#C4A878]" />
+          <circle cx="188" cy="100" r="3" fill={colors.secondary} className="drop-shadow-[0_0_8px_#C9F36A]" />
+          <circle cx="12" cy="100" r="3" fill={colors.secondary} className="drop-shadow-[0_0_8px_#C9F36A]" />
+          <circle cx="100" cy="188" r="3.5" fill={colors.primary} className="drop-shadow-[0_0_8px_#C4A878]" />
         </svg>
 
         {/* Counter-Rotating Inner Cyber Ring */}
@@ -123,7 +123,7 @@ export default function SignatureShield({ size = 'md', status = 'secure' }: Sign
 
         {/* 3D Elevated Shield Core */}
         <div
-          className="relative z-10 flex items-center justify-center p-4 rounded-2xl bg-gradient-to-br from-[#0c1324] via-[#09101d] to-[#040711] border border-cyan-400/30 shadow-[0_0_30px_rgba(0,240,255,0.25)] transition-transform duration-300"
+          className="relative z-10 flex items-center justify-center p-4 rounded-2xl bg-gradient-to-br from-[#262A24] via-[#20231E] to-[#10120F] border border-[#363A31] shadow-[0_0_30px_rgba(201,243,106,0.12)] transition-transform duration-300"
           style={{ transform: 'translateZ(30px)' }}
         >
           <div className="relative">
@@ -148,8 +148,8 @@ export default function SignatureShield({ size = 'md', status = 'secure' }: Sign
           className="absolute inset-0 pointer-events-none opacity-20"
           style={{ transform: 'translateZ(10px)' }}
         >
-          <div className="absolute top-0 bottom-0 left-1/2 w-[1px] bg-cyan-400/40"></div>
-          <div className="absolute left-0 right-0 top-1/2 h-[1px] bg-cyan-400/40"></div>
+          <div className="absolute top-0 bottom-0 left-1/2 w-[1px] bg-[#C4A878]/40"></div>
+          <div className="absolute left-0 right-0 top-1/2 h-[1px] bg-[#C4A878]/40"></div>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-  variant?: 'default' | 'elevated' | 'glow-cyan' | 'glow-sapphire';
+  variant?: 'default' | 'elevated' | 'glow-cyan' | 'glow-sapphire' | 'glow-lime' | 'glow-champagne';
   hoverEffect?: boolean;
   scanlines?: boolean;
   className?: string;
@@ -16,17 +16,21 @@ export default function GlassCard({
 }: GlassCardProps) {
   const variantStyles = {
     default:
-      'bg-gradient-to-b from-[#0E1726]/90 to-[#131F37]/85 border-[#09BBC8]/25 shadow-[0_16px_40px_rgba(0,0,0,0.6)]',
+      'bg-[#20231E]/95 border-[#363A31] shadow-[0_16px_40px_rgba(0,0,0,0.7)]',
     elevated:
-      'bg-gradient-to-b from-[#0E1726]/95 to-[#131F37]/90 border-[#09BBC8]/35 shadow-[0_24px_50px_rgba(0,0,0,0.7),0_0_25px_rgba(9,187,200,0.15)]',
+      'bg-[#262A24]/95 border-[#363A31] hover:border-[#C4A878]/50 shadow-[0_24px_50px_rgba(0,0,0,0.8),0_0_20px_rgba(201,243,106,0.08)]',
     'glow-cyan':
-      'bg-gradient-to-b from-[#0E1726]/95 to-[#131F37]/90 border-[#09BBC8]/45 shadow-[0_0_30px_rgba(9,187,200,0.25)]',
+      'bg-[#20231E]/95 border-[#C9F36A]/40 shadow-[0_0_25px_rgba(201,243,106,0.18)]',
+    'glow-lime':
+      'bg-[#20231E]/95 border-[#C9F36A]/40 shadow-[0_0_25px_rgba(201,243,106,0.18)]',
     'glow-sapphire':
-      'bg-gradient-to-b from-[#0E1726]/95 to-[#131F37]/90 border-[#405FFA]/45 shadow-[0_0_30px_rgba(64,95,250,0.3)]',
+      'bg-[#20231E]/95 border-[#C4A878]/40 shadow-[0_0_25px_rgba(196,168,120,0.18)]',
+    'glow-champagne':
+      'bg-[#20231E]/95 border-[#C4A878]/40 shadow-[0_0_25px_rgba(196,168,120,0.18)]',
   };
 
   const hoverClass = hoverEffect
-    ? 'transition-all duration-300 hover:border-[#09BBC8]/60 hover:shadow-[0_24px_60px_rgba(0,0,0,0.8),0_0_35px_rgba(9,187,200,0.3)] hover:-translate-y-0.5'
+    ? 'transition-all duration-300 hover:border-[#C4A878]/60 hover:shadow-[0_24px_60px_rgba(0,0,0,0.85),0_0_25px_rgba(201,243,106,0.15)] hover:-translate-y-0.5'
     : '';
 
   return (
@@ -36,7 +40,7 @@ export default function GlassCard({
     >
       {/* Subtle top laser highlight */}
       <div
-        className="absolute top-0 left-8 right-8 h-[1px] bg-gradient-to-r from-transparent via-[#09BBC8]/50 to-transparent pointer-events-none"
+        className="absolute top-0 left-8 right-8 h-[1px] bg-gradient-to-r from-transparent via-[#C4A878]/40 to-transparent pointer-events-none"
         aria-hidden="true"
       />
 

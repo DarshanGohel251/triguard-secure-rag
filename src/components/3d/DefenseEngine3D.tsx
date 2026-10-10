@@ -27,7 +27,7 @@ export default function DefenseEngine3D({
 
     // Scene setup
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x07240F, 0.04);
+    scene.fog = new THREE.FogExp2(0x10120F, 0.045);
 
     const width = container.clientWidth || 400;
     const h = typeof height === 'number' ? height : container.clientHeight || 380;
@@ -39,33 +39,35 @@ export default function DefenseEngine3D({
     renderer.setSize(width, h);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
+    renderer.toneMappingExposure = 1.15;
     container.appendChild(renderer.domElement);
 
-    // Color definitions based on God-Level palette
-    // FROZEN WATER: #D9FCED (0xD9FCED)
-    // ELECTRIC SAPPHIRE: #405FFA (0x405FFA)
-    // STRONG CYAN: #09BBC8 (0x09BBC8)
-    // TWILIGHT INDIGO: #3B3664 (0x3B3664)
-    // EVERGREEN: #07240F (0x07240F)
-    const primaryColor = status === 'secure' ? 0x09BBC8 : status === 'warning' ? 0xF59E0B : 0xFF3B5C;
-    const sapphireColor = 0x405FFA;
-    const strongCyanColor = 0x09BBC8;
-    const frozenWaterColor = 0xD9FCED;
+    // Obsidian Apex Color Definitions
+    // Obsidian: #10120F (0x10120F)
+    // Carbon: #20231E (0x20231E)
+    // Graphite: #363A31 (0x363A31)
+    // Warm Ivory: #F1EEE5 (0xF1EEE5)
+    // Signal Lime: #C9F36A (0xC9F36A)
+    // Champagne Metallic: #C4A878 (0xC4A878)
+    const primaryColor = status === 'secure' ? 0xC9F36A : status === 'warning' ? 0xF59E0B : 0xEF4444;
+    const champagneColor = 0xC4A878;
+    const graphiteColor = 0x363A31;
+    const ivoryColor = 0xF1EEE5;
+    const limeColor = 0xC9F36A;
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0x07240F, 1.5);
+    const ambientLight = new THREE.AmbientLight(0x20231E, 1.4);
     scene.add(ambientLight);
 
-    const coreLight = new THREE.PointLight(primaryColor, 3.5, 12);
+    const coreLight = new THREE.PointLight(primaryColor, 3.2, 11);
     coreLight.position.set(0, 0, 0);
     scene.add(coreLight);
 
-    const keyLight = new THREE.DirectionalLight(frozenWaterColor, 1.0);
+    const keyLight = new THREE.DirectionalLight(ivoryColor, 0.95);
     keyLight.position.set(5, 6, 8);
     scene.add(keyLight);
 
-    const rimLight = new THREE.DirectionalLight(sapphireColor, 1.8);
+    const rimLight = new THREE.DirectionalLight(champagneColor, 1.4);
     rimLight.position.set(-6, -4, -4);
     scene.add(rimLight);
 
@@ -79,31 +81,31 @@ export default function DefenseEngine3D({
     const layer1Group = new THREE.Group();
     masterGroup.add(layer1Group);
 
-    // Outer Geodesic Wireframe Sphere (Electric Sapphire)
+    // Outer Geodesic Wireframe Sphere (Graphite structural lattice)
     const l1Geo = new THREE.IcosahedronGeometry(3.2, 1);
     const l1WireGeo = new THREE.WireframeGeometry(l1Geo);
     const l1WireMat = new THREE.LineBasicMaterial({
-      color: sapphireColor,
+      color: graphiteColor,
       transparent: true,
-      opacity: 0.35
+      opacity: 0.55
     });
     const l1Mesh = new THREE.LineSegments(l1WireGeo, l1WireMat);
     layer1Group.add(l1Mesh);
 
-    // Outer Equatorial Tactical Rail Ring (Strong Cyan)
+    // Outer Equatorial Tactical Rail Ring (Champagne Metallic edge highlight)
     const outerRingGeo = new THREE.TorusGeometry(3.3, 0.02, 16, 80);
-    const outerRingMat = new THREE.MeshBasicMaterial({ color: strongCyanColor, transparent: true, opacity: 0.65 });
+    const outerRingMat = new THREE.MeshBasicMaterial({ color: champagneColor, transparent: true, opacity: 0.65 });
     const outerRing = new THREE.Mesh(outerRingGeo, outerRingMat);
     outerRing.rotation.x = Math.PI / 2;
     layer1Group.add(outerRing);
 
-    // Orbital Nodes on Outer Ring (Strong Cyan)
+    // Orbital Nodes on Outer Ring (Restrained Champagne)
     const nodeGeo = new THREE.SphereGeometry(0.08, 12, 12);
     const nodeMat = new THREE.MeshStandardMaterial({
-      color: strongCyanColor,
-      emissive: strongCyanColor,
-      emissiveIntensity: 0.85,
-      roughness: 0.2
+      color: champagneColor,
+      emissive: champagneColor,
+      emissiveIntensity: 0.6,
+      roughness: 0.3
     });
     const nodeCount = 6;
     const nodes: THREE.Mesh[] = [];
@@ -121,39 +123,39 @@ export default function DefenseEngine3D({
     const layer2Group = new THREE.Group();
     masterGroup.add(layer2Group);
 
-    // Gimbal Ring A (Inclined 55 deg) - Electric Sapphire
+    // Gimbal Ring A (Inclined 55 deg) - Dark Graphite Carbon
     const gimbalAGeo = new THREE.TorusGeometry(2.2, 0.04, 16, 72);
     const gimbalAMat = new THREE.MeshStandardMaterial({
-      color: sapphireColor,
-      emissive: sapphireColor,
-      emissiveIntensity: 0.55,
-      metalness: 0.85,
-      roughness: 0.2
+      color: graphiteColor,
+      emissive: 0x181A15,
+      emissiveIntensity: 0.3,
+      metalness: 0.9,
+      roughness: 0.25
     });
     const gimbalA = new THREE.Mesh(gimbalAGeo, gimbalAMat);
     gimbalA.rotation.x = Math.PI / 3;
     layer2Group.add(gimbalA);
 
-    // Gimbal Ring B (Inclined -55 deg counter-angle) - Strong Cyan
+    // Gimbal Ring B (Inclined -55 deg counter-angle) - Champagne Metallic
     const gimbalBGeo = new THREE.TorusGeometry(2.0, 0.035, 16, 72);
     const gimbalBMat = new THREE.MeshStandardMaterial({
-      color: strongCyanColor,
-      emissive: strongCyanColor,
-      emissiveIntensity: 0.55,
-      metalness: 0.85,
+      color: champagneColor,
+      emissive: champagneColor,
+      emissiveIntensity: 0.45,
+      metalness: 0.88,
       roughness: 0.2
     });
     const gimbalB = new THREE.Mesh(gimbalBGeo, gimbalBMat);
     gimbalB.rotation.y = Math.PI / 3;
     layer2Group.add(gimbalB);
 
-    // Vector Sandbox Data Crystals orbiting gimbal B (Strong Cyan / Frozen Water)
+    // Vector Sandbox Data Crystals orbiting gimbal B (Muted Champagne)
     const crystalGeo = new THREE.OctahedronGeometry(0.12, 0);
     const crystalMat = new THREE.MeshStandardMaterial({
-      color: strongCyanColor,
-      emissive: strongCyanColor,
-      emissiveIntensity: 0.9,
-      roughness: 0.15
+      color: champagneColor,
+      emissive: champagneColor,
+      emissiveIntensity: 0.7,
+      roughness: 0.2
     });
     const crystals: THREE.Mesh[] = [];
     for (let i = 0; i < 4; i++) {
@@ -168,16 +170,16 @@ export default function DefenseEngine3D({
     const layer3Group = new THREE.Group();
     masterGroup.add(layer3Group);
 
-    // Quantum Core Dodecahedron (Pulsating)
+    // Quantum Core Dodecahedron (Signal Lime pulsating core)
     const coreGeo = new THREE.DodecahedronGeometry(1.0, 0);
     const coreMat = new THREE.MeshPhysicalMaterial({
       color: primaryColor,
       emissive: primaryColor,
-      emissiveIntensity: 0.75,
-      roughness: 0.15,
-      metalness: 0.1,
-      transmission: 0.65,
-      thickness: 1.2,
+      emissiveIntensity: 0.7,
+      roughness: 0.2,
+      metalness: 0.15,
+      transmission: 0.6,
+      thickness: 1.1,
       wireframe: false,
       transparent: true,
       opacity: 0.92
@@ -185,17 +187,17 @@ export default function DefenseEngine3D({
     const coreMesh = new THREE.Mesh(coreGeo, coreMat);
     layer3Group.add(coreMesh);
 
-    // Core Wireframe Cage (Frozen Water #D9FCED)
+    // Core Wireframe Cage (Champagne Metallic edge highlight)
     const coreWireGeo = new THREE.WireframeGeometry(new THREE.DodecahedronGeometry(1.15, 0));
     const coreWireMat = new THREE.LineBasicMaterial({
-      color: frozenWaterColor,
+      color: champagneColor,
       transparent: true,
-      opacity: 0.8
+      opacity: 0.75
     });
     const coreWire = new THREE.LineSegments(coreWireGeo, coreWireMat);
     layer3Group.add(coreWire);
 
-    // Floating Cyber Dust Particle Field (Strong Cyan & Frozen Water)
+    // Floating Cyber Dust Particle Field (Signal Lime restrained points)
     const particleCount = 140;
     const particlePositions = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount * 3; i += 3) {
@@ -209,15 +211,14 @@ export default function DefenseEngine3D({
     const particleGeo = new THREE.BufferGeometry();
     particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
     const particleMat = new THREE.PointsMaterial({
-      color: strongCyanColor,
-      size: 0.045,
+      color: limeColor,
+      size: 0.04,
       transparent: true,
-      opacity: 0.75,
+      opacity: 0.65,
       blending: THREE.AdditiveBlending
     });
     const particleCloud = new THREE.Points(particleGeo, particleMat);
     masterGroup.add(particleCloud);
-
     // Mouse Parallax Interaction
     let targetRotX = 0;
     let targetRotY = 0;
@@ -364,15 +365,15 @@ export default function DefenseEngine3D({
         style={{ height }}
       >
         {/* Ambient Radial Gradient behind WebGL */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(9,187,200,0.15)_0%,rgba(7,36,15,0)_70%)] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(201,243,106,0.08)_0%,rgba(16,18,15,0)_70%)] pointer-events-none" />
 
         {/* HUD Overlay Reticle */}
-        <div className="absolute top-3 left-4 text-[10px] font-mono text-[#09BBC8] bg-[#3B3664]/60 border border-[#09BBC8]/30 px-2.5 py-1 rounded-lg backdrop-blur-md pointer-events-none flex items-center gap-1.5 shadow-lg">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#09BBC8] animate-ping" />
-          <span className="text-[#D9FCED] font-semibold">APEX DEFENSE ENGINE 3D • ACTIVE</span>
+        <div className="absolute top-3 left-4 text-[10px] font-mono text-[#C9F36A] bg-[#20231E]/85 border border-[#363A31] px-2.5 py-1 rounded-lg backdrop-blur-md pointer-events-none flex items-center gap-1.5 shadow-lg">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#C9F36A] animate-ping" />
+          <span className="text-[#F1EEE5] font-semibold tracking-wider">OBSIDIAN DEFENSE ENGINE 3D • ACTIVE</span>
         </div>
 
-        <div className="absolute top-3 right-4 text-[10px] font-mono text-[#D9FCED]/70 bg-[#3B3664]/60 border border-[#09BBC8]/20 px-2.5 py-1 rounded-lg backdrop-blur-md pointer-events-none">
+        <div className="absolute top-3 right-4 text-[10px] font-mono text-[#B8B5AB] bg-[#20231E]/85 border border-[#363A31] px-2.5 py-1 rounded-lg backdrop-blur-md pointer-events-none">
           ORBITAL ENGINE: 60 FPS
         </div>
       </div>
@@ -395,8 +396,8 @@ export default function DefenseEngine3D({
                   onClick={() => setActiveLayer(layer.id)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer border ${
                     isSelected
-                      ? 'bg-[#405FFA] text-[#D9FCED] border-[#09BBC8] shadow-[0_0_16px_rgba(9,187,200,0.45)]'
-                      : 'bg-[#3B3664]/40 text-[#D9FCED]/70 border-[#09BBC8]/20 hover:text-[#D9FCED] hover:border-[#09BBC8]/40'
+                      ? 'bg-[#C9F36A] text-[#10120F] border-[#C9F36A] shadow-[0_0_16px_rgba(201,243,106,0.35)]'
+                      : 'bg-[#20231E]/80 text-[#B8B5AB] border-[#363A31] hover:text-[#F1EEE5] hover:border-[#C4A878]/50'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -408,23 +409,23 @@ export default function DefenseEngine3D({
 
           {/* Telemetry Deep-Dive Drawer */}
           {layerTelemetry && (
-            <div className="mx-2 p-3 rounded-xl bg-[#3B3664]/40 border border-[#09BBC8]/25 text-left backdrop-blur-md transition-all shadow-xl">
+            <div className="mx-2 p-3 rounded-xl bg-[#20231E]/90 border border-[#363A31] text-left backdrop-blur-md transition-all shadow-xl">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#D9FCED] flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-[#09BBC8]" />
+                <span className="text-xs font-bold text-[#F1EEE5] flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-[#C9F36A]" />
                   {layerTelemetry.title}
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#405FFA]/30 border border-[#09BBC8]/30 text-[#D9FCED]">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#C4A878]/15 border border-[#C4A878]/30 text-[#C4A878] font-semibold">
                   {layerTelemetry.badge}
                 </span>
               </div>
-              <p className="text-[11px] text-[#D9FCED]/80 mt-1 leading-relaxed">
+              <p className="text-[11px] text-[#B8B5AB] mt-1 leading-relaxed">
                 {layerTelemetry.desc}
               </p>
-              <div className="mt-2 pt-2 border-t border-[#09BBC8]/20 flex items-center justify-between text-[10px] font-mono text-[#D9FCED]/70">
-                <span>Telemetry: <span className="text-[#09BBC8] font-bold">{layerTelemetry.metrics}</span></span>
-                <span className="text-[#09BBC8] flex items-center gap-1">
-                  <Eye className="w-3 h-3" /> Real-time Verified
+              <div className="mt-2 pt-2 border-t border-[#363A31] flex items-center justify-between text-[10px] font-mono text-[#B8B5AB]">
+                <span>Telemetry: <span className="text-[#C9F36A] font-bold">{layerTelemetry.metrics}</span></span>
+                <span className="text-[#C4A878] flex items-center gap-1 font-semibold">
+                  <Eye className="w-3 h-3 text-[#C9F36A]" /> Real-time Verified
                 </span>
               </div>
             </div>

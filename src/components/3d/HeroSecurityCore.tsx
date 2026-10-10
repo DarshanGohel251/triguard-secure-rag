@@ -44,12 +44,12 @@ export default function HeroSecurityCore({
 
   const statusTheme = {
     secure: {
-      primary: '#00E5FF',
-      secondary: '#0072F5',
+      primary: '#C9F36A',
+      secondary: '#C4A878',
       accent: '#10B981',
-      glow: 'rgba(0, 229, 255, 0.28)',
+      glow: 'rgba(201, 243, 106, 0.22)',
       statusLabel: 'PERIMETER VERIFIED • ZERO-LEAK ACTIVE',
-      badgeClass: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30'
+      badgeClass: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30 font-semibold'
     },
     warning: {
       primary: '#F59E0B',
@@ -57,7 +57,7 @@ export default function HeroSecurityCore({
       accent: '#EAB308',
       glow: 'rgba(245, 158, 11, 0.35)',
       statusLabel: 'ACCESS RESTRICTION ENFORCED',
-      badgeClass: 'text-amber-400 bg-amber-500/10 border-amber-500/30'
+      badgeClass: 'text-amber-400 bg-amber-500/10 border-amber-500/30 font-semibold'
     },
     alert: {
       primary: '#EF4444',
@@ -65,7 +65,7 @@ export default function HeroSecurityCore({
       accent: '#B91C1C',
       glow: 'rgba(239, 68, 68, 0.4)',
       statusLabel: 'PROMPT THREAT INTERCEPTED',
-      badgeClass: 'text-red-400 bg-red-500/10 border-red-500/30'
+      badgeClass: 'text-rose-400 bg-rose-500/10 border-rose-500/30 font-semibold'
     }
   }[status];
 
@@ -87,37 +87,37 @@ export default function HeroSecurityCore({
       >
         {/* Layer 0: Depth Ambient Halo Light */}
         <div
-          className="absolute inset-4 rounded-full blur-3xl opacity-60 transition-all duration-700 pointer-events-none"
+          className="absolute inset-4 rounded-full blur-3xl opacity-50 transition-all duration-700 pointer-events-none"
           style={{
-            background: `radial-gradient(circle, ${statusTheme.glow} 0%, rgba(3, 8, 20, 0) 70%)`,
+            background: `radial-gradient(circle, ${statusTheme.glow} 0%, rgba(16, 18, 15, 0) 70%)`,
             transform: 'translateZ(-50px)'
           }}
         />
 
-        {/* Layer 1: Outer Defensive Orbit (Identity & RBAC Boundary Ring) */}
+        {/* Layer 1: Outer Defensive Orbit (Champagne Metallic Boundary Ring) */}
         <div
-          className="absolute inset-2 sm:inset-4 rounded-full border border-cyan-500/20 pointer-events-none"
+          className="absolute inset-2 sm:inset-4 rounded-full border border-[#C4A878]/30 pointer-events-none"
           style={{
             transform: 'translateZ(-20px) rotateX(65deg)',
             boxShadow: `0 0 25px ${statusTheme.glow}`
           }}
         >
           <div
-            className={`w-full h-full rounded-full border border-dashed border-cyan-400/40 ${
+            className={`w-full h-full rounded-full border border-dashed border-[#C4A878]/40 ${
               prefersReducedMotion ? '' : 'animate-[spin_24s_linear_infinite]'
             }`}
           />
         </div>
 
-        {/* Layer 2: Middle Transversal Orbit (Vector Retrieval Sandbox) */}
+        {/* Layer 2: Middle Transversal Orbit (Graphite Retrieval Sandbox) */}
         <div
-          className="absolute inset-8 sm:inset-10 rounded-full border border-blue-500/30 pointer-events-none"
+          className="absolute inset-8 sm:inset-10 rounded-full border border-[#363A31] pointer-events-none"
           style={{
             transform: 'translateZ(0px) rotateY(65deg)',
           }}
         >
           <div
-            className={`w-full h-full rounded-full border border-cyan-300/30 ${
+            className={`w-full h-full rounded-full border border-[#C9F36A]/30 ${
               prefersReducedMotion ? '' : 'animate-[spin_16s_linear_infinite_reverse]'
             }`}
           />
@@ -131,26 +131,26 @@ export default function HeroSecurityCore({
           viewBox="0 0 400 400"
           style={{ transform: 'translateZ(-30px)' }}
         >
-          <circle cx="200" cy="200" r="170" fill="none" stroke="rgba(0,229,255,0.12)" strokeWidth="1" />
-          <circle cx="200" cy="200" r="140" fill="none" stroke="rgba(0,229,255,0.18)" strokeWidth="1" strokeDasharray="6 8" />
-          <circle cx="200" cy="200" r="105" fill="none" stroke="rgba(0,114,245,0.25)" strokeWidth="1.5" />
+          <circle cx="200" cy="200" r="170" fill="none" stroke="#363A31" strokeWidth="1" />
+          <circle cx="200" cy="200" r="140" fill="none" stroke="#363A31" strokeWidth="1" strokeDasharray="6 8" />
+          <circle cx="200" cy="200" r="105" fill="none" stroke="rgba(196,168,120,0.35)" strokeWidth="1.5" />
 
           {/* Telemetry Coordinate Ticks */}
-          <line x1="200" y1="18" x2="200" y2="34" stroke="#00E5FF" strokeWidth="2" opacity="0.8" />
-          <line x1="200" y1="366" x2="200" y2="382" stroke="#00E5FF" strokeWidth="2" opacity="0.8" />
-          <line x1="18" y1="200" x2="34" y2="200" stroke="#00E5FF" strokeWidth="2" opacity="0.8" />
-          <line x1="366" y1="200" x2="382" y2="200" stroke="#00E5FF" strokeWidth="2" opacity="0.8" />
+          <line x1="200" y1="18" x2="200" y2="34" stroke="#C4A878" strokeWidth="2" opacity="0.8" />
+          <line x1="200" y1="366" x2="200" y2="382" stroke="#C4A878" strokeWidth="2" opacity="0.8" />
+          <line x1="18" y1="200" x2="34" y2="200" stroke="#C4A878" strokeWidth="2" opacity="0.8" />
+          <line x1="366" y1="200" x2="382" y2="200" stroke="#C4A878" strokeWidth="2" opacity="0.8" />
 
           {/* Orbiting Sentinel Nodes */}
-          <circle cx="200" cy="30" r="4" fill="#00E5FF" className="drop-shadow-[0_0_8px_#00E5FF]" />
-          <circle cx="370" cy="200" r="3.5" fill="#10B981" className="drop-shadow-[0_0_8px_#10B981]" />
-          <circle cx="30" cy="200" r="3.5" fill="#0072F5" className="drop-shadow-[0_0_8px_#0072F5]" />
-          <circle cx="200" cy="370" r="4" fill="#00E5FF" className="drop-shadow-[0_0_8px_#00E5FF]" />
+          <circle cx="200" cy="30" r="4" fill="#C9F36A" className="drop-shadow-[0_0_8px_#C9F36A]" />
+          <circle cx="370" cy="200" r="3.5" fill="#C4A878" className="drop-shadow-[0_0_8px_#C4A878]" />
+          <circle cx="30" cy="200" r="3.5" fill="#C4A878" className="drop-shadow-[0_0_8px_#C4A878]" />
+          <circle cx="200" cy="370" r="4" fill="#C9F36A" className="drop-shadow-[0_0_8px_#C9F36A]" />
         </svg>
 
         {/* Layer 3: Central 3D Elevated Shield Plinth */}
         <div
-          className="relative z-20 flex flex-col items-center justify-center p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#0a162e]/90 via-[#060e1f]/95 to-[#030712] border border-cyan-400/30 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_30px_rgba(0,229,255,0.2)] backdrop-blur-xl transition-all duration-300"
+          className="relative z-20 flex flex-col items-center justify-center p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#262A24]/95 via-[#20231E]/95 to-[#10120F] border border-[#363A31] shadow-[0_20px_50px_rgba(0,0,0,0.95),0_0_30px_rgba(201,243,106,0.12)] backdrop-blur-xl transition-all duration-300"
           style={{ transform: 'translateZ(45px)' }}
         >
           {/* TriGuard Custom Emblem with 3D elevation */}
@@ -172,8 +172,8 @@ export default function HeroSecurityCore({
               style={{ transform: 'translateZ(30px)' }}
             >
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-                <span className="text-[11px] font-mono font-extrabold uppercase tracking-widest text-white">
+                <span className="w-2 h-2 rounded-full bg-[#C9F36A] animate-ping" />
+                <span className="text-[11px] font-mono font-extrabold uppercase tracking-widest text-[#F1EEE5]">
                   3-LAYER DEFENSE
                 </span>
               </div>
@@ -186,21 +186,21 @@ export default function HeroSecurityCore({
 
         {/* Layer 4: Floating Atmospheric Particles & Depth Markers */}
         <div
-          className="absolute -top-3 left-6 px-2.5 py-1 rounded-md bg-slate-900/80 border border-cyan-500/30 text-[10px] font-mono text-cyan-300 backdrop-blur-md shadow-lg pointer-events-none"
+          className="absolute -top-3 left-6 px-2.5 py-1 rounded-md bg-[#181A15]/90 border border-[#363A31] text-[10px] font-mono text-[#C4A878] backdrop-blur-md shadow-lg pointer-events-none"
           style={{ transform: 'translateZ(60px)' }}
         >
           L1: RBAC_ENFORCED
         </div>
 
         <div
-          className="absolute -bottom-3 right-6 px-2.5 py-1 rounded-md bg-slate-900/80 border border-blue-500/30 text-[10px] font-mono text-blue-300 backdrop-blur-md shadow-lg pointer-events-none"
+          className="absolute -bottom-3 right-6 px-2.5 py-1 rounded-md bg-[#181A15]/90 border border-[#363A31] text-[10px] font-mono text-[#C4A878] backdrop-blur-md shadow-lg pointer-events-none"
           style={{ transform: 'translateZ(55px)' }}
         >
           L2: SCOPED_EMBEDDINGS
         </div>
 
         <div
-          className="absolute top-1/2 -right-6 -translate-y-1/2 px-2.5 py-1 rounded-md bg-slate-900/80 border border-emerald-500/30 text-[10px] font-mono text-emerald-300 backdrop-blur-md shadow-lg pointer-events-none hidden sm:block"
+          className="absolute top-1/2 -right-6 -translate-y-1/2 px-2.5 py-1 rounded-md bg-[#181A15]/90 border border-[#363A31] text-[10px] font-mono text-[#C9F36A] backdrop-blur-md shadow-lg pointer-events-none hidden sm:block"
           style={{ transform: 'translateZ(50px)' }}
         >
           L3: PROMPT_FIREWALL

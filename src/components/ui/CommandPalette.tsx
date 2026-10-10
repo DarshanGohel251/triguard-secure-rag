@@ -126,27 +126,27 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl rounded-3xl bg-gradient-to-b from-[#0E1726] to-[#131F37] border border-[#09BBC8]/40 shadow-[0_25px_70px_rgba(0,0,0,0.9),0_0_35px_rgba(9,187,200,0.2)] overflow-hidden"
+        className="w-full max-w-2xl rounded-3xl bg-[#181A15] border border-[#363A31] shadow-[0_25px_70px_rgba(0,0,0,0.95),0_0_35px_rgba(201,243,106,0.12)] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Bar */}
-        <div className="relative border-b border-[#09BBC8]/25 p-4 flex items-center gap-3">
-          <Search className="w-5 h-5 text-[#09BBC8] shrink-0" />
+        <div className="relative border-b border-[#363A31] p-4 flex items-center gap-3 bg-[#20231E]/50">
+          <Search className="w-5 h-5 text-[#C9F36A] shrink-0" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Type a command, run demo query, or switch persona..."
-            className="w-full bg-transparent text-sm sm:text-base text-[#F8FAFC] placeholder-[#D9FCED]/40 focus:outline-none font-sans"
+            className="w-full bg-transparent text-sm sm:text-base text-[#F1EEE5] placeholder-[#B8B5AB]/50 focus:outline-none font-sans"
           />
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-[#D9FCED]/50 hover:text-white transition-colors cursor-pointer"
+            className="p-1 rounded-lg text-[#B8B5AB] hover:text-[#F1EEE5] transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -156,8 +156,8 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
         <div className="max-h-96 overflow-y-auto p-4 space-y-5">
           {/* Scripted Demo Queries */}
           <div>
-            <div className="text-[10px] font-mono uppercase tracking-wider text-[#09BBC8] font-bold mb-2 flex items-center gap-1.5">
-              <Zap className="w-3 h-3 text-[#00F5A0]" />
+            <div className="text-[10px] font-mono uppercase tracking-wider text-[#C9F36A] font-bold mb-2 flex items-center gap-1.5">
+              <Zap className="w-3 h-3 text-[#C9F36A]" />
               <span>Scripted Demo Queries (1-Click Run)</span>
             </div>
             <div className="space-y-1.5">
@@ -165,16 +165,16 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                 <button
                   key={idx}
                   onClick={q.action}
-                  className="w-full p-2.5 rounded-xl bg-[#080D16]/60 hover:bg-[#405FFA]/25 border border-[#09BBC8]/15 hover:border-[#09BBC8]/50 text-left transition-all flex items-center justify-between group cursor-pointer"
+                  className="w-full p-2.5 rounded-xl bg-[#20231E]/80 hover:bg-[#2A2E26] border border-[#363A31] hover:border-[#C9F36A]/50 text-left transition-all flex items-center justify-between group cursor-pointer"
                 >
-                  <span className="text-xs sm:text-sm font-bold text-[#D9FCED] group-hover:text-white truncate">
+                  <span className="text-xs sm:text-sm font-bold text-[#F1EEE5] group-hover:text-white truncate">
                     {q.label}
                   </span>
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#09BBC8]/10 text-[#09BBC8] border border-[#09BBC8]/25">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#C9F36A]/10 text-[#C9F36A] border border-[#C9F36A]/30 font-semibold">
                       {q.badge}
                     </span>
-                    <CornerDownLeft className="w-3.5 h-3.5 text-[#D9FCED]/40 group-hover:text-[#09BBC8]" />
+                    <CornerDownLeft className="w-3.5 h-3.5 text-[#B8B5AB] group-hover:text-[#C9F36A]" />
                   </div>
                 </button>
               ))}
@@ -183,8 +183,8 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
 
           {/* Quick Persona Switcher */}
           <div>
-            <div className="text-[10px] font-mono uppercase tracking-wider text-[#405FFA] font-bold mb-2 flex items-center gap-1.5">
-              <UserCheck className="w-3 h-3 text-[#405FFA]" />
+            <div className="text-[10px] font-mono uppercase tracking-wider text-[#C4A878] font-bold mb-2 flex items-center gap-1.5">
+              <UserCheck className="w-3 h-3 text-[#C4A878]" />
               <span>Quick Persona Switcher (For Judges)</span>
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -192,10 +192,10 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                 <button
                   key={p.email}
                   onClick={() => handleSwitchPersona(p.email)}
-                  className="p-2.5 rounded-xl bg-[#080D16]/60 hover:bg-[#405FFA]/20 border border-[#09BBC8]/15 hover:border-[#09BBC8]/40 text-left transition-all cursor-pointer"
+                  className="p-2.5 rounded-xl bg-[#20231E]/80 hover:bg-[#2A2E26] border border-[#363A31] hover:border-[#C4A878]/50 text-left transition-all cursor-pointer"
                 >
-                  <div className="text-xs font-bold text-[#F8FAFC]">{p.name}</div>
-                  <div className="text-[10px] font-mono text-[#09BBC8]">
+                  <div className="text-xs font-bold text-[#F1EEE5]">{p.name}</div>
+                  <div className="text-[10px] font-mono text-[#C4A878]">
                     {p.role.replace('_', ' ')} • {p.dept}
                   </div>
                 </button>
@@ -205,7 +205,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
 
           {/* Navigation */}
           <div>
-            <div className="text-[10px] font-mono uppercase tracking-wider text-[#D9FCED]/50 font-bold mb-2">
+            <div className="text-[10px] font-mono uppercase tracking-wider text-[#B8B5AB] font-bold mb-2">
               Navigation
             </div>
             <div className="space-y-1">
@@ -218,9 +218,9 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                       onClose();
                       navigate(n.path);
                     }}
-                    className="w-full p-2 rounded-xl hover:bg-[#09BBC8]/10 text-left transition-colors flex items-center gap-2.5 text-xs text-[#D9FCED]/80 hover:text-white cursor-pointer"
+                    className="w-full p-2 rounded-xl hover:bg-[#2A2E26] text-left transition-colors flex items-center gap-2.5 text-xs text-[#F1EEE5]/80 hover:text-[#F1EEE5] cursor-pointer"
                   >
-                    <Icon className="w-4 h-4 text-[#09BBC8]" />
+                    <Icon className="w-4 h-4 text-[#C9F36A]" />
                     <span>{n.label}</span>
                   </button>
                 );
@@ -230,12 +230,12 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
         </div>
 
         {/* Footer Shortcut Pill */}
-        <div className="px-4 py-2.5 bg-[#080D16]/90 border-t border-[#09BBC8]/20 flex items-center justify-between text-[11px] font-mono text-[#D9FCED]/60">
+        <div className="px-4 py-2.5 bg-[#10120F] border-t border-[#363A31] flex items-center justify-between text-[11px] font-mono text-[#B8B5AB]">
           <span>Tip: Press ESC or click outside to dismiss</span>
           <span className="flex items-center gap-1">
-            <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-white text-[10px]">Ctrl</kbd>
+            <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-[#F1EEE5] text-[10px]">Ctrl</kbd>
             <span>+</span>
-            <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-white text-[10px]">K</kbd>
+            <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-[#F1EEE5] text-[10px]">K</kbd>
           </span>
         </div>
       </div>

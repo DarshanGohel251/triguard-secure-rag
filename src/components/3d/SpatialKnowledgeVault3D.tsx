@@ -123,9 +123,9 @@ export default function SpatialKnowledgeVault3D({
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let isTabVisible = !document.hidden;
 
-    // 1. Scene & Camera (Evergreen #07240F Fog Depth)
+    // 1. Scene & Camera (Obsidian #10120F Fog Depth)
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x07240f, 0.032);
+    scene.fog = new THREE.FogExp2(0x10120F, 0.035);
 
     const width = container.clientWidth || 600;
     const h = typeof height === 'number' ? height : container.clientHeight || 440;
@@ -139,24 +139,24 @@ export default function SpatialKnowledgeVault3D({
     renderer.setSize(width, h);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.35;
+    renderer.toneMappingExposure = 1.25;
     container.appendChild(renderer.domElement);
 
-    // 3. Dynamic Scene Lighting
-    const ambientLight = new THREE.AmbientLight(0x3b3664, 1.8);
+    // 3. Dynamic Scene Lighting (Obsidian Apex Palette)
+    const ambientLight = new THREE.AmbientLight(0x20231E, 1.6);
     scene.add(ambientLight);
 
-    const corePointLight = new THREE.PointLight(0x09bbc8, 4.5, 16);
+    const corePointLight = new THREE.PointLight(0xC4A878, 3.8, 15);
     corePointLight.position.set(0, 0.5, 0);
     scene.add(corePointLight);
 
-    const cyanRimLight = new THREE.DirectionalLight(0x09bbc8, 1.6);
-    cyanRimLight.position.set(6, 8, 5);
-    scene.add(cyanRimLight);
+    const keyRimLight = new THREE.DirectionalLight(0xF1EEE5, 1.2);
+    keyRimLight.position.set(6, 8, 5);
+    scene.add(keyRimLight);
 
-    const sapphireBackLight = new THREE.DirectionalLight(0x405ffa, 1.4);
-    sapphireBackLight.position.set(-6, 4, -6);
-    scene.add(sapphireBackLight);
+    const champagneBackLight = new THREE.DirectionalLight(0xC4A878, 1.1);
+    champagneBackLight.position.set(-6, 4, -6);
+    scene.add(champagneBackLight);
 
     // 4. Master Groups
     const masterGroup = new THREE.Group();
@@ -165,30 +165,30 @@ export default function SpatialKnowledgeVault3D({
     // ------------------------------------------------------------------
     // RADAR BASE: Holographic Polar Grid & Range Rings
     // ------------------------------------------------------------------
-    const radarGrid = new THREE.PolarGridHelper(5.2, 16, 5, 64, 0x09bbc8, 0x405ffa);
+    const radarGrid = new THREE.PolarGridHelper(5.2, 16, 5, 64, 0x363A31, 0x20231E);
     radarGrid.position.y = -0.05;
     if (Array.isArray(radarGrid.material)) {
       radarGrid.material.forEach((m) => {
         m.transparent = true;
-        m.opacity = 0.38;
+        m.opacity = 0.45;
       });
     } else {
       radarGrid.material.transparent = true;
-      radarGrid.material.opacity = 0.38;
+      radarGrid.material.opacity = 0.45;
     }
     masterGroup.add(radarGrid);
 
     // Concentric Glowing Range Rings with Classification Colors
     const tiers = [
       { r: 2.0, color: 0x10b981, label: 'PUBLIC' },
-      { r: 3.2, color: 0x09bbc8, label: 'INTERNAL' },
-      { r: 4.2, color: 0xffb020, label: 'CONFIDENTIAL' },
-      { r: 5.0, color: 0xff3b5c, label: 'RESTRICTED' }
+      { r: 3.2, color: 0xC4A878, label: 'INTERNAL' },
+      { r: 4.2, color: 0xf59e0b, label: 'CONFIDENTIAL' },
+      { r: 5.0, color: 0xef4444, label: 'RESTRICTED' }
     ];
 
     const ringMeshes: THREE.Mesh[] = [];
     tiers.forEach((t) => {
-      const ringGeo = new THREE.TorusGeometry(t.r, 0.024, 16, 96);
+      const ringGeo = new THREE.TorusGeometry(t.r, 0.022, 16, 96);
       const ringMat = new THREE.MeshBasicMaterial({ color: t.color, transparent: true, opacity: 0.55 });
       const ring = new THREE.Mesh(ringGeo, ringMat);
       ring.rotation.x = Math.PI / 2;
@@ -197,7 +197,7 @@ export default function SpatialKnowledgeVault3D({
 
       // Add 8 tactical tick markers along each ring
       const markerGeo = new THREE.BoxGeometry(0.04, 0.04, 0.08);
-      const markerMat = new THREE.MeshBasicMaterial({ color: t.color, transparent: true, opacity: 0.8 });
+      const markerMat = new THREE.MeshBasicMaterial({ color: t.color, transparent: true, opacity: 0.75 });
       for (let m = 0; m < 8; m++) {
         const theta = (m / 8) * Math.PI * 2;
         const tick = new THREE.Mesh(markerGeo, markerMat);
@@ -208,7 +208,7 @@ export default function SpatialKnowledgeVault3D({
     });
 
     // ------------------------------------------------------------------
-    // 360° ROTATING TACTICAL RADAR SWEEP BEAM
+    // 360° ROTATING TACTICAL RADAR SWEEP BEAM (Signal Lime #C9F36A)
     // ------------------------------------------------------------------
     const radarSweepGroup = new THREE.Group();
     masterGroup.add(radarSweepGroup);
@@ -219,19 +219,19 @@ export default function SpatialKnowledgeVault3D({
       new THREE.Vector3(5.2, 0.02, 0)
     ]);
     const sweepLineMat = new THREE.LineBasicMaterial({
-      color: 0x09bbc8,
+      color: 0xC9F36A,
       transparent: true,
-      opacity: 0.95
+      opacity: 0.85
     });
     const sweepLine = new THREE.Line(sweepLineGeo, sweepLineMat);
     radarSweepGroup.add(sweepLine);
 
-    // Trailing illuminated fan sector (45-degree luminous wedge)
+    // Trailing illuminated fan sector (45-degree wedge)
     const fanGeo = new THREE.RingGeometry(0.1, 5.2, 32, 1, 0, Math.PI / 4);
     const fanMat = new THREE.MeshBasicMaterial({
-      color: 0x09bbc8,
+      color: 0xC9F36A,
       transparent: true,
-      opacity: 0.20,
+      opacity: 0.12,
       side: THREE.DoubleSide
     });
     const sweepFan = new THREE.Mesh(fanGeo, fanMat);
@@ -241,59 +241,59 @@ export default function SpatialKnowledgeVault3D({
     radarSweepGroup.add(sweepFan);
 
     // ------------------------------------------------------------------
-    // LUMINOUS QUANTUM CORE: High-Tech Central Cryptographic Pillar
+    // LUMINOUS QUANTUM CORE: Dark Sculptural Geometry & Champagne Edges
     // ------------------------------------------------------------------
     const coreGroup = new THREE.Group();
     masterGroup.add(coreGroup);
 
-    // Central Floating Octahedron Quantum Crystal (Electric Sapphire & Strong Cyan)
+    // Central Floating Octahedron (Dark Carbon with Champagne emissive)
     const crystalGeo = new THREE.OctahedronGeometry(0.65, 0);
     const crystalMat = new THREE.MeshStandardMaterial({
-      color: 0x405ffa,
-      emissive: 0x09bbc8,
-      emissiveIntensity: 0.85,
+      color: 0x20231E,
+      emissive: 0xC4A878,
+      emissiveIntensity: 0.5,
       metalness: 0.85,
-      roughness: 0.15
+      roughness: 0.2
     });
     const coreCrystal = new THREE.Mesh(crystalGeo, crystalMat);
     coreCrystal.position.y = 0.65;
     coreGroup.add(coreCrystal);
 
-    // Glowing Crystal Edge Facets (Frozen Water)
+    // Glowing Crystal Edge Facets (Champagne Metallic #C4A878)
     const crystalEdgesGeo = new THREE.EdgesGeometry(crystalGeo);
-    const crystalEdgesMat = new THREE.LineBasicMaterial({ color: 0xd9fced, transparent: true, opacity: 0.85 });
+    const crystalEdgesMat = new THREE.LineBasicMaterial({ color: 0xC4A878, transparent: true, opacity: 0.85 });
     const crystalEdges = new THREE.LineSegments(crystalEdgesGeo, crystalEdgesMat);
     coreCrystal.add(crystalEdges);
 
-    // Translucent Laser Energy Containment Cylinder
+    // Translucent Containment Cylinder (Graphite Lattice)
     const cylGeo = new THREE.CylinderGeometry(0.75, 0.75, 2.8, 16, 1, true);
     const cylMat = new THREE.MeshBasicMaterial({
-      color: 0x09bbc8,
+      color: 0x363A31,
       wireframe: true,
       transparent: true,
-      opacity: 0.25
+      opacity: 0.35
     });
     const beamCylinder = new THREE.Mesh(cylGeo, cylMat);
     beamCylinder.position.y = 0.65;
     coreGroup.add(beamCylinder);
 
-    // Dual Counter-Rotating Quantum Core Rings
+    // Dual Counter-Rotating Core Rings
     const coreRingAGeo = new THREE.TorusGeometry(1.05, 0.03, 16, 64);
-    const coreRingAMat = new THREE.MeshBasicMaterial({ color: 0x09bbc8, transparent: true, opacity: 0.85 });
+    const coreRingAMat = new THREE.MeshBasicMaterial({ color: 0xC4A878, transparent: true, opacity: 0.8 });
     const coreRingA = new THREE.Mesh(coreRingAGeo, coreRingAMat);
     coreRingA.rotation.x = Math.PI / 2;
     coreRingA.position.y = 0.65;
     coreGroup.add(coreRingA);
 
     const coreRingBGeo = new THREE.TorusGeometry(1.25, 0.02, 16, 64);
-    const coreRingBMat = new THREE.MeshBasicMaterial({ color: 0x405ffa, transparent: true, opacity: 0.6 });
+    const coreRingBMat = new THREE.MeshBasicMaterial({ color: 0x363A31, transparent: true, opacity: 0.65 });
     const coreRingB = new THREE.Mesh(coreRingBGeo, coreRingBMat);
     coreRingB.rotation.x = Math.PI / 2.3;
     coreRingB.position.y = 0.65;
     coreGroup.add(coreRingB);
 
     // ------------------------------------------------------------------
-    // AMBIENT RADAR PARTICLES: Upward drifting luminous data dust (Frozen Water)
+    // AMBIENT RADAR PARTICLES: Upward drifting subtle dust (Champagne & Lime)
     // ------------------------------------------------------------------
     const particleCount = 120;
     const particleGeo = new THREE.BufferGeometry();
@@ -307,17 +307,17 @@ export default function SpatialKnowledgeVault3D({
     }
     particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
     const particleMat = new THREE.PointsMaterial({
-      color: 0xd9fced,
-      size: 0.045,
+      color: 0xC4A878,
+      size: 0.04,
       transparent: true,
-      opacity: 0.65,
+      opacity: 0.6,
       blending: THREE.AdditiveBlending
     });
     const particlePoints = new THREE.Points(particleGeo, particleMat);
     masterGroup.add(particlePoints);
 
     // ------------------------------------------------------------------
-    // 3D FLOATING DOCUMENT & TELEMETRY MODULES
+    // 3D FLOATING DOCUMENT & TELEMETRY MODULES (Dark Sculptural Geometry)
     // ------------------------------------------------------------------
     const docMeshes: {
       mesh: THREE.Mesh;
@@ -332,17 +332,21 @@ export default function SpatialKnowledgeVault3D({
 
     displayItems.forEach((doc, idx) => {
       const c = (doc.classification || 'INTERNAL').toUpperCase();
-      let tierColor = 0x00f0ff;
+      let tierColor = 0xC4A878; // Champagne for INTERNAL
+      let baseTint = 0x22241F;
       let radius = 3.2;
 
       if (c === 'RESTRICTED') {
         tierColor = 0xef4444;
+        baseTint = 0x281919;
         radius = 5.0;
       } else if (c === 'CONFIDENTIAL') {
         tierColor = 0xf59e0b;
+        baseTint = 0x292217;
         radius = 4.2;
       } else if (c === 'PUBLIC') {
         tierColor = 0x10b981;
+        baseTint = 0x18241C;
         radius = 2.0;
       }
 
@@ -353,27 +357,27 @@ export default function SpatialKnowledgeVault3D({
       const y = 0.5 + Math.sin(idx * 1.8) * 0.25;
 
       const docMat = new THREE.MeshPhysicalMaterial({
-        color: tierColor,
+        color: baseTint,
         emissive: tierColor,
-        emissiveIntensity: 0.35,
-        roughness: 0.15,
-        metalness: 0.6,
-        transmission: 0.6,
-        thickness: 0.6,
+        emissiveIntensity: 0.3,
+        roughness: 0.25,
+        metalness: 0.7,
+        transmission: 0.4,
+        thickness: 0.5,
         transparent: true,
-        opacity: 0.9
+        opacity: 0.95
       });
 
       const docMesh = new THREE.Mesh(docBoxGeo, docMat);
       docMesh.position.set(x, y, z);
       docMesh.lookAt(0, y, 0);
 
-      // Glowing Perimeter Wireframe Edges
+      // Controlled Perimeter Wireframe Edges (Precise metallic classification edge)
       const edgeGeo = new THREE.EdgesGeometry(docBoxGeo);
       const edgeMat = new THREE.LineBasicMaterial({
-        color: 0xffffff,
+        color: tierColor,
         transparent: true,
-        opacity: 0.75
+        opacity: 0.85
       });
       const edgeLines = new THREE.LineSegments(edgeGeo, edgeMat);
       docMesh.add(edgeLines);
@@ -539,45 +543,45 @@ export default function SpatialKnowledgeVault3D({
   }, [displayItems, height]);
 
   return (
-    <div className="w-full bg-[#3B3664]/35 border border-[#09BBC8]/25 rounded-3xl p-6 sm:p-8 shadow-[0_0_50px_rgba(9,187,200,0.14)] relative overflow-hidden backdrop-blur-2xl text-[#D9FCED]">
+    <div className="w-full bg-[#20231E]/95 border border-[#363A31] rounded-3xl p-6 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.85)] relative overflow-hidden backdrop-blur-2xl text-[#F1EEE5]">
       {/* Dynamic Cybernetic Radial Background Grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(9,187,200,0.12),transparent_70%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(201,243,106,0.06),transparent_70%)] pointer-events-none" />
       <div
-        className="absolute inset-0 opacity-10 pointer-events-none"
+        className="absolute inset-0 opacity-15 pointer-events-none"
         style={{
           backgroundImage:
-            'linear-gradient(rgba(9,187,200,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(9,187,200,0.15) 1px, transparent 1px)',
+            'linear-gradient(rgba(54,58,49,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(54,58,49,0.4) 1px, transparent 1px)',
           backgroundSize: '32px 32px'
         }}
       />
 
       {/* Header Bar */}
-      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-[#09BBC8]/20 gap-4">
+      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-[#363A31] gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#405FFA]/20 border border-[#09BBC8]/40 text-[#D9FCED] text-xs font-mono uppercase tracking-wider mb-2 shadow-[0_0_15px_rgba(9,187,200,0.25)]">
-            <Radar className="w-3.5 h-3.5 text-[#09BBC8] animate-spin" style={{ animationDuration: '6s' }} />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C4A878]/15 border border-[#C4A878]/30 text-[#C4A878] text-xs font-mono uppercase tracking-wider mb-2 shadow-[0_0_15px_rgba(196,168,120,0.15)] font-semibold">
+            <Radar className="w-3.5 h-3.5 text-[#C4A878] animate-spin" style={{ animationDuration: '6s' }} />
             3D Holographic Radar • Spatial Knowledge Vault
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-[#D9FCED] tracking-tight flex items-center gap-2.5">
+          <h2 className="text-2xl sm:text-3xl font-black text-[#F1EEE5] tracking-tight flex items-center gap-2.5">
             Spatial Knowledge Vault
-            <span className="text-xs font-mono font-normal px-2.5 py-0.5 rounded-full bg-[#09BBC8]/15 text-[#09BBC8] border border-[#09BBC8]/30">
+            <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#C9F36A]/15 text-[#C9F36A] border border-[#C9F36A]/30">
               RADAR ACTIVE
             </span>
           </h2>
-          <p className="text-base text-[#D9FCED]/75 mt-1 max-w-2xl leading-relaxed">
+          <p className="text-sm sm:text-base text-[#B8B5AB] mt-1 max-w-2xl leading-relaxed">
             Dimensional 360° radar telemetry mapping classified document partitions orbiting the cryptographic knowledge core.
           </p>
         </div>
 
         {/* Clearance Scope Badge */}
-        <div className="flex items-center gap-3 bg-[#3B3664]/60 border border-[#09BBC8]/30 px-4 py-2.5 rounded-2xl shrink-0 shadow-lg">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#09BBC8] animate-pulse" />
+        <div className="flex items-center gap-3 bg-[#181A15] border border-[#363A31] px-4 py-2.5 rounded-2xl shrink-0 shadow-lg">
+          <div className="w-2.5 h-2.5 rounded-full bg-[#C9F36A] animate-pulse" />
           <div className="flex flex-col text-xs font-mono">
-            <span className="font-bold text-[#D9FCED] flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#09BBC8]" />
+            <span className="font-bold text-[#F1EEE5] flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#C4A878]" />
               Clearance: {userRole}
             </span>
-            <span className="text-[#D9FCED]/70 text-[11px]">Scope: {userDept} Department</span>
+            <span className="text-[#B8B5AB] text-[11px]">Scope: {userDept} Department</span>
           </div>
         </div>
       </div>
@@ -585,33 +589,33 @@ export default function SpatialKnowledgeVault3D({
       {/* 3D Scene Viewport & Real-Time Document Inspector */}
       <div className="relative z-10 mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
         {/* 3D WebGL Canvas (lg:col-span-8) */}
-        <div className="lg:col-span-8 relative rounded-2xl bg-[#07240F]/80 border border-[#09BBC8]/25 overflow-hidden shadow-2xl">
+        <div className="lg:col-span-8 relative rounded-2xl bg-[#10120F] border border-[#363A31] overflow-hidden shadow-2xl">
           <div ref={mountRef} className="w-full" style={{ height }} />
 
           {/* Tactical Radar HUD: Top Overlay */}
           <div className="absolute top-3 left-4 right-4 flex items-center justify-between text-[11px] font-mono pointer-events-none">
-            <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3B3664]/80 border border-[#09BBC8]/30 text-[#D9FCED] backdrop-blur-md">
-              <Activity className="w-3.5 h-3.5 text-[#09BBC8] animate-pulse" />
+            <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-[#181A15]/90 border border-[#363A31] text-[#F1EEE5] backdrop-blur-md">
+              <Activity className="w-3.5 h-3.5 text-[#C9F36A] animate-pulse" />
               <span>AZIMUTH: </span>
-              <span ref={azimuthTextRef} className="text-[#D9FCED] font-bold w-10">000°</span>
-              <span className="text-[#D9FCED]/60 hidden sm:inline">| 360° CONT SCAN</span>
+              <span ref={azimuthTextRef} className="text-[#C9F36A] font-bold w-10">000°</span>
+              <span className="text-[#B8B5AB] hidden sm:inline">| 360° CONT SCAN</span>
             </div>
 
-            <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-[#3B3664]/80 border border-[#09BBC8]/30 text-[#D9FCED]/80 backdrop-blur-md">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#09BBC8] animate-ping" />
-              <span className="text-[#09BBC8] font-bold">X-BAND 9.4 GHz</span>
-              <span className="text-[#D9FCED]/60 hidden sm:inline">• RANGE 5.2m</span>
+            <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-[#181A15]/90 border border-[#363A31] text-[#B8B5AB] backdrop-blur-md">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C9F36A] animate-ping" />
+              <span className="text-[#C9F36A] font-bold">X-BAND 9.4 GHz</span>
+              <span className="text-[#B8B5AB] hidden sm:inline">• RANGE 5.2m</span>
             </div>
           </div>
 
           {/* Interactive Legend in Viewport Bottom */}
-          <div className="absolute bottom-3 left-4 right-4 flex flex-wrap items-center justify-between text-[11px] font-mono text-[#D9FCED]/70 bg-[#3B3664]/85 border border-[#09BBC8]/30 px-3.5 py-1.5 rounded-xl backdrop-blur-md shadow-lg">
+          <div className="absolute bottom-3 left-4 right-4 flex flex-wrap items-center justify-between text-[11px] font-mono text-[#B8B5AB] bg-[#181A15]/90 border border-[#363A31] px-3.5 py-1.5 rounded-xl backdrop-blur-md shadow-lg">
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1.5 text-emerald-400">
                 <span className="w-2 h-2 rounded-full bg-emerald-400" /> Public (2.0m)
               </span>
-              <span className="flex items-center gap-1.5 text-[#09BBC8]">
-                <span className="w-2 h-2 rounded-full bg-[#09BBC8]" /> Internal (3.2m)
+              <span className="flex items-center gap-1.5 text-[#C4A878]">
+                <span className="w-2 h-2 rounded-full bg-[#C4A878]" /> Internal (3.2m)
               </span>
               <span className="flex items-center gap-1.5 text-amber-400">
                 <span className="w-2 h-2 rounded-full bg-amber-400" /> Confidential (4.2m)
@@ -620,23 +624,23 @@ export default function SpatialKnowledgeVault3D({
                 <span className="w-2 h-2 rounded-full bg-red-400" /> Restricted (5.0m)
               </span>
             </div>
-            <span className="text-[#09BBC8] hidden sm:inline font-semibold">Click 3D slab to inspect</span>
+            <span className="text-[#C9F36A] hidden sm:inline font-semibold">Click 3D slab to inspect</span>
           </div>
 
           {/* Hover Banner */}
           {hoveredDoc && (
-            <div className="absolute top-12 left-4 px-3 py-1.5 rounded-lg bg-[#3B3664]/95 border border-[#09BBC8] text-[#D9FCED] text-xs font-mono backdrop-blur-md shadow-[0_0_15px_rgba(9,187,200,0.4)]">
+            <div className="absolute top-12 left-4 px-3 py-1.5 rounded-lg bg-[#181A15]/95 border border-[#C9F36A] text-[#F1EEE5] text-xs font-mono backdrop-blur-md shadow-[0_0_15px_rgba(201,243,106,0.3)]">
               Target Track: {hoveredDoc.name || hoveredDoc.filename} ({hoveredDoc.classification})
             </div>
           )}
         </div>
 
         {/* Selected Document Metadata Inspector (lg:col-span-4) */}
-        <div className="lg:col-span-4 p-5 sm:p-6 rounded-2xl bg-[#3B3664]/45 border border-[#09BBC8]/30 shadow-2xl flex flex-col justify-between h-full min-h-[380px] backdrop-blur-xl">
+        <div className="lg:col-span-4 p-5 sm:p-6 rounded-2xl bg-[#181A15] border border-[#363A31] shadow-2xl flex flex-col justify-between h-full min-h-[380px] backdrop-blur-xl">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-[#09BBC8]/20 mb-4">
-              <span className="text-xs font-mono uppercase tracking-wider text-[#D9FCED]/70 font-bold flex items-center gap-1.5">
-                <Crosshair className="w-4 h-4 text-[#09BBC8]" />
+            <div className="flex items-center justify-between pb-3 border-b border-[#363A31] mb-4">
+              <span className="text-xs font-mono uppercase tracking-wider text-[#B8B5AB] font-bold flex items-center gap-1.5">
+                <Crosshair className="w-4 h-4 text-[#C4A878]" />
                 Radar Target Inspector
               </span>
               {selectedDoc && (
@@ -647,7 +651,7 @@ export default function SpatialKnowledgeVault3D({
                       : selectedDoc.classification === 'CONFIDENTIAL'
                       ? 'bg-amber-500/10 text-amber-300 border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
                       : selectedDoc.classification === 'INTERNAL'
-                      ? 'bg-blue-500/10 text-blue-300 border-blue-500/40 shadow-[0_0_10px_rgba(59,130,246,0.2)]'
+                      ? 'bg-[#C4A878]/10 text-[#C4A878] border-[#C4A878]/40 shadow-[0_0_10px_rgba(196,168,120,0.2)]'
                       : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/40 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
                   }`}
                 >
@@ -659,13 +663,13 @@ export default function SpatialKnowledgeVault3D({
             {selectedDoc ? (
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-base font-bold text-[#D9FCED] leading-snug break-words">
+                  <h3 className="text-base font-bold text-[#F1EEE5] leading-snug break-words">
                     {selectedDoc.name || selectedDoc.filename || 'Untitled Document'}
                   </h3>
-                  <div className="text-xs text-[#D9FCED]/70 mt-1 font-mono flex items-center gap-1">
-                    Owning Department: <span className="text-[#09BBC8] font-bold">{selectedDoc.department || 'General'}</span>
+                  <div className="text-xs text-[#B8B5AB] mt-1 font-mono flex items-center gap-1">
+                    Owning Department: <span className="text-[#C4A878] font-bold">{selectedDoc.department || 'General'}</span>
                     {selectedDoc.isAuxiliary && (
-                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#3B3664]/80 text-[#D9FCED]/60 border border-[#09BBC8]/20">
+                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#20231E] text-[#B8B5AB] border border-[#363A31]">
                         Auxiliary Shard
                       </span>
                     )}
@@ -673,8 +677,8 @@ export default function SpatialKnowledgeVault3D({
                 </div>
 
                 {/* Authorization Status */}
-                <div className="p-3.5 rounded-xl bg-[#3B3664]/60 border border-[#09BBC8]/25 text-xs flex items-center justify-between shadow-inner">
-                  <span className="text-[#D9FCED]/70 font-mono">Clearance Status:</span>
+                <div className="p-3.5 rounded-xl bg-[#20231E] border border-[#363A31] text-xs flex items-center justify-between shadow-inner">
+                  <span className="text-[#B8B5AB] font-mono">Clearance Status:</span>
                   {isAuthorized(selectedDoc.classification) ? (
                     <span className="flex items-center gap-1.5 text-emerald-400 font-bold font-mono">
                       <CheckCircle2 className="w-4 h-4" /> AUTHORIZED
@@ -688,31 +692,31 @@ export default function SpatialKnowledgeVault3D({
 
                 {/* Vector Metrics */}
                 <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-                  <div className="p-3 rounded-xl bg-[#3B3664]/60 border border-[#09BBC8]/20">
-                    <div className="text-[#D9FCED]/60 text-[10px] uppercase">Vector Chunks</div>
-                    <div className="text-base font-black text-[#D9FCED] mt-0.5">{selectedDoc.chunkCount || 3}</div>
+                  <div className="p-3 rounded-xl bg-[#20231E] border border-[#363A31]">
+                    <div className="text-[#B8B5AB] text-[10px] uppercase">Vector Chunks</div>
+                    <div className="text-base font-black text-[#F1EEE5] mt-0.5">{selectedDoc.chunkCount || 3}</div>
                   </div>
-                  <div className="p-3 rounded-xl bg-[#3B3664]/60 border border-[#09BBC8]/20">
-                    <div className="text-[#D9FCED]/60 text-[10px] uppercase">Radar Track</div>
-                    <div className="text-xs font-bold text-[#09BBC8] mt-1">L2 Scoped</div>
+                  <div className="p-3 rounded-xl bg-[#20231E] border border-[#363A31]">
+                    <div className="text-[#B8B5AB] text-[10px] uppercase">Radar Track</div>
+                    <div className="text-xs font-bold text-[#C9F36A] mt-1">L2 Scoped</div>
                   </div>
                 </div>
 
-                <div className="text-xs text-[#D9FCED]/75 leading-relaxed font-sans bg-[#07240F]/80 p-3 rounded-xl border border-[#09BBC8]/20">
+                <div className="text-xs text-[#B8B5AB] leading-relaxed font-sans bg-[#10120F] p-3 rounded-xl border border-[#363A31]">
                   {isAuthorized(selectedDoc.classification)
                     ? 'This asset is indexed into your active retrieval scope. Queries from your role evaluate chunks from this partition.'
                     : 'This document is quarantined outside your role boundary. Retrieval queries targeting this asset will be deterministically blocked.'}
                 </div>
               </div>
             ) : (
-              <div className="py-12 text-center text-[#D9FCED]/60 text-xs">
+              <div className="py-12 text-center text-[#B8B5AB] text-xs">
                 Select a 3D document in the radar vault to inspect classification metadata and vector scope.
               </div>
             )}
           </div>
 
-          <div className="pt-4 border-t border-[#09BBC8]/20 flex items-center justify-between text-[11px] font-mono text-[#D9FCED]/70">
-            <span className="flex items-center gap-1 text-[#09BBC8] font-bold">
+          <div className="pt-4 border-t border-[#363A31] flex items-center justify-between text-[11px] font-mono text-[#B8B5AB]">
+            <span className="flex items-center gap-1 text-[#C9F36A] font-bold">
               <Radar className="w-3 h-3 animate-spin" /> 3D RADAR TELEMETRY
             </span>
             <span>{displayItems.length} ACTIVE PARTITIONS</span>

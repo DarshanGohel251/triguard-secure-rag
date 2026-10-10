@@ -38,11 +38,11 @@ export default function Badge({
       glow: 'shadow-[0_0_10px_rgba(16,185,129,0.3)]',
     },
     INTERNAL: {
-      text: 'text-[#09BBC8]',
-      bg: 'bg-[#09BBC8]/15',
-      border: 'border-[#09BBC8]/35',
-      dot: 'bg-[#09BBC8]',
-      glow: 'shadow-[0_0_10px_rgba(9,187,200,0.3)]',
+      text: 'text-[#C4A878]',
+      bg: 'bg-[#C4A878]/15',
+      border: 'border-[#C4A878]/35',
+      dot: 'bg-[#C4A878]',
+      glow: 'shadow-[0_0_10px_rgba(196,168,120,0.25)]',
     },
     CONFIDENTIAL: {
       text: 'text-amber-300',
@@ -59,18 +59,18 @@ export default function Badge({
       glow: 'shadow-[0_0_10px_rgba(244,63,94,0.3)]',
     },
     ACTIVE: {
+      text: 'text-[#C9F36A]',
+      bg: 'bg-[#C9F36A]/15',
+      border: 'border-[#C9F36A]/35',
+      dot: 'bg-[#C9F36A]',
+      glow: 'shadow-[0_0_10px_rgba(201,243,106,0.3)]',
+    },
+    VERIFIED: {
       text: 'text-emerald-300',
       bg: 'bg-emerald-500/15',
       border: 'border-emerald-500/35',
       dot: 'bg-emerald-400',
-      glow: 'shadow-[0_0_10px_rgba(16,185,129,0.3)]',
-    },
-    VERIFIED: {
-      text: 'text-[#D9FCED]',
-      bg: 'bg-[#405FFA]/20',
-      border: 'border-[#09BBC8]/40',
-      dot: 'bg-[#09BBC8]',
-      glow: 'shadow-[0_0_12px_rgba(9,187,200,0.4)]',
+      glow: 'shadow-[0_0_12px_rgba(16,185,129,0.35)]',
     },
     BLOCKED: {
       text: 'text-rose-300',
@@ -87,19 +87,19 @@ export default function Badge({
       glow: 'shadow-[0_0_12px_rgba(245,158,11,0.4)]',
     },
     SECURE: {
-      text: 'text-[#00F5A0]',
-      bg: 'bg-[#00F5A0]/15',
-      border: 'border-[#00F5A0]/35',
-      dot: 'bg-[#00F5A0]',
-      glow: 'shadow-[0_0_12px_rgba(0,245,160,0.35)]',
+      text: 'text-[#C9F36A]',
+      bg: 'bg-[#C9F36A]/15',
+      border: 'border-[#C9F36A]/35',
+      dot: 'bg-[#C9F36A]',
+      glow: 'shadow-[0_0_12px_rgba(201,243,106,0.35)]',
     },
   };
 
   const style = variantMap[normalized] || {
-    text: 'text-[#D9FCED]',
-    bg: 'bg-[#3B3664]/30',
-    border: 'border-[#09BBC8]/25',
-    dot: 'bg-[#09BBC8]',
+    text: 'text-[#F1EEE5]',
+    bg: 'bg-[#20231E]',
+    border: 'border-[#363A31]',
+    dot: 'bg-[#C4A878]',
     glow: 'shadow-sm',
   };
 

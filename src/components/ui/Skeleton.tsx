@@ -14,7 +14,7 @@ export default function Skeleton({
   lines = 3,
 }: SkeletonProps) {
   const baseShimmer =
-    'relative overflow-hidden bg-[#3B3664]/35 rounded-xl border border-[#09BBC8]/15 before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-[#09BBC8]/15 before:to-transparent';
+    'relative overflow-hidden bg-[#20231E]/70 rounded-xl border border-[#363A31]/50 before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-[#C9F36A]/10 before:to-transparent';
 
   if (variant === 'text') {
     return (
@@ -40,7 +40,7 @@ export default function Skeleton({
   if (variant === 'card') {
     return (
       <div
-        className={`p-6 rounded-3xl bg-[#0E1726]/85 border border-[#09BBC8]/25 space-y-4 ${className}`}
+        className={`p-6 rounded-3xl bg-[#20231E]/90 border border-[#363A31] space-y-4 ${className}`}
         role="status"
         aria-busy="true"
         aria-label="Loading card content"
@@ -54,7 +54,7 @@ export default function Skeleton({
           <div className={`h-3 rounded-lg ${baseShimmer}`} />
           <div className={`h-3 w-5/6 rounded-lg ${baseShimmer}`} />
         </div>
-        <div className="flex items-center justify-between pt-3 border-t border-[#09BBC8]/15">
+        <div className="flex items-center justify-between pt-3 border-t border-[#363A31]">
           <div className={`w-24 h-6 rounded-xl ${baseShimmer}`} />
           <div className={`w-8 h-8 rounded-xl ${baseShimmer}`} />
         </div>
@@ -65,7 +65,7 @@ export default function Skeleton({
   if (variant === 'stat') {
     return (
       <div
-        className={`p-4 rounded-2xl bg-[#080D16]/80 border border-[#09BBC8]/20 flex items-center gap-3.5 ${className}`}
+        className={`p-4 rounded-2xl bg-[#181A15]/90 border border-[#363A31] flex items-center gap-3.5 ${className}`}
         role="status"
         aria-busy="true"
         aria-label="Loading telemetry statistic"
@@ -82,17 +82,17 @@ export default function Skeleton({
   if (variant === 'table') {
     return (
       <div
-        className={`rounded-2xl border border-[#09BBC8]/20 bg-[#080D16]/60 p-4 space-y-3 ${className}`}
+        className={`rounded-2xl border border-[#363A31] bg-[#181A15]/80 p-4 space-y-3 ${className}`}
         role="status"
         aria-busy="true"
         aria-label="Loading data table"
       >
-        <div className="flex items-center justify-between pb-3 border-b border-[#09BBC8]/15">
+        <div className="flex items-center justify-between pb-3 border-b border-[#363A31]">
           <div className={`h-4 w-32 rounded ${baseShimmer}`} />
           <div className={`h-4 w-20 rounded ${baseShimmer}`} />
         </div>
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="flex items-center justify-between py-2 border-b border-[#09BBC8]/10">
+          <div key={i} className="flex items-center justify-between py-2 border-b border-[#363A31]/50">
             <div className="flex items-center gap-3">
               <div className={`w-8 h-8 rounded-lg ${baseShimmer}`} />
               <div className={`h-3.5 w-40 rounded ${baseShimmer}`} />

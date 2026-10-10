@@ -2,7 +2,7 @@ import { useRef, useState, useEffect, type ButtonHTMLAttributes, type ReactNode,
 
 interface MagneticButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  variant?: 'primary' | 'cyan' | 'ghost' | 'danger' | 'surface';
+  variant?: 'primary' | 'cyan' | 'ghost' | 'danger' | 'surface' | 'champagne' | 'lime';
   size?: 'sm' | 'md' | 'lg';
   icon?: ReactNode;
   strength?: number;
@@ -55,16 +55,20 @@ export default function MagneticButton({
     setPosition({ x: 0, y: 0 });
   };
 
-  // Variant styling
+  // Obsidian Apex Variant styling
   const variantStyles = {
     primary:
-      'bg-gradient-to-r from-[#405FFA] to-[#5572FB] hover:to-[#09BBC8] text-[#F8FAFC] border border-[#09BBC8]/40 shadow-[0_0_20px_rgba(64,95,250,0.45)] hover:shadow-[0_0_30px_rgba(9,187,200,0.65)]',
+      'bg-[#C9F36A] hover:bg-[#D6F886] text-[#10120F] font-bold border border-[#C9F36A] shadow-[0_0_20px_rgba(201,243,106,0.35)] hover:shadow-[0_0_28px_rgba(201,243,106,0.6)]',
+    lime:
+      'bg-[#C9F36A] hover:bg-[#D6F886] text-[#10120F] font-bold border border-[#C9F36A] shadow-[0_0_20px_rgba(201,243,106,0.35)] hover:shadow-[0_0_28px_rgba(201,243,106,0.6)]',
     cyan:
-      'bg-gradient-to-r from-[#09BBC8] to-[#12D1E0] text-[#080D16] font-black border border-[#D9FCED]/50 shadow-[0_0_20px_rgba(9,187,200,0.5)] hover:shadow-[0_0_30px_rgba(9,187,200,0.8)]',
+      'bg-[#C9F36A] hover:bg-[#D6F886] text-[#10120F] font-bold border border-[#C9F36A] shadow-[0_0_20px_rgba(201,243,106,0.35)]',
+    champagne:
+      'bg-[#C4A878] hover:bg-[#D1B88B] text-[#10120F] font-bold border border-[#C4A878] shadow-[0_0_18px_rgba(196,168,120,0.35)] hover:shadow-[0_0_26px_rgba(196,168,120,0.55)]',
     surface:
-      'bg-[#0E1726]/90 hover:bg-[#131F37] text-[#D9FCED] border border-[#09BBC8]/30 hover:border-[#09BBC8] shadow-md hover:shadow-[0_0_20px_rgba(9,187,200,0.3)]',
+      'bg-[#20231E] hover:bg-[#282C25] text-[#F1EEE5] border border-[#363A31] hover:border-[#C4A878]/50 shadow-md',
     ghost:
-      'bg-transparent hover:bg-[#09BBC8]/10 text-[#D9FCED] hover:text-white border border-transparent hover:border-[#09BBC8]/30',
+      'bg-transparent hover:bg-[#20231E] text-[#B8B5AB] hover:text-[#F1EEE5] border border-transparent hover:border-[#363A31]',
     danger:
       'bg-rose-500/20 hover:bg-rose-500/35 text-rose-200 border border-rose-500/40 shadow-[0_0_15px_rgba(244,63,94,0.3)]',
   };
@@ -95,7 +99,7 @@ export default function MagneticButton({
       onClick={onClick}
       disabled={disabled}
       style={transformStyle}
-      className={`relative inline-flex items-center justify-center cursor-pointer select-none transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[#09BBC8] focus-visible:ring-offset-2 focus-visible:ring-offset-[#080D16] disabled:opacity-40 disabled:cursor-not-allowed ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+      className={`relative inline-flex items-center justify-center cursor-pointer select-none transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[#C9F36A] focus-visible:ring-offset-2 focus-visible:ring-offset-[#10120F] disabled:opacity-40 disabled:cursor-not-allowed ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
       {...props}
     >
       {/* Dynamic ambient highlight glow */}

@@ -93,12 +93,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             key={t.id}
             className={`pointer-events-auto rounded-2xl p-4 shadow-2xl border backdrop-blur-xl transition-all duration-300 animate-in slide-in-from-bottom-5 fade-in flex items-start gap-3 relative overflow-hidden ${
               t.type === 'success'
-                ? 'bg-[#0E1726]/95 border-emerald-500/40 shadow-[0_10px_30px_rgba(16,185,129,0.25)]'
+                ? 'bg-[#20231E]/95 border-emerald-500/40 shadow-[0_10px_30px_rgba(16,185,129,0.2)]'
                 : t.type === 'error'
-                ? 'bg-rose-950/90 border-rose-500/50 shadow-[0_10px_30px_rgba(244,63,94,0.3)]'
+                ? 'bg-[#20231E]/95 border-red-500/50 shadow-[0_10px_30px_rgba(239,68,68,0.25)]'
                 : t.type === 'security'
-                ? 'bg-[#0E1726]/95 border-[#09BBC8]/50 shadow-[0_10px_30px_rgba(9,187,200,0.3)]'
-                : 'bg-[#0E1726]/95 border-[#09BBC8]/30 shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
+                ? 'bg-[#20231E]/95 border-[#C9F36A]/50 shadow-[0_10px_30px_rgba(201,243,106,0.2)]'
+                : t.type === 'warning'
+                ? 'bg-[#20231E]/95 border-amber-500/50 shadow-[0_10px_30px_rgba(245,158,11,0.2)]'
+                : 'bg-[#20231E]/95 border-[#363A31] shadow-[0_10px_30px_rgba(0,0,0,0.6)]'
             }`}
           >
             {/* Ambient status beam */}
@@ -107,32 +109,37 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 t.type === 'success'
                   ? 'bg-emerald-400'
                   : t.type === 'error'
-                  ? 'bg-rose-500'
-                  : 'bg-[#09BBC8]'
+                  ? 'bg-red-500'
+                  : t.type === 'warning'
+                  ? 'bg-amber-400'
+                  : t.type === 'security'
+                  ? 'bg-[#C9F36A]'
+                  : 'bg-[#C4A878]'
               }`}
             />
 
             <div className="shrink-0 mt-0.5">
               {t.type === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-400" />}
-              {t.type === 'error' && <AlertCircle className="w-5 h-5 text-rose-400" />}
-              {t.type === 'security' && <ShieldAlert className="w-5 h-5 text-[#09BBC8]" />}
-              {t.type === 'info' && <Info className="w-5 h-5 text-[#D9FCED]" />}
+              {t.type === 'error' && <AlertCircle className="w-5 h-5 text-red-400" />}
+              {t.type === 'warning' && <AlertCircle className="w-5 h-5 text-amber-400" />}
+              {t.type === 'security' && <ShieldAlert className="w-5 h-5 text-[#C9F36A]" />}
+              {t.type === 'info' && <Info className="w-5 h-5 text-[#C4A878]" />}
             </div>
 
             <div className="flex-1 min-w-0 pr-4">
               {t.title && (
-                <div className="text-xs font-mono font-bold tracking-wider text-[#F8FAFC] uppercase mb-0.5">
+                <div className="text-xs font-mono font-bold tracking-wider text-[#F1EEE5] uppercase mb-0.5">
                   {t.title}
                 </div>
               )}
-              <div className="text-xs text-[#D9FCED]/85 leading-snug break-words">
+              <div className="text-xs text-[#A6AAA0] leading-snug break-words">
                 {t.message}
               </div>
             </div>
 
             <button
               onClick={() => removeToast(t.id)}
-              className="shrink-0 text-[#D9FCED]/40 hover:text-[#D9FCED] transition-colors p-1 rounded-lg cursor-pointer"
+              className="shrink-0 text-[#A6AAA0]/60 hover:text-[#F1EEE5] transition-colors p-1 rounded-lg cursor-pointer"
               aria-label="Dismiss toast"
             >
               <X className="w-4 h-4" />

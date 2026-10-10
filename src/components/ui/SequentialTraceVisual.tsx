@@ -27,17 +27,17 @@ export default function SequentialTraceVisual({
   const getStageIcon = (stageId: number) => {
     switch (stageId) {
       case 1:
-        return <ShieldCheck className="w-4 h-4 text-[#09BBC8]" />;
+        return <ShieldCheck className="w-4 h-4 text-[#C4A878]" />;
       case 2:
-        return <Lock className="w-4 h-4 text-[#405FFA]" />;
+        return <Lock className="w-4 h-4 text-[#C9F36A]" />;
       case 3:
-        return <Database className="w-4 h-4 text-[#09BBC8]" />;
+        return <Database className="w-4 h-4 text-[#C4A878]" />;
       case 4:
         return <ShieldAlert className="w-4 h-4 text-emerald-400" />;
       case 5:
-        return <Cpu className="w-4 h-4 text-[#405FFA]" />;
+        return <Cpu className="w-4 h-4 text-[#C9F36A]" />;
       case 6:
-        return <Layers className="w-4 h-4 text-[#09BBC8]" />;
+        return <Layers className="w-4 h-4 text-[#C4A878]" />;
       default:
         return <ShieldCheck className="w-4 h-4" />;
     }
@@ -47,7 +47,7 @@ export default function SequentialTraceVisual({
     if (!isComplete) {
       return {
         label: 'EVALUATING DEFENSE RINGS...',
-        className: 'bg-[#405FFA]/20 text-[#09BBC8] border-[#09BBC8]/40 animate-pulse',
+        className: 'bg-[#C9F36A]/15 text-[#C9F36A] border-[#C9F36A]/40 animate-pulse',
       };
     }
     switch (status) {
@@ -75,18 +75,18 @@ export default function SequentialTraceVisual({
       case 'NO_INFO':
         return {
           label: 'INSUFFICIENT EVIDENCE • ABSTENTION',
-          className: 'bg-sky-500/15 text-sky-300 border-sky-500/40',
+          className: 'bg-neutral-500/20 text-neutral-300 border-neutral-500/40',
         };
       case 'INJECTION_BLOCKED':
         return {
           label: 'INJECTION INTERCEPTED • BLOCKED',
-          className: 'bg-rose-500/15 text-rose-300 border-rose-500/40 shadow-[0_0_10px_rgba(244,63,94,0.2)]',
+          className: 'bg-red-500/15 text-red-300 border-red-500/40 shadow-[0_0_10px_rgba(239,68,68,0.2)]',
         };
       case 'ERROR':
       default:
         return {
           label: 'CONNECTION FAULT',
-          className: 'bg-rose-500/15 text-rose-300 border-rose-500/40 shadow-[0_0_10px_rgba(244,63,94,0.2)]',
+          className: 'bg-red-500/15 text-red-300 border-red-500/40 shadow-[0_0_10px_rgba(239,68,68,0.2)]',
         };
     }
   };
@@ -94,12 +94,12 @@ export default function SequentialTraceVisual({
   const statusBadge = getStatusBadge();
 
   return (
-    <div className="rounded-2xl bg-[#080D16]/90 border border-[#09BBC8]/30 p-4 space-y-4 shadow-xl">
+    <div className="rounded-2xl bg-[#181A15] border border-[#363A31] p-4 space-y-4 shadow-xl">
       {/* Top Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-[#09BBC8]/20">
+      <div className="flex items-center justify-between pb-3 border-b border-[#363A31]">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#00F5A0] animate-ping" />
-          <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#F8FAFC]">
+          <div className="w-2 h-2 rounded-full bg-[#C9F36A] animate-ping" />
+          <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#F1EEE5]">
             6-Stage Deterministic Decision Trace
           </span>
         </div>
@@ -125,21 +125,21 @@ export default function SequentialTraceVisual({
                 isPassed
                   ? 'bg-emerald-500/10 border-emerald-500/35 shadow-[0_0_10px_rgba(16,185,129,0.15)]'
                   : isBlocked
-                  ? 'bg-rose-500/15 border-rose-500/40 shadow-[0_0_12px_rgba(244,63,94,0.25)]'
+                  ? 'bg-red-500/15 border-red-500/40 shadow-[0_0_12px_rgba(239,68,68,0.25)]'
                   : isFallbackState
                   ? 'bg-amber-500/15 border-amber-500/40 shadow-[0_0_12px_rgba(245,158,11,0.2)]'
                   : isRunning
-                  ? 'bg-[#405FFA]/20 border-[#09BBC8] shadow-[0_0_15px_rgba(9,187,200,0.35)] scale-[1.01]'
-                  : 'bg-[#0E1726]/40 border-white/5 opacity-50'
+                  ? 'bg-[#C9F36A]/10 border-[#C9F36A]/60 shadow-[0_0_15px_rgba(201,243,106,0.2)] scale-[1.01]'
+                  : 'bg-[#20231E]/40 border-white/5 opacity-50'
               }`}
             >
               <div className="flex items-center gap-2.5 min-w-0 pr-2">
                 <div className="shrink-0">{getStageIcon(stage.id)}</div>
                 <div className="truncate">
-                  <div className="text-xs font-bold text-[#F8FAFC] truncate">
+                  <div className="text-xs font-bold text-[#F1EEE5] truncate">
                     Stage {stage.id}: {stage.name}
                   </div>
-                  <div className="text-[10px] text-[#D9FCED]/60 font-mono truncate">
+                  <div className="text-[10px] text-[#A6AAA0] font-mono truncate">
                     {stage.description}
                   </div>
                 </div>
@@ -154,7 +154,7 @@ export default function SequentialTraceVisual({
                   </span>
                 )}
                 {isBlocked && (
-                  <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-rose-400 bg-rose-500/20 px-2 py-0.5 rounded-md border border-rose-500/40">
+                  <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-red-400 bg-red-500/20 px-2 py-0.5 rounded-md border border-red-500/40">
                     <ShieldAlert className="w-3 h-3" />
                     <span>BLOCKED</span>
                   </span>
@@ -165,13 +165,13 @@ export default function SequentialTraceVisual({
                   </span>
                 )}
                 {isRunning && (
-                  <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-[#09BBC8] bg-[#09BBC8]/20 px-2 py-0.5 rounded-md border border-[#09BBC8]/40 animate-pulse">
+                  <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-[#C9F36A] bg-[#C9F36A]/20 px-2 py-0.5 rounded-md border border-[#C9F36A]/40 animate-pulse">
                     <Loader2 className="w-3 h-3 animate-spin" />
                     <span>ACTIVE</span>
                   </span>
                 )}
                 {stage.status === 'pending' && (
-                  <span className="flex items-center gap-1 text-[10px] font-mono text-[#D9FCED]/40 bg-white/5 px-2 py-0.5 rounded-md">
+                  <span className="flex items-center gap-1 text-[10px] font-mono text-[#A6AAA0]/40 bg-white/5 px-2 py-0.5 rounded-md">
                     <Clock className="w-3 h-3" />
                     <span>STANDBY</span>
                   </span>
@@ -184,22 +184,22 @@ export default function SequentialTraceVisual({
 
       {/* Telemetry Footer */}
       {decisionTrace && (
-        <div className="pt-3 border-t border-[#09BBC8]/20 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] font-mono text-[#D9FCED]/70">
+        <div className="pt-3 border-t border-[#363A31] grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] font-mono text-[#A6AAA0]">
           <div>
-            <span className="text-[#D9FCED]/40 block">CANDIDATES</span>
-            <span className="font-bold text-[#F8FAFC]">{decisionTrace.candidatesScored ?? 3} chunks</span>
+            <span className="text-[#A6AAA0]/50 block">CANDIDATES</span>
+            <span className="font-bold text-[#F1EEE5]">{decisionTrace.candidatesScored ?? 3} chunks</span>
           </div>
           <div>
-            <span className="text-[#D9FCED]/40 block">AUTHORIZED</span>
+            <span className="text-[#A6AAA0]/50 block">AUTHORIZED</span>
             <span className="font-bold text-emerald-400">{decisionTrace.authorizedChunksRetrieved ?? 1} verified</span>
           </div>
           <div>
-            <span className="text-[#D9FCED]/40 block">WITHHELD</span>
-            <span className="font-bold text-rose-400">{decisionTrace.restrictedChunksBlocked ?? 0} blocked</span>
+            <span className="text-[#A6AAA0]/50 block">WITHHELD</span>
+            <span className="font-bold text-red-400">{decisionTrace.restrictedChunksBlocked ?? 0} blocked</span>
           </div>
           <div>
-            <span className="text-[#D9FCED]/40 block">LATENCY</span>
-            <span className="font-bold text-[#09BBC8]">{decisionTrace.executionTimeMs ?? 240} ms</span>
+            <span className="text-[#A6AAA0]/50 block">LATENCY</span>
+            <span className="font-bold text-[#C9F36A]">{decisionTrace.executionTimeMs ?? 240} ms</span>
           </div>
         </div>
       )}

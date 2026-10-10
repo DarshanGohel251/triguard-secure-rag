@@ -22,9 +22,9 @@ const SECURITY_TIERS = [
   {
     tier: 'RESTRICTED',
     label: 'Restricted Ring',
-    color: 'border-red-500/50 text-red-400 bg-red-950/20',
+    color: 'border-rose-500/50 text-rose-400 bg-rose-950/20',
     accent: '#EF4444',
-    badge: 'bg-red-500/10 text-red-300 border-red-500/30',
+    badge: 'bg-rose-500/10 text-rose-300 border-rose-500/30',
     clearance: 'Admin & HR Executives Only',
     desc: 'Executive compensation, legal settlements, security keys'
   },
@@ -40,9 +40,9 @@ const SECURITY_TIERS = [
   {
     tier: 'INTERNAL',
     label: 'Internal Ring',
-    color: 'border-cyan-500/50 text-cyan-300 bg-cyan-950/20',
-    accent: '#00E5FF',
-    badge: 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30',
+    color: 'border-[#C4A878]/50 text-[#C4A878] bg-[#C4A878]/10',
+    accent: '#C4A878',
+    badge: 'bg-[#C4A878]/10 text-[#C4A878] border-[#C4A878]/30',
     clearance: 'Department Employees',
     desc: 'Operational SOPs, team roadmaps, engineering specs'
   },
@@ -83,30 +83,30 @@ export default function DocumentSecuritySpace({
   };
 
   return (
-    <div className="w-full bg-[#050B17]/95 border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden backdrop-blur-xl">
+    <div className="w-full bg-[#20231E]/95 border border-[#363A31] rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden backdrop-blur-xl text-[#F1EEE5]">
       {/* Background Cyber Atmosphere */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,229,255,0.08),rgba(255,255,255,0))] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(201,243,106,0.06),transparent_70%)] pointer-events-none" />
 
       {/* Header with Clearance Summary */}
-      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-white/10 gap-4">
+      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-[#363A31] gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-wider mb-2">
-            <Shield className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C4A878]/15 border border-[#C4A878]/30 text-[#C4A878] text-xs font-mono uppercase tracking-wider mb-2 font-semibold">
+            <Shield className="w-3.5 h-3.5 text-[#C4A878]" />
             Spatial Knowledge Architecture • Multi-Tenant Boundaries
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-black text-[#F1EEE5] tracking-tight">
             Document Security Classification Space
           </h2>
-          <p className="text-sm sm:text-base text-slate-300 mt-1 max-w-2xl">
+          <p className="text-sm sm:text-base text-[#B8B5AB] mt-1 max-w-2xl">
             Pre-retrieval deterministic partition. Documents are cryptographically scoped into 4 concentric isolation envelopes.
           </p>
         </div>
 
-        <div className="flex items-center gap-3 bg-slate-900/80 border border-white/10 px-4 py-2.5 rounded-xl shrink-0">
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+        <div className="flex items-center gap-3 bg-[#181A15] border border-[#363A31] px-4 py-2.5 rounded-xl shrink-0">
+          <div className="w-2.5 h-2.5 rounded-full bg-[#C9F36A] animate-pulse" />
           <div className="flex flex-col text-xs">
-            <span className="font-semibold text-white">Your Clearance: {userRole}</span>
-            <span className="text-slate-400 text-[11px] font-mono">Scope: {userDept}</span>
+            <span className="font-semibold text-[#F1EEE5]">Your Clearance: {userRole}</span>
+            <span className="text-[#B8B5AB] text-[11px] font-mono">Scope: {userDept}</span>
           </div>
         </div>
       </div>
@@ -124,10 +124,10 @@ export default function DocumentSecuritySpace({
               onClick={() => setSelectedTier(isSelected ? null : tierInfo.tier)}
               className={`relative rounded-2xl p-5 border transition-all duration-300 cursor-pointer flex flex-col justify-between group ${
                 isSelected
-                  ? 'border-cyan-400 bg-cyan-950/30 shadow-[0_0_25px_rgba(0,229,255,0.2)]'
+                  ? 'border-[#C9F36A] bg-[#262A24] shadow-[0_0_25px_rgba(201,243,106,0.18)] ring-1 ring-[#C9F36A]/40'
                   : authorized
-                  ? 'border-white/10 bg-[#071022]/80 hover:border-cyan-500/40 hover:bg-[#09152e]'
-                  : 'border-red-500/20 bg-slate-950/60 opacity-80 hover:opacity-100 hover:border-red-500/40'
+                  ? 'border-[#363A31] bg-[#181A15]/80 hover:border-[#C4A878]/50 hover:bg-[#20231E]'
+                  : 'border-rose-500/20 bg-[#181A15]/40 opacity-80 hover:opacity-100 hover:border-rose-500/40'
               }`}
             >
               {/* Top Bar */}
@@ -142,29 +142,29 @@ export default function DocumentSecuritySpace({
                       Accessible
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1 text-[11px] font-medium text-red-400 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">
+                    <span className="flex items-center gap-1 text-[11px] font-medium text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">
                       <Lock className="w-3 h-3" />
                       Restricted
                     </span>
                   )}
                 </div>
 
-                <div className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">
+                <div className="text-base font-bold text-[#F1EEE5] group-hover:text-[#C9F36A] transition-colors">
                   {tierInfo.label}
                 </div>
-                <div className="text-xs text-slate-400 mt-1 leading-relaxed">
+                <div className="text-xs text-[#B8B5AB] mt-1 leading-relaxed">
                   {tierInfo.desc}
                 </div>
               </div>
 
               {/* Bottom Metrics & Document Count */}
-              <div className="mt-5 pt-4 border-t border-white/5 flex items-center justify-between text-xs">
-                <div className="flex items-center gap-1.5 text-slate-300">
-                  <FileText className="w-3.5 h-3.5 text-cyan-400" />
-                  <span className="font-bold text-white">{tierDocs.length}</span>
-                  <span className="text-slate-400 text-[11px]">Enrolled Files</span>
+              <div className="mt-5 pt-4 border-t border-[#363A31] flex items-center justify-between text-xs">
+                <div className="flex items-center gap-1.5 text-[#B8B5AB]">
+                  <FileText className="w-3.5 h-3.5 text-[#C4A878]" />
+                  <span className="font-bold text-[#F1EEE5]">{tierDocs.length}</span>
+                  <span className="text-[#B8B5AB] text-[11px]">Enrolled Files</span>
                 </div>
-                <div className="text-[10px] text-slate-400 font-mono">
+                <div className="text-[10px] text-[#B8B5AB] font-mono">
                   {tierInfo.clearance}
                 </div>
               </div>
@@ -174,27 +174,27 @@ export default function DocumentSecuritySpace({
       </div>
 
       {/* Selected Tier Document Explorer or Global Knowledge Snapshot */}
-      <div className="relative z-10 mt-6 pt-6 border-t border-white/10">
+      <div className="relative z-10 mt-6 pt-6 border-t border-[#363A31]">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <FileText className="w-4 h-4 text-cyan-400" />
-            <h3 className="text-base sm:text-lg font-bold text-white">
+            <FileText className="w-4 h-4 text-[#C4A878]" />
+            <h3 className="text-base sm:text-lg font-bold text-[#F1EEE5]">
               {selectedTier ? `${selectedTier} Knowledge Assets` : 'Active Document Corpus in Scope'}
             </h3>
-            <span className="text-xs text-slate-400 font-mono">
+            <span className="text-xs text-[#B8B5AB] font-mono">
               ({(selectedTier ? groupedDocs[selectedTier as keyof typeof groupedDocs] : documents).length} items)
             </span>
           </div>
           <div className="flex items-center gap-3">
             {hoveredDoc && (
-              <span className="hidden sm:inline-block text-xs font-mono text-cyan-300 bg-cyan-950/40 border border-cyan-500/30 px-2.5 py-0.5 rounded-full">
+              <span className="hidden sm:inline-block text-xs font-mono text-[#F1EEE5] bg-[#181A15] border border-[#C9F36A]/40 px-2.5 py-0.5 rounded-full">
                 Inspecting: {hoveredDoc.name || hoveredDoc.filename} ({hoveredDoc.classification})
               </span>
             )}
             {selectedTier && (
               <button
                 onClick={() => setSelectedTier(null)}
-                className="text-xs text-cyan-400 hover:text-cyan-300 font-medium underline cursor-pointer"
+                className="text-xs text-[#C9F36A] hover:underline font-medium cursor-pointer"
               >
                 Show All Tiers
               </button>
@@ -214,41 +214,41 @@ export default function DocumentSecuritySpace({
                 onMouseLeave={() => setHoveredDoc(null)}
                 className={`p-4 rounded-xl border transition-all ${
                   authorized
-                    ? 'bg-slate-900/60 border-white/10 hover:border-cyan-400/40 hover:bg-slate-800/80 shadow-md'
-                    : 'bg-red-950/20 border-red-500/20 hover:border-red-500/40'
+                    ? 'bg-[#181A15] border-[#363A31] hover:border-[#C4A878]/50 hover:bg-[#20231E] shadow-md'
+                    : 'bg-rose-950/20 border-rose-500/20 hover:border-rose-500/40'
                 }`}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-[#20231E] border border-[#363A31] flex items-center justify-center text-[#C4A878] shrink-0">
                       <FileText className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-sm font-bold text-white truncate" title={doc.name || doc.filename}>
+                      <div className="text-sm font-bold text-[#F1EEE5] truncate" title={doc.name || doc.filename}>
                         {doc.name || doc.filename || 'Untitled Document'}
                       </div>
-                      <div className="text-[11px] text-slate-400 font-mono">
+                      <div className="text-[11px] text-[#B8B5AB] font-mono">
                         Dept: {doc.department || 'General'}
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-3 flex items-center justify-between pt-2 border-t border-white/5">
+                <div className="mt-3 flex items-center justify-between pt-2 border-t border-[#363A31]/50">
                   <span
                     className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${
                       doc.classification === 'RESTRICTED'
-                        ? 'bg-red-500/10 text-red-300 border-red-500/30'
+                        ? 'bg-rose-500/10 text-rose-300 border-rose-500/30'
                         : doc.classification === 'CONFIDENTIAL'
                         ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
                         : doc.classification === 'INTERNAL'
-                        ? 'bg-blue-500/10 text-blue-300 border-blue-500/30'
+                        ? 'bg-[#C4A878]/10 text-[#C4A878] border-[#C4A878]/30'
                         : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
                     }`}
                   >
                     {doc.classification || 'INTERNAL'}
                   </span>
-                  <span className="text-[11px] text-slate-400 font-mono">
+                  <span className="text-[11px] text-[#B8B5AB] font-mono">
                     {doc.chunkCount ? `${doc.chunkCount} vector chunks` : 'Indexed'}
                   </span>
                 </div>
@@ -257,7 +257,7 @@ export default function DocumentSecuritySpace({
           })}
 
           {documents.length === 0 && (
-            <div className="col-span-full py-8 text-center text-slate-400 text-sm bg-slate-900/40 rounded-xl border border-white/5">
+            <div className="col-span-full py-8 text-center text-[#B8B5AB] text-sm bg-[#181A15] rounded-xl border border-[#363A31]">
               No documents ingested yet. Upload your first enterprise document to populate the 3D security space.
             </div>
           )}

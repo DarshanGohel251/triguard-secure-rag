@@ -141,31 +141,31 @@ export default function RetrievalPipelineVisual({
     switch (stageId) {
       case 1:
         return decisionTrace.identity ? (
-          <span className="text-[#09BBC8] font-mono truncate max-w-[180px]">{decisionTrace.identity}</span>
+          <span className="text-[#C4A878] font-mono truncate max-w-[180px]">{decisionTrace.identity}</span>
         ) : null;
       case 2:
         return decisionTrace.permissionScope ? (
-          <span className="text-[#D9FCED] font-mono truncate max-w-[180px]">{decisionTrace.permissionScope}</span>
+          <span className="text-[#F1EEE5] font-mono truncate max-w-[180px]">{decisionTrace.permissionScope}</span>
         ) : null;
       case 3:
         return decisionTrace.candidatesScored !== undefined ? (
-          <span className="text-[#09BBC8] font-mono">
+          <span className="text-[#C9F36A] font-mono">
             {decisionTrace.candidatesScored} Scored ({decisionTrace.authorizedChunksRetrieved ?? 0} In-Scope)
           </span>
         ) : null;
       case 4:
         return decisionTrace.restrictedChunksBlocked !== undefined ? (
-          <span className="text-[#09BBC8] font-mono">
+          <span className="text-[#C4A878] font-mono">
             {decisionTrace.restrictedChunksBlocked} Excluded (Zero Leak)
           </span>
         ) : null;
       case 5:
         return (
-          <span className="text-[#D9FCED] font-mono">{decisionTrace.llmModel || 'gemini-flash'}</span>
+          <span className="text-[#F1EEE5] font-mono">{decisionTrace.llmModel || 'gemini-flash'}</span>
         );
       case 6:
         return decisionTrace.citationsValidated !== undefined ? (
-          <span className="text-[#09BBC8] font-mono">{decisionTrace.citationsValidated} Grounded Citations</span>
+          <span className="text-[#C9F36A] font-mono">{decisionTrace.citationsValidated} Grounded Citations</span>
         ) : null;
       default:
         return null;
@@ -182,68 +182,68 @@ export default function RetrievalPipelineVisual({
     return (
       <div className="w-full flex flex-col gap-3 font-sans">
         {/* Compact Timeline Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#09BBC8]/20">
+        <div className="flex items-center justify-between pb-3 border-b border-[#363A31]">
           <div className="flex items-center gap-2">
             <div
               className={`w-2.5 h-2.5 rounded-full ${
                 status === 'AUTHORIZED'
-                  ? 'bg-[#09BBC8] animate-pulse'
+                  ? 'bg-[#C9F36A] animate-pulse'
                   : status === 'INJECTION_BLOCKED'
                   ? 'bg-red-400'
                   : status === 'RESTRICTED'
                   ? 'bg-amber-400'
-                  : 'bg-[#405FFA]'
+                  : 'bg-[#C4A878]'
               }`}
             />
-            <span className="text-xs font-bold text-[#D9FCED] uppercase tracking-wider font-mono">
+            <span className="text-xs font-bold text-[#F1EEE5] uppercase tracking-wider font-mono">
               6-Stage Decision Rail
             </span>
           </div>
           {decisionTrace?.executionTimeMs !== undefined && (
-            <span className="text-[11px] font-mono text-[#D9FCED] bg-[#405FFA]/30 border border-[#09BBC8]/30 px-2 py-0.5 rounded-full flex items-center gap-1">
-              <Clock className="w-3 h-3 text-[#09BBC8]" />
+            <span className="text-[11px] font-mono text-[#F1EEE5] bg-[#181A15] border border-[#363A31] px-2 py-0.5 rounded-full flex items-center gap-1">
+              <Clock className="w-3 h-3 text-[#C9F36A]" />
               {decisionTrace.executionTimeMs} ms
             </span>
           )}
         </div>
 
         {/* Vertical Pipeline Sequence */}
-        <div className="relative pl-6 space-y-3 before:absolute before:left-2.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-gradient-to-b before:from-[#09BBC8]/60 before:via-[#405FFA]/40 before:to-[#09BBC8]/50">
+        <div className="relative pl-6 space-y-3 before:absolute before:left-2.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-gradient-to-b before:from-[#C4A878]/60 before:via-[#363A31] before:to-[#C9F36A]/60">
           {PIPELINE_STAGES.map((s) => {
             const Icon = s.icon;
             const state = getStageState(s.id);
             const isExpanded = expandedStageId === s.id;
             const metric = getStageMetric(s.id);
 
-            let nodeClass = 'border-[#3B3664] bg-[#07240F] text-[#D9FCED]/40';
-            let cardBorder = 'border-[#09BBC8]/15 bg-[#3B3664]/30';
+            let nodeClass = 'border-[#363A31] bg-[#181A15] text-[#B8B5AB]/50';
+            let cardBorder = 'border-[#363A31] bg-[#20231E]/60';
             let statusBadge = (
-              <span className="text-[10px] text-[#D9FCED]/40 font-mono px-2 py-0.5 rounded bg-[#3B3664]/40 border border-[#09BBC8]/10">
+              <span className="text-[10px] text-[#B8B5AB]/60 font-mono px-2 py-0.5 rounded bg-[#181A15] border border-[#363A31]">
                 STANDBY
               </span>
             );
 
             if (state === 'PASSED') {
-              nodeClass = 'border-[#09BBC8] bg-[#3B3664] text-[#D9FCED] shadow-[0_0_12px_rgba(9,187,200,0.4)]';
-              cardBorder = 'border-[#09BBC8]/30 bg-[#3B3664]/40 hover:border-[#09BBC8]/60';
+              nodeClass = 'border-[#C9F36A] bg-[#20231E] text-[#C9F36A] shadow-[0_0_12px_rgba(201,243,106,0.3)]';
+              cardBorder = 'border-[#363A31] bg-[#20231E]/90 hover:border-[#C4A878]/50';
               statusBadge = (
-                <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-[#09BBC8] bg-[#09BBC8]/15 border border-[#09BBC8]/30 px-2 py-0.5 rounded">
+                <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-300 bg-emerald-500/15 border border-emerald-500/35 px-2 py-0.5 rounded">
                   <CheckCircle2 className="w-3 h-3" /> PASS
                 </span>
               );
             } else if (state === 'BLOCKED') {
-              nodeClass = 'border-red-500 bg-red-950 text-red-300 shadow-[0_0_12px_rgba(239,68,68,0.5)] animate-pulse';
-              cardBorder = 'border-red-500/40 bg-red-950/30 shadow-[0_0_15px_rgba(239,68,68,0.2)]';
+              nodeClass = 'border-red-500 bg-red-950/80 text-red-300 shadow-[0_0_12px_rgba(239,68,68,0.5)] animate-pulse';
+              cardBorder = 'border-red-500/40 bg-red-950/20 shadow-[0_0_15px_rgba(239,68,68,0.2)]';
               statusBadge = (
                 <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-red-400 bg-red-500/15 border border-red-500/40 px-2 py-0.5 rounded">
                   <XCircle className="w-3 h-3" /> BLOCKED
                 </span>
               );
             } else if (state === 'SKIPPED') {
-              nodeClass = 'border-[#3B3664]/50 bg-[#07240F]/60 text-[#D9FCED]/30 opacity-50';
-              cardBorder = 'border-[#09BBC8]/10 bg-[#3B3664]/15 opacity-50';
+              nodeClass = 'border-[#363A31]/50 bg-[#181A15]/60 text-[#B8B5AB]/30 opacity-50';
+              cardBorder = 'border-[#363A31]/40 bg-[#181A15]/40 opacity-50';
               statusBadge = (
-                <span className="text-[10px] text-[#D9FCED]/40 font-mono px-2 py-0.5 rounded bg-[#3B3664]/20">SKIPPED</span>
+                <span className="text-[10px] text-[#B8B5AB]/40 font-mono px-2 py-0.5 rounded bg-[#181A15]">SKIPPED</span>
               );
             }
 
@@ -263,33 +263,33 @@ export default function RetrievalPipelineVisual({
                 >
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-xs font-mono text-cyan-400 font-bold">{s.number}</span>
-                      <span className="text-xs font-bold text-white truncate">{s.title}</span>
+                      <span className="text-xs font-mono text-[#C4A878] font-bold">{s.number}</span>
+                      <span className="text-xs font-bold text-[#F1EEE5] truncate">{s.title}</span>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       {statusBadge}
-                      <span className="text-slate-400 hover:text-white">
+                      <span className="text-[#B8B5AB] hover:text-[#F1EEE5]">
                         {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                       </span>
                     </div>
                   </div>
 
-                  <div className="text-[11px] text-slate-400 mt-1 leading-snug">
+                  <div className="text-[11px] text-[#B8B5AB] mt-1 leading-snug">
                     {s.summary}
                   </div>
 
                   {/* Telemetry Readout */}
                   {metric && (
-                    <div className="mt-2 pt-2 border-t border-white/5 flex items-center justify-between text-[11px]">
-                      <span className="text-slate-400 font-mono text-[10px] uppercase">Telemetry:</span>
+                    <div className="mt-2 pt-2 border-t border-[#363A31] flex items-center justify-between text-[11px]">
+                      <span className="text-[#B8B5AB] font-mono text-[10px] uppercase">Telemetry:</span>
                       {metric}
                     </div>
                   )}
 
                   {/* Expanded Details */}
                   {isExpanded && (
-                    <div className="mt-2.5 pt-2 border-t border-white/10 text-xs text-slate-300 leading-relaxed bg-black/30 p-2.5 rounded-lg font-sans">
-                      <div className="text-[10px] font-mono text-cyan-400 mb-1">{s.defenseLayer}</div>
+                    <div className="mt-2.5 pt-2 border-t border-[#363A31] text-xs text-[#B8B5AB] leading-relaxed bg-[#10120F] p-2.5 rounded-lg font-sans">
+                      <div className="text-[10px] font-mono text-[#C4A878] mb-1">{s.defenseLayer}</div>
                       {s.details}
                     </div>
                   )}
@@ -306,21 +306,21 @@ export default function RetrievalPipelineVisual({
   // HORIZONTAL / SPACIOUS GRID WORKFLOW LAYOUT (Main Views)
   // -----------------------------------------------------------
   return (
-    <div className="w-full bg-[#050C1B]/95 border border-cyan-500/25 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden backdrop-blur-2xl font-sans">
+    <div className="w-full bg-[#20231E]/95 border border-[#363A31] rounded-3xl p-6 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.85)] relative overflow-hidden backdrop-blur-2xl font-sans text-[#F1EEE5]">
       {/* Background Cyber Grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,240,255,0.08),transparent_70%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(201,243,106,0.06),transparent_70%)] pointer-events-none" />
 
       {/* Header Bar */}
-      <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-white/10 gap-4">
+      <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#363A31] gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-wider mb-2">
-            <Zap className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C4A878]/15 border border-[#C4A878]/30 text-[#C4A878] text-xs font-mono uppercase tracking-wider mb-2 font-semibold">
+            <Zap className="w-3.5 h-3.5 text-[#C4A878]" />
             Deterministic RAG Verification Architecture
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-black text-[#F1EEE5] tracking-tight">
             6-Stage Deterministic Decision Pipeline
           </h2>
-          <p className="text-sm text-slate-300 mt-1 max-w-2xl">
+          <p className="text-sm text-[#B8B5AB] mt-1 max-w-2xl">
             Pre-retrieval clearance gates guarantee zero unauthorized context or embedding leakage to downstream LLMs.
           </p>
         </div>
@@ -335,7 +335,7 @@ export default function RetrievalPipelineVisual({
                 ? 'bg-amber-500/15 text-amber-300 border-amber-500/40'
                 : status === 'INJECTION_BLOCKED'
                 ? 'bg-red-500/15 text-red-300 border-red-500/40'
-                : 'bg-slate-800 text-slate-300 border-slate-700'
+                : 'bg-[#181A15] text-[#B8B5AB] border-[#363A31]'
             }`}
           >
             {status === 'AUTHORIZED' && '✓ PIPELINE VERIFIED'}
@@ -345,8 +345,8 @@ export default function RetrievalPipelineVisual({
             {status === 'ERROR' && '✕ PIPELINE FAULT'}
           </span>
           {decisionTrace?.executionTimeMs !== undefined && (
-            <span className="text-xs font-mono text-cyan-300 bg-cyan-950/60 border border-cyan-500/30 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
-              <Clock className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="text-xs font-mono text-[#F1EEE5] bg-[#181A15] border border-[#363A31] px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+              <Clock className="w-3.5 h-3.5 text-[#C9F36A]" />
               {decisionTrace.executionTimeMs} ms
             </span>
           )}
@@ -360,28 +360,28 @@ export default function RetrievalPipelineVisual({
           const state = getStageState(s.id);
           const isSelected = selectedStageId === s.id;
 
-          let cardBorder = 'border-[#09BBC8]/15 bg-[#3B3664]/30 text-[#D9FCED]/60';
-          let statusBadge = <span className="text-[10px] text-[#D9FCED]/40 font-mono">STANDBY</span>;
+          let cardBorder = 'border-[#363A31] bg-[#181A15]/80 text-[#B8B5AB]';
+          let statusBadge = <span className="text-[10px] text-[#B8B5AB]/50 font-mono">STANDBY</span>;
 
           if (state === 'PASSED') {
             cardBorder = isSelected
-              ? 'border-[#09BBC8] bg-[#405FFA]/30 text-[#D9FCED] shadow-[0_0_25px_rgba(9,187,200,0.35)] ring-1 ring-[#09BBC8]/50'
-              : 'border-[#09BBC8]/30 bg-[#3B3664]/40 text-[#D9FCED] hover:border-[#09BBC8]/60';
+              ? 'border-[#C9F36A] bg-[#262A24] text-[#F1EEE5] shadow-[0_0_20px_rgba(201,243,106,0.18)] ring-1 ring-[#C9F36A]/40'
+              : 'border-[#363A31] bg-[#20231E] text-[#F1EEE5] hover:border-[#C4A878]/50';
             statusBadge = (
-              <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-[#09BBC8]">
+              <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-300">
                 <CheckCircle2 className="w-3 h-3" /> VERIFIED
               </span>
             );
           } else if (state === 'BLOCKED') {
-            cardBorder = 'border-red-500 bg-red-950/40 text-red-300 shadow-[0_0_20px_rgba(239,68,68,0.35)] animate-pulse';
+            cardBorder = 'border-red-500 bg-red-950/30 text-red-300 shadow-[0_0_20px_rgba(239,68,68,0.35)] animate-pulse';
             statusBadge = (
               <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-red-400">
                 <XCircle className="w-3 h-3" /> BLOCKED
               </span>
             );
           } else if (state === 'SKIPPED') {
-            cardBorder = 'border-[#3B3664]/40 bg-[#07240F]/40 text-[#D9FCED]/30 opacity-50';
-            statusBadge = <span className="text-[10px] text-[#D9FCED]/30 font-mono">SKIPPED</span>;
+            cardBorder = 'border-[#363A31]/40 bg-[#181A15]/40 text-[#B8B5AB]/30 opacity-50';
+            statusBadge = <span className="text-[10px] text-[#B8B5AB]/30 font-mono">SKIPPED</span>;
           }
 
           return (
@@ -393,27 +393,27 @@ export default function RetrievalPipelineVisual({
               <div>
                 {/* Top Badge & Stage Icon */}
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[11px] font-mono font-extrabold text-cyan-400">
+                  <span className="text-[11px] font-mono font-extrabold text-[#C4A878]">
                     {s.number}
                   </span>
                   {statusBadge}
                 </div>
 
-                <div className="w-8 h-8 rounded-xl bg-black/40 border border-white/5 flex items-center justify-center text-cyan-400 mb-2.5 group-hover:scale-110 transition-transform">
+                <div className="w-8 h-8 rounded-xl bg-[#10120F] border border-[#363A31] flex items-center justify-center text-[#C9F36A] mb-2.5 group-hover:scale-110 transition-transform">
                   <Icon className="w-4 h-4" />
                 </div>
 
-                <div className="text-xs sm:text-sm font-bold text-white group-hover:text-cyan-300 transition-colors leading-snug">
+                <div className="text-xs sm:text-sm font-bold text-[#F1EEE5] group-hover:text-[#C9F36A] transition-colors leading-snug">
                   {s.title}
                 </div>
-                <div className="text-[11px] text-slate-400 mt-1 leading-snug line-clamp-2">
+                <div className="text-[11px] text-[#B8B5AB] mt-1 leading-snug line-clamp-2">
                   {s.short}
                 </div>
               </div>
 
               {/* Connecting Pulse Marker for wide screens */}
               {idx < PIPELINE_STAGES.length - 1 && (
-                <div className="hidden xl:block absolute -right-2.5 top-1/2 -translate-y-1/2 z-10 text-slate-600 pointer-events-none">
+                <div className="hidden xl:block absolute -right-2.5 top-1/2 -translate-y-1/2 z-10 text-[#363A31] pointer-events-none">
                   <ChevronRight className="w-4 h-4" />
                 </div>
               )}
@@ -424,52 +424,52 @@ export default function RetrievalPipelineVisual({
 
       {/* Interactive Deep-Dive Drawer for Selected Stage */}
       {interactive && selectedStage && (
-        <div className="relative z-10 mt-6 p-5 sm:p-6 rounded-2xl bg-[#060D1E]/95 border border-cyan-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-2xl backdrop-blur-xl">
+        <div className="relative z-10 mt-6 p-5 sm:p-6 rounded-2xl bg-[#181A15] border border-[#363A31] flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-2xl backdrop-blur-xl">
           <div className="flex items-start gap-4">
-            <div className="p-3 rounded-2xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 shrink-0 mt-0.5 shadow-md">
+            <div className="p-3 rounded-2xl bg-[#C9F36A]/15 border border-[#C9F36A]/30 text-[#C9F36A] shrink-0 mt-0.5 shadow-md">
               <selectedStage.icon className="w-6 h-6" />
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-base font-bold text-white">
+                <span className="text-base font-bold text-[#F1EEE5]">
                   Stage {selectedStage.number}: {selectedStage.title}
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/30 text-cyan-300">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#C4A878]/15 border border-[#C4A878]/30 text-[#C4A878] font-semibold">
                   {selectedStage.defenseLayer}
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-slate-300">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#20231E] border border-[#363A31] text-[#B8B5AB]">
                   State: {selectedState}
                 </span>
               </div>
-              <p className="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed max-w-3xl">
+              <p className="text-xs sm:text-sm text-[#B8B5AB] mt-1.5 leading-relaxed max-w-3xl">
                 {selectedStage.details}
               </p>
             </div>
           </div>
 
           {/* Real Telemetry Output */}
-          <div className="flex items-center gap-3 shrink-0 self-end md:self-auto bg-slate-900/80 px-4 py-2.5 rounded-xl border border-white/10">
+          <div className="flex items-center gap-3 shrink-0 self-end md:self-auto bg-[#20231E] px-4 py-2.5 rounded-xl border border-[#363A31]">
             {selectedStage.id === 1 && decisionTrace?.identity && (
               <div className="text-right">
-                <div className="text-[10px] text-slate-400 uppercase font-mono">Verified Subject</div>
-                <div className="text-xs font-bold text-cyan-300">{decisionTrace.identity}</div>
+                <div className="text-[10px] text-[#B8B5AB] uppercase font-mono">Verified Subject</div>
+                <div className="text-xs font-bold text-[#C4A878]">{decisionTrace.identity}</div>
               </div>
             )}
             {selectedStage.id === 2 && decisionTrace?.permissionScope && (
               <div className="text-right">
-                <div className="text-[10px] text-slate-400 uppercase font-mono">Clearance Scope</div>
+                <div className="text-[10px] text-[#B8B5AB] uppercase font-mono">Clearance Scope</div>
                 <div className="text-xs font-bold text-emerald-400">{decisionTrace.permissionScope}</div>
               </div>
             )}
             {selectedStage.id === 3 && decisionTrace?.candidatesScored !== undefined && (
               <div className="text-right">
-                <div className="text-[10px] text-slate-400 uppercase font-mono">Scoped Candidates</div>
-                <div className="text-xs font-bold text-cyan-300">{decisionTrace.candidatesScored} Scored</div>
+                <div className="text-[10px] text-[#B8B5AB] uppercase font-mono">Scoped Candidates</div>
+                <div className="text-xs font-bold text-[#C9F36A]">{decisionTrace.candidatesScored} Scored</div>
               </div>
             )}
             {selectedStage.id === 4 && decisionTrace?.restrictedChunksBlocked !== undefined && (
               <div className="text-right">
-                <div className="text-[10px] text-slate-400 uppercase font-mono">Zero-Leak Guard</div>
+                <div className="text-[10px] text-[#B8B5AB] uppercase font-mono">Zero-Leak Guard</div>
                 <div className="text-xs font-bold text-emerald-400">
                   {decisionTrace.restrictedChunksBlocked} Excluded
                 </div>
@@ -477,22 +477,22 @@ export default function RetrievalPipelineVisual({
             )}
             {selectedStage.id === 5 && (
               <div className="text-right">
-                <div className="text-[10px] text-slate-400 uppercase font-mono">Synthesis Engine</div>
-                <div className="text-xs font-bold text-purple-300">
+                <div className="text-[10px] text-[#B8B5AB] uppercase font-mono">Synthesis Engine</div>
+                <div className="text-xs font-bold text-[#F1EEE5]">
                   {decisionTrace?.llmModel || 'gemini-2.5-flash'}
                 </div>
               </div>
             )}
             {selectedStage.id === 6 && decisionTrace?.citationsValidated !== undefined && (
               <div className="text-right">
-                <div className="text-[10px] text-slate-400 uppercase font-mono">Grounded Proofs</div>
+                <div className="text-[10px] text-[#B8B5AB] uppercase font-mono">Grounded Proofs</div>
                 <div className="text-xs font-bold text-emerald-400">
                   {decisionTrace.citationsValidated} Page Citations
                 </div>
               </div>
             )}
             {!decisionTrace && (
-              <div className="text-[11px] font-mono text-slate-400">
+              <div className="text-[11px] font-mono text-[#B8B5AB]">
                 Ready to trace next user query.
               </div>
             )}
