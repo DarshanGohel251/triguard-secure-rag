@@ -7,21 +7,25 @@ import Security from './pages/Security';
 import Audit from './pages/Audit';
 import Layout from './components/layout/Layout';
 
+import { ToastProvider } from './context/ToastContext';
+
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Navigate to="/dashboard" replace />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="ask" element={<Ask />} />
-          <Route path="documents" element={<Documents />} />
-          <Route path="security" element={<Security />} />
-          <Route path="audit" element={<Audit />} />
-        </Route>
-      </Routes>
-    </Router>
+    <ToastProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="ask" element={<Ask />} />
+            <Route path="documents" element={<Documents />} />
+            <Route path="security" element={<Security />} />
+            <Route path="audit" element={<Audit />} />
+          </Route>
+        </Routes>
+      </Router>
+    </ToastProvider>
   );
 }
 

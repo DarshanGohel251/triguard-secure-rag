@@ -11,11 +11,13 @@ import {
   Sparkles,
   Menu,
   X,
-  ShieldCheck
+  ShieldCheck,
+  Search
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../../services/api';
 import TriGuardLogo from '../brand/TriGuardLogo';
+import CommandPalette from '../ui/CommandPalette';
 
 const NAV_ITEMS = [
   { path: '/dashboard', label: 'Command Center', icon: LayoutDashboard, desc: 'Overview & Defense Engine' },
@@ -39,6 +41,13 @@ export default function Layout() {
   const [showPersonaMenu, setShowPersonaMenu] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [switching, setSwitching] = useState(false);
+  const [cmdPaletteOpen, setCmdPaletteOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setCmdPaletteOpen(true);
+    window.addEventListener('open-command-palette', handler);
+    return () => window.removeEventListener('open-command-palette', handler);
+  }, []);
 
   if (!token) {
     return <Navigate to="/login" replace />;
@@ -118,6 +127,17 @@ export default function Layout() {
             <span className="w-2 h-2 rounded-full bg-[#09BBC8] animate-ping" />
             <span>PERIMETER VERIFIED</span>
           </div>
+
+          {/* Quick Command Palette Button */}
+          <button
+            onClick={() => setCmdPaletteOpen(true)}
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#3B3664]/40 hover:bg-[#3B3664]/70 border border-[#09BBC8]/30 hover:border-[#09BBC8] text-xs font-mono text-[#D9FCED]/80 hover:text-white transition-all cursor-pointer shadow-md"
+            title="Open Command Palette (Ctrl+K)"
+          >
+            <Search className="w-3.5 h-3.5 text-[#09BBC8]" />
+            <span>Commands</span>
+            <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-white">Ctrl+K</kbd>
+          </button>
 
           {/* 1-Click Persona Switcher for Hackathon Judges */}
           <div className="relative">
@@ -273,6 +293,11 @@ export default function Layout() {
           <Outlet />
         </main>
       </div>
+
+      <CommandPalette
+        isOpen={cmdPaletteOpen}
+        onClose={() => setCmdPaletteOpen(false)}
+      />
     </div>
   );
 }
