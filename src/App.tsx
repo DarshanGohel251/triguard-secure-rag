@@ -8,10 +8,12 @@ import Audit from './pages/Audit';
 import Layout from './components/layout/Layout';
 
 import { ToastProvider } from './context/ToastContext';
+import ErrorBoundary from './components/common/ErrorBoundary';
 
 function App() {
   return (
-    <ToastProvider>
+    <ErrorBoundary>
+      <ToastProvider>
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -25,7 +27,8 @@ function App() {
           </Route>
         </Routes>
       </Router>
-    </ToastProvider>
+      </ToastProvider>
+    </ErrorBoundary>
   );
 }
 
