@@ -179,21 +179,21 @@ export default function TriGuardLogo({
       <div className={`flex flex-col items-center text-center gap-4 ${className}`}>
         <Emblem />
         <div className="flex flex-col items-center">
-          <div className="flex items-center tracking-tight font-black text-white">
+          <div className="flex items-center tracking-tight font-black text-[#D9FCED]">
             <span className={`${textSizes.title} tracking-wider font-extrabold`}>
-              TRI<span className="text-cyan-400 drop-shadow-[0_0_14px_rgba(0,240,255,0.7)]">GUARD</span>
-              <span className="text-xs ml-2 px-2 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-400/40 font-mono text-cyan-300 font-bold uppercase tracking-wider">
+              TRI<span className="text-[#09BBC8] drop-shadow-[0_0_14px_rgba(9,187,200,0.7)]">GUARD</span>
+              <span className="text-xs ml-2 px-2 py-0.5 rounded-full bg-[#405FFA]/20 border border-[#09BBC8]/40 font-mono text-[#D9FCED] font-bold uppercase tracking-wider">
                 APEX
               </span>
             </span>
           </div>
           {showSubtitle && (
             <div className="flex items-center gap-2 mt-1.5">
-              <span className="h-[1px] w-8 bg-gradient-to-r from-transparent to-cyan-500/60" />
-              <span className={`${textSizes.sub} font-mono uppercase tracking-[0.24em] text-slate-300 font-semibold`}>
+              <span className="h-[1px] w-8 bg-gradient-to-r from-transparent to-[#09BBC8]/60" />
+              <span className={`${textSizes.sub} font-mono uppercase tracking-[0.24em] text-[#D9FCED]/70 font-semibold`}>
                 Deterministic AI Defense
               </span>
-              <span className="h-[1px] w-8 bg-gradient-to-l from-transparent to-cyan-500/60" />
+              <span className="h-[1px] w-8 bg-gradient-to-l from-transparent to-[#09BBC8]/60" />
             </div>
           )}
         </div>
@@ -205,16 +205,16 @@ export default function TriGuardLogo({
     <div className={`inline-flex items-center gap-3 select-none ${className}`}>
       <Emblem />
       <div className="flex flex-col justify-center leading-none">
-        <div className="flex items-center font-black text-white tracking-wider">
+        <div className="flex items-center font-black text-[#D9FCED] tracking-wider">
           <span className={`${textSizes.title} font-black`}>
-            TRI<span className="text-cyan-400 drop-shadow-[0_0_10px_rgba(0,240,255,0.6)]">GUARD</span>
+            TRI<span className="text-[#09BBC8] drop-shadow-[0_0_10px_rgba(9,187,200,0.6)]">GUARD</span>
           </span>
-          <span className="ml-1.5 text-[9px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-mono font-bold">
+          <span className="ml-1.5 text-[9px] px-1.5 py-0.2 rounded bg-[#405FFA]/25 text-[#D9FCED] border border-[#09BBC8]/40 font-mono font-bold">
             APEX
           </span>
         </div>
         {showSubtitle && (
-          <span className={`${textSizes.sub} font-mono uppercase tracking-[0.2em] text-slate-400 font-semibold mt-1`}>
+          <span className={`${textSizes.sub} font-mono uppercase tracking-[0.2em] text-[#D9FCED]/60 font-semibold mt-1`}>
             Secure AI Intelligence
           </span>
         )}

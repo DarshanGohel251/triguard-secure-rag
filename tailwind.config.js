@@ -7,17 +7,25 @@ export default {
   theme: {
     extend: {
       colors: {
-        'app-bg': '#020814',
-        'nav-bg': '#030B18',
-        'card-bg': '#061426',
-        'raised-bg': '#0A1C35',
-        'primary': '#1260F5',
-        'cyan-accent': '#00D4E8',
-        'text-primary': '#EAF2FF',
-        'text-secondary': '#A5BAD5',
-        'status-success': '#00CCA3',
-        'status-warning': '#FFBC38',
-        'status-danger': '#FF4565',
+        // God-Level 5-Color Cyber-Intelligence Palette
+        'frozen-water': '#D9FCED',
+        'electric-sapphire': '#405FFA',
+        'strong-cyan': '#09BBC8',
+        'twilight-indigo': '#3B3664',
+        'evergreen': '#07240F',
+
+        // Cohesive Semantic Aliases
+        'app-bg': '#07240F',
+        'nav-bg': '#3B3664',
+        'card-bg': '#3B3664',
+        'raised-bg': '#3B3664',
+        'primary': '#405FFA',
+        'cyan-accent': '#09BBC8',
+        'text-primary': '#D9FCED',
+        'text-secondary': 'rgba(217, 252, 237, 0.70)',
+        'status-success': '#09BBC8',
+        'status-warning': '#FFB020',
+        'status-danger': '#FF3B5C',
       },
     },
   },

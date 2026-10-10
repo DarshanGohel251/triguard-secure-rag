@@ -27,7 +27,7 @@ export default function DefenseEngine3D({
 
     // Scene setup
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x020612, 0.04);
+    scene.fog = new THREE.FogExp2(0x07240F, 0.04);
 
     const width = container.clientWidth || 400;
     const h = typeof height === 'number' ? height : container.clientHeight || 380;
@@ -42,24 +42,30 @@ export default function DefenseEngine3D({
     renderer.toneMappingExposure = 1.2;
     container.appendChild(renderer.domElement);
 
-    // Color definitions based on status
-    const primaryColor = status === 'secure' ? 0x00f0ff : status === 'warning' ? 0xf59e0b : 0xef4444;
-    const secondaryColor = 0x0066ff;
-    const accentColor = 0x8b5cf6;
+    // Color definitions based on God-Level palette
+    // FROZEN WATER: #D9FCED (0xD9FCED)
+    // ELECTRIC SAPPHIRE: #405FFA (0x405FFA)
+    // STRONG CYAN: #09BBC8 (0x09BBC8)
+    // TWILIGHT INDIGO: #3B3664 (0x3B3664)
+    // EVERGREEN: #07240F (0x07240F)
+    const primaryColor = status === 'secure' ? 0x09BBC8 : status === 'warning' ? 0xF59E0B : 0xFF3B5C;
+    const sapphireColor = 0x405FFA;
+    const strongCyanColor = 0x09BBC8;
+    const frozenWaterColor = 0xD9FCED;
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0x0a1428, 1.2);
+    const ambientLight = new THREE.AmbientLight(0x07240F, 1.5);
     scene.add(ambientLight);
 
     const coreLight = new THREE.PointLight(primaryColor, 3.5, 12);
     coreLight.position.set(0, 0, 0);
     scene.add(coreLight);
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    const keyLight = new THREE.DirectionalLight(frozenWaterColor, 1.0);
     keyLight.position.set(5, 6, 8);
     scene.add(keyLight);
 
-    const rimLight = new THREE.DirectionalLight(secondaryColor, 1.5);
+    const rimLight = new THREE.DirectionalLight(sapphireColor, 1.8);
     rimLight.position.set(-6, -4, -4);
     scene.add(rimLight);
 
@@ -73,30 +79,30 @@ export default function DefenseEngine3D({
     const layer1Group = new THREE.Group();
     masterGroup.add(layer1Group);
 
-    // Outer Geodesic Wireframe Sphere
+    // Outer Geodesic Wireframe Sphere (Electric Sapphire)
     const l1Geo = new THREE.IcosahedronGeometry(3.2, 1);
     const l1WireGeo = new THREE.WireframeGeometry(l1Geo);
     const l1WireMat = new THREE.LineBasicMaterial({
-      color: 0x00a3ff,
+      color: sapphireColor,
       transparent: true,
-      opacity: 0.28
+      opacity: 0.35
     });
     const l1Mesh = new THREE.LineSegments(l1WireGeo, l1WireMat);
     layer1Group.add(l1Mesh);
 
-    // Outer Equatorial Tactical Rail Ring
+    // Outer Equatorial Tactical Rail Ring (Strong Cyan)
     const outerRingGeo = new THREE.TorusGeometry(3.3, 0.02, 16, 80);
-    const outerRingMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.6 });
+    const outerRingMat = new THREE.MeshBasicMaterial({ color: strongCyanColor, transparent: true, opacity: 0.65 });
     const outerRing = new THREE.Mesh(outerRingGeo, outerRingMat);
     outerRing.rotation.x = Math.PI / 2;
     layer1Group.add(outerRing);
 
-    // Orbital Nodes on Outer Ring
+    // Orbital Nodes on Outer Ring (Strong Cyan)
     const nodeGeo = new THREE.SphereGeometry(0.08, 12, 12);
     const nodeMat = new THREE.MeshStandardMaterial({
-      color: 0x00f0ff,
-      emissive: 0x00f0ff,
-      emissiveIntensity: 0.8,
+      color: strongCyanColor,
+      emissive: strongCyanColor,
+      emissiveIntensity: 0.85,
       roughness: 0.2
     });
     const nodeCount = 6;
@@ -115,39 +121,39 @@ export default function DefenseEngine3D({
     const layer2Group = new THREE.Group();
     masterGroup.add(layer2Group);
 
-    // Gimbal Ring A (Inclined 55 deg)
+    // Gimbal Ring A (Inclined 55 deg) - Electric Sapphire
     const gimbalAGeo = new THREE.TorusGeometry(2.2, 0.04, 16, 72);
     const gimbalAMat = new THREE.MeshStandardMaterial({
-      color: 0x0072f5,
-      emissive: 0x0033aa,
-      emissiveIntensity: 0.6,
-      metalness: 0.8,
+      color: sapphireColor,
+      emissive: sapphireColor,
+      emissiveIntensity: 0.55,
+      metalness: 0.85,
       roughness: 0.2
     });
     const gimbalA = new THREE.Mesh(gimbalAGeo, gimbalAMat);
     gimbalA.rotation.x = Math.PI / 3;
     layer2Group.add(gimbalA);
 
-    // Gimbal Ring B (Inclined -55 deg counter-angle)
+    // Gimbal Ring B (Inclined -55 deg counter-angle) - Strong Cyan
     const gimbalBGeo = new THREE.TorusGeometry(2.0, 0.035, 16, 72);
     const gimbalBMat = new THREE.MeshStandardMaterial({
-      color: 0x38bdf8,
-      emissive: 0x0284c7,
-      emissiveIntensity: 0.5,
-      metalness: 0.8,
+      color: strongCyanColor,
+      emissive: strongCyanColor,
+      emissiveIntensity: 0.55,
+      metalness: 0.85,
       roughness: 0.2
     });
     const gimbalB = new THREE.Mesh(gimbalBGeo, gimbalBMat);
     gimbalB.rotation.y = Math.PI / 3;
     layer2Group.add(gimbalB);
 
-    // Vector Sandbox Data Crystals orbiting gimbal B
+    // Vector Sandbox Data Crystals orbiting gimbal B (Strong Cyan / Frozen Water)
     const crystalGeo = new THREE.OctahedronGeometry(0.12, 0);
     const crystalMat = new THREE.MeshStandardMaterial({
-      color: 0x10b981,
-      emissive: 0x10b981,
+      color: strongCyanColor,
+      emissive: strongCyanColor,
       emissiveIntensity: 0.9,
-      roughness: 0.1
+      roughness: 0.15
     });
     const crystals: THREE.Mesh[] = [];
     for (let i = 0; i < 4; i++) {
@@ -167,29 +173,29 @@ export default function DefenseEngine3D({
     const coreMat = new THREE.MeshPhysicalMaterial({
       color: primaryColor,
       emissive: primaryColor,
-      emissiveIntensity: 0.7,
+      emissiveIntensity: 0.75,
       roughness: 0.15,
       metalness: 0.1,
-      transmission: 0.6,
+      transmission: 0.65,
       thickness: 1.2,
       wireframe: false,
       transparent: true,
-      opacity: 0.9
+      opacity: 0.92
     });
     const coreMesh = new THREE.Mesh(coreGeo, coreMat);
     layer3Group.add(coreMesh);
 
-    // Core Wireframe Cage
+    // Core Wireframe Cage (Frozen Water #D9FCED)
     const coreWireGeo = new THREE.WireframeGeometry(new THREE.DodecahedronGeometry(1.15, 0));
     const coreWireMat = new THREE.LineBasicMaterial({
-      color: 0xffffff,
+      color: frozenWaterColor,
       transparent: true,
-      opacity: 0.75
+      opacity: 0.8
     });
     const coreWire = new THREE.LineSegments(coreWireGeo, coreWireMat);
     layer3Group.add(coreWire);
 
-    // Floating Cyber Dust Particle Field
+    // Floating Cyber Dust Particle Field (Strong Cyan & Frozen Water)
     const particleCount = 140;
     const particlePositions = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount * 3; i += 3) {
@@ -203,10 +209,10 @@ export default function DefenseEngine3D({
     const particleGeo = new THREE.BufferGeometry();
     particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
     const particleMat = new THREE.PointsMaterial({
-      color: accentColor,
+      color: strongCyanColor,
       size: 0.045,
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.75,
       blending: THREE.AdditiveBlending
     });
     const particleCloud = new THREE.Points(particleGeo, particleMat);
@@ -226,12 +232,25 @@ export default function DefenseEngine3D({
 
     container.addEventListener('mousemove', onMouseMove);
 
-    // Animation Loop
+    // Animation Loop with Tab Visibility Optimization (Task 3)
     let animationFrameId: number;
     let clock = new THREE.Clock();
+    let isTabVisible = !document.hidden;
+
+    const onVisibilityChange = () => {
+      isTabVisible = !document.hidden;
+      if (isTabVisible) {
+        clock.start();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
+
+      // Task 3: Zero GPU consumption if document is hidden
+      if (!isTabVisible || document.hidden) return;
+
       const delta = clock.getDelta();
       const time = clock.getElapsedTime();
 
@@ -288,6 +307,7 @@ export default function DefenseEngine3D({
       cancelAnimationFrame(animationFrameId);
       container.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('resize', handleResize);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
       if (renderer.domElement && container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
@@ -344,15 +364,15 @@ export default function DefenseEngine3D({
         style={{ height }}
       >
         {/* Ambient Radial Gradient behind WebGL */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,240,255,0.12)_0%,rgba(3,8,24,0)_70%)] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(9,187,200,0.15)_0%,rgba(7,36,15,0)_70%)] pointer-events-none" />
 
         {/* HUD Overlay Reticle */}
-        <div className="absolute top-3 left-4 text-[10px] font-mono text-cyan-400 bg-slate-950/70 border border-cyan-500/30 px-2.5 py-1 rounded-md backdrop-blur-md pointer-events-none flex items-center gap-1.5 shadow-lg">
-          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
-          <span>APEX DEFENSE ENGINE 3D • ACTIVE</span>
+        <div className="absolute top-3 left-4 text-[10px] font-mono text-[#09BBC8] bg-[#3B3664]/60 border border-[#09BBC8]/30 px-2.5 py-1 rounded-lg backdrop-blur-md pointer-events-none flex items-center gap-1.5 shadow-lg">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#09BBC8] animate-ping" />
+          <span className="text-[#D9FCED] font-semibold">APEX DEFENSE ENGINE 3D • ACTIVE</span>
         </div>
 
-        <div className="absolute top-3 right-4 text-[10px] font-mono text-slate-400 bg-slate-950/70 border border-white/10 px-2.5 py-1 rounded-md backdrop-blur-md pointer-events-none">
+        <div className="absolute top-3 right-4 text-[10px] font-mono text-[#D9FCED]/70 bg-[#3B3664]/60 border border-[#09BBC8]/20 px-2.5 py-1 rounded-lg backdrop-blur-md pointer-events-none">
           ORBITAL ENGINE: 60 FPS
         </div>
       </div>
@@ -363,9 +383,9 @@ export default function DefenseEngine3D({
           {/* Layer Selector Chips */}
           <div className="flex items-center justify-center gap-2 px-2">
             {[
-              { id: 1, label: 'L1: RBAC Shield', icon: Shield, color: 'text-cyan-400 border-cyan-500/40' },
-              { id: 2, label: 'L2: Vector Sandbox', icon: Lock, color: 'text-blue-400 border-blue-500/40' },
-              { id: 3, label: 'L3: AI Quantum Core', icon: Cpu, color: 'text-purple-400 border-purple-500/40' }
+              { id: 1, label: 'L1: RBAC Shield', icon: Shield },
+              { id: 2, label: 'L2: Vector Sandbox', icon: Lock },
+              { id: 3, label: 'L3: AI Quantum Core', icon: Cpu }
             ].map((layer) => {
               const Icon = layer.icon;
               const isSelected = activeLayer === layer.id;
@@ -375,8 +395,8 @@ export default function DefenseEngine3D({
                   onClick={() => setActiveLayer(layer.id)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer border ${
                     isSelected
-                      ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400 shadow-[0_0_15px_rgba(0,240,255,0.25)]'
-                      : 'bg-slate-900/80 text-slate-400 border-white/10 hover:text-white hover:border-white/20'
+                      ? 'bg-[#405FFA] text-[#D9FCED] border-[#09BBC8] shadow-[0_0_16px_rgba(9,187,200,0.45)]'
+                      : 'bg-[#3B3664]/40 text-[#D9FCED]/70 border-[#09BBC8]/20 hover:text-[#D9FCED] hover:border-[#09BBC8]/40'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -388,22 +408,22 @@ export default function DefenseEngine3D({
 
           {/* Telemetry Deep-Dive Drawer */}
           {layerTelemetry && (
-            <div className="mx-2 p-3 rounded-xl bg-[#060E21]/90 border border-cyan-500/25 text-left backdrop-blur-md transition-all shadow-xl">
+            <div className="mx-2 p-3 rounded-xl bg-[#3B3664]/40 border border-[#09BBC8]/25 text-left backdrop-blur-md transition-all shadow-xl">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                <span className="text-xs font-bold text-[#D9FCED] flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-[#09BBC8]" />
                   {layerTelemetry.title}
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/30 text-cyan-300">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#405FFA]/30 border border-[#09BBC8]/30 text-[#D9FCED]">
                   {layerTelemetry.badge}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-300 mt-1 leading-relaxed">
+              <p className="text-[11px] text-[#D9FCED]/80 mt-1 leading-relaxed">
                 {layerTelemetry.desc}
               </p>
-              <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-slate-400">
-                <span>Telemetry: <span className="text-emerald-400">{layerTelemetry.metrics}</span></span>
-                <span className="text-cyan-400 flex items-center gap-1">
+              <div className="mt-2 pt-2 border-t border-[#09BBC8]/20 flex items-center justify-between text-[10px] font-mono text-[#D9FCED]/70">
+                <span>Telemetry: <span className="text-[#09BBC8] font-bold">{layerTelemetry.metrics}</span></span>
+                <span className="text-[#09BBC8] flex items-center gap-1">
                   <Eye className="w-3 h-3" /> Real-time Verified
                 </span>
               </div>

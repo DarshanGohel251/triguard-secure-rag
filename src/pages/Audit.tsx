@@ -85,14 +85,14 @@ export default function Audit() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-wider mb-2">
-            <Activity className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#09BBC8]/10 border border-[#09BBC8]/30 text-[#D9FCED] text-xs font-mono uppercase tracking-wider mb-2">
+            <Activity className="w-3.5 h-3.5 text-[#09BBC8]" />
             Immutable Enterprise Compliance Ledger
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-black text-[#D9FCED] tracking-tight">
             Security & Access Audit Ledger
           </h1>
-          <p className="text-sm sm:text-base text-slate-300 mt-1 max-w-2xl">
+          <p className="text-sm sm:text-base text-[#D9FCED]/75 mt-1 max-w-2xl">
             Tamper-evident record of all identity authentications, retrieval queries, and policy gate decisions.
           </p>
         </div>
@@ -102,20 +102,20 @@ export default function Audit() {
             onClick={() => setShowConstellation(!showConstellation)}
             className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold border flex items-center gap-1.5 transition-all cursor-pointer ${
               showConstellation
-                ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400 shadow-sm'
-                : 'bg-slate-900/80 text-slate-400 border-white/10 hover:text-white'
+                ? 'bg-[#405FFA] text-[#D9FCED] border-[#09BBC8] shadow-[0_0_15px_rgba(9,187,200,0.35)]'
+                : 'bg-[#3B3664]/40 text-[#D9FCED]/70 border-[#09BBC8]/20 hover:text-[#D9FCED]'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+            <Sparkles className="w-3.5 h-3.5 text-[#09BBC8]" />
             <span>{showConstellation ? 'Hide 3D Nodes' : '3D Event Nodes'}</span>
           </button>
 
           <button
             onClick={fetchAuditLogs}
             disabled={loading}
-            className="px-4 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 hover:border-cyan-400/40 text-slate-300 hover:text-white text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[#3B3664]/50 hover:bg-[#3B3664]/80 border border-[#09BBC8]/30 hover:border-[#09BBC8]/60 text-[#D9FCED] text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer"
           >
-            <RefreshCw className={`w-4 h-4 text-cyan-400 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-4 h-4 text-[#09BBC8] ${loading ? 'animate-spin' : ''}`} />
             <span>Refresh Ledger</span>
           </button>
         </div>
@@ -128,41 +128,41 @@ export default function Audit() {
 
       {/* KPI Overview Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div className="p-6 rounded-2xl bg-[#060D1E]/95 border border-white/10 shadow-xl">
+        <div className="p-6 rounded-2xl bg-[#3B3664]/30 backdrop-blur-md border border-[#09BBC8]/20 shadow-xl">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+            <span className="text-xs font-bold text-[#D9FCED]/70 uppercase tracking-wider">
               Total Recorded Actions
             </span>
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <div className="w-10 h-10 rounded-xl bg-[#09BBC8]/10 border border-[#09BBC8]/30 flex items-center justify-center text-[#09BBC8]">
               <Activity className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl sm:text-4xl font-black text-white mt-4 tracking-tight">
+          <div className="text-3xl sm:text-4xl font-black text-[#D9FCED] mt-4 tracking-tight">
             {stats.total}
           </div>
-          <div className="text-xs text-slate-400 mt-1 font-mono">
+          <div className="text-xs text-[#D9FCED]/60 mt-1 font-mono">
             Cryptographically logged events
           </div>
         </div>
 
-        <div className="p-6 rounded-2xl bg-[#060D1E]/95 border border-emerald-500/30 shadow-xl">
+        <div className="p-6 rounded-2xl bg-[#3B3664]/30 backdrop-blur-md border border-[#09BBC8]/20 shadow-xl">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
+            <span className="text-xs font-bold text-[#09BBC8] uppercase tracking-wider">
               Authorized Decisions
             </span>
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <div className="w-10 h-10 rounded-xl bg-[#09BBC8]/10 border border-[#09BBC8]/30 flex items-center justify-center text-[#09BBC8]">
               <CheckCircle2 className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl sm:text-4xl font-black text-white mt-4 tracking-tight">
+          <div className="text-3xl sm:text-4xl font-black text-[#D9FCED] mt-4 tracking-tight">
             {stats.allows}
           </div>
-          <div className="text-xs text-emerald-400 mt-1 font-mono">
+          <div className="text-xs text-[#09BBC8] mt-1 font-mono">
             Passed deterministic policy gate
           </div>
         </div>
 
-        <div className="p-6 rounded-2xl bg-[#060D1E]/95 border border-amber-500/30 shadow-xl">
+        <div className="p-6 rounded-2xl bg-[#3B3664]/30 backdrop-blur-md border border-amber-500/30 shadow-xl">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
               Blocked / Denied Decisions
@@ -171,7 +171,7 @@ export default function Audit() {
               <Lock className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl sm:text-4xl font-black text-white mt-4 tracking-tight">
+          <div className="text-3xl sm:text-4xl font-black text-[#D9FCED] mt-4 tracking-tight">
             {stats.denies}
           </div>
           <div className="text-xs text-amber-400 mt-1 font-mono">
@@ -181,16 +181,16 @@ export default function Audit() {
       </div>
 
       {/* Main Ledger Table & Filter Controls */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-[#060D1E]/95 border border-white/10 shadow-2xl backdrop-blur-2xl space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl bg-[#3B3664]/30 border border-[#09BBC8]/25 shadow-2xl backdrop-blur-2xl space-y-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#D9FCED]/50 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search user, action, details, request ID..."
-              className="w-full bg-[#091326] border border-white/15 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+              className="w-full bg-[#3B3664]/40 border border-[#09BBC8]/25 rounded-xl pl-10 pr-4 py-2.5 text-sm text-[#D9FCED] placeholder-[#D9FCED]/40 focus:outline-none focus:border-[#09BBC8]"
             />
           </div>
 
@@ -198,22 +198,22 @@ export default function Audit() {
             <select
               value={actionFilter}
               onChange={(e) => setActionFilter(e.target.value)}
-              className="bg-[#091326] border border-white/15 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-300 focus:outline-none focus:border-cyan-400 cursor-pointer"
+              className="bg-[#3B3664]/40 border border-[#09BBC8]/25 rounded-xl px-3.5 py-2.5 text-xs font-mono text-[#D9FCED] focus:outline-none focus:border-[#09BBC8] cursor-pointer"
             >
-              <option value="ALL">All Actions</option>
-              <option value="QUERY">Query</option>
-              <option value="LOGIN">Login</option>
-              <option value="UPLOAD">Upload</option>
+              <option value="ALL" className="bg-[#07240F]">All Actions</option>
+              <option value="QUERY" className="bg-[#07240F]">Query</option>
+              <option value="LOGIN" className="bg-[#07240F]">Login</option>
+              <option value="UPLOAD" className="bg-[#07240F]">Upload</option>
             </select>
 
             <select
               value={decisionFilter}
               onChange={(e) => setDecisionFilter(e.target.value)}
-              className="bg-[#091326] border border-white/15 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-300 focus:outline-none focus:border-cyan-400 cursor-pointer"
+              className="bg-[#3B3664]/40 border border-[#09BBC8]/25 rounded-xl px-3.5 py-2.5 text-xs font-mono text-[#D9FCED] focus:outline-none focus:border-[#09BBC8] cursor-pointer"
             >
-              <option value="ALL">All Decisions</option>
-              <option value="ALLOW">Allow</option>
-              <option value="DENY">Deny</option>
+              <option value="ALL" className="bg-[#07240F]">All Decisions</option>
+              <option value="ALLOW" className="bg-[#07240F]">Allow</option>
+              <option value="DENY" className="bg-[#07240F]">Deny</option>
             </select>
           </div>
         </div>
@@ -222,7 +222,7 @@ export default function Audit() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-white/10 text-xs font-mono uppercase tracking-wider text-slate-400 bg-slate-900/40">
+              <tr className="border-b border-[#09BBC8]/20 text-xs font-mono uppercase tracking-wider text-[#D9FCED]/70 bg-[#3B3664]/40">
                 <th className="py-3 px-4">Decision</th>
                 <th className="py-3 px-4">Action</th>
                 <th className="py-3 px-4">Subject User</th>
@@ -231,20 +231,20 @@ export default function Audit() {
                 <th className="py-3 px-4">Timestamp</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-[#09BBC8]/10">
               {filteredLogs.map((log, idx) => (
-                <tr key={`audit-log-${log.id || idx}`} className="hover:bg-white/5 transition-colors">
+                <tr key={`audit-log-${log.id || idx}`} className="hover:bg-[#09BBC8]/5 transition-colors">
                   <td className="py-3.5 px-4 font-mono">
                     <span
                       className={`text-xs font-bold px-2.5 py-1 rounded-md border flex items-center gap-1.5 w-fit ${
                         log.decision === 'ALLOW'
-                          ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
-                          : 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                          ? 'bg-[#09BBC8]/10 text-[#09BBC8] border-[#09BBC8]/30'
+                          : 'bg-amber-500/15 text-amber-300 border-amber-500/40'
                       }`}
                     >
                       {log.decision === 'ALLOW' ? (
                         <>
-                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                          <Check className="w-3.5 h-3.5 text-[#09BBC8]" />
                           ALLOW
                         </>
                       ) : (
@@ -255,35 +255,35 @@ export default function Audit() {
                       )}
                     </span>
                   </td>
-                  <td className="py-3.5 px-4 font-mono text-xs font-bold text-cyan-300">
+                  <td className="py-3.5 px-4 font-mono text-xs font-bold text-[#09BBC8]">
                     {log.action}
                   </td>
-                  <td className="py-3.5 px-4 font-bold text-white flex items-center gap-2">
-                    <User className="w-3.5 h-3.5 text-slate-400" />
+                  <td className="py-3.5 px-4 font-bold text-[#D9FCED] flex items-center gap-2">
+                    <User className="w-3.5 h-3.5 text-[#09BBC8]" />
                     <span>{log.username || log.userEmail || 'System'}</span>
                   </td>
-                  <td className="py-3.5 px-4 text-xs text-slate-300 max-w-sm truncate font-mono">
+                  <td className="py-3.5 px-4 text-xs text-[#D9FCED]/80 max-w-sm truncate font-mono">
                     {log.details || 'N/A'}
                   </td>
                   <td className="py-3.5 px-4">
                     {log.requestId ? (
                       <button
                         onClick={() => copyRequestId(log.requestId)}
-                        className="px-2 py-1 rounded bg-slate-900 border border-white/10 hover:border-cyan-400/40 text-[11px] font-mono text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                        className="px-2 py-1 rounded bg-[#3B3664]/50 border border-[#09BBC8]/20 hover:border-[#09BBC8]/50 text-[11px] font-mono text-[#D9FCED]/70 hover:text-[#D9FCED] flex items-center gap-1.5 transition-colors cursor-pointer"
                         title="Copy Request ID"
                       >
                         <span className="truncate max-w-[80px]">{log.requestId}</span>
                         {copiedId === log.requestId ? (
-                          <CheckCheck className="w-3 h-3 text-emerald-400" />
+                          <CheckCheck className="w-3 h-3 text-[#09BBC8]" />
                         ) : (
                           <Copy className="w-3 h-3" />
                         )}
                       </button>
                     ) : (
-                      <span className="text-[11px] font-mono text-slate-600">—</span>
+                      <span className="text-[11px] font-mono text-[#D9FCED]/40">—</span>
                     )}
                   </td>
-                  <td className="py-3.5 px-4 text-xs font-mono text-slate-400">
+                  <td className="py-3.5 px-4 text-xs font-mono text-[#D9FCED]/50">
                     {log.timestamp ? new Date(log.timestamp).toLocaleString() : 'Recent'}
                   </td>
                 </tr>
@@ -291,7 +291,7 @@ export default function Audit() {
 
               {filteredLogs.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-slate-500 text-sm">
+                  <td colSpan={6} className="py-8 text-center text-[#D9FCED]/40 text-sm">
                     No audit records matching filter criteria.
                   </td>
                 </tr>

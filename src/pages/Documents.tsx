@@ -123,27 +123,27 @@ export default function Documents() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-wider mb-2">
-            <Layers className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#09BBC8]/10 border border-[#09BBC8]/30 text-[#D9FCED] text-xs font-mono uppercase tracking-wider mb-2">
+            <Layers className="w-3.5 h-3.5 text-[#09BBC8]" />
             Classified Multi-Modal Knowledge Store
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-black text-[#D9FCED] tracking-tight">
             Knowledge Base & Spatial Vault
           </h1>
-          <p className="text-sm sm:text-base text-slate-300 mt-1 max-w-2xl">
+          <p className="text-sm sm:text-base text-[#D9FCED]/75 mt-1 max-w-2xl">
             Ingest, quarantine, and partition enterprise knowledge assets into hardware-isolated vector clearance rings.
           </p>
         </div>
 
         {/* View Switcher & Counter */}
         <div className="flex items-center gap-3 self-start sm:self-auto">
-          <div className="flex items-center bg-slate-900/90 p-1 rounded-xl border border-white/10">
+          <div className="flex items-center bg-[#3B3664]/40 p-1 rounded-xl border border-[#09BBC8]/20 backdrop-blur-md">
             <button
               onClick={() => setViewMode('3D')}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 viewMode === '3D'
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-sm'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#405FFA] text-[#D9FCED] border border-[#09BBC8] shadow-[0_0_15px_rgba(9,187,200,0.35)]'
+                  : 'text-[#D9FCED]/60 hover:text-[#D9FCED]'
               }`}
             >
               <Box className="w-3.5 h-3.5" />
@@ -153,8 +153,8 @@ export default function Documents() {
               onClick={() => setViewMode('TABLE')}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 viewMode === 'TABLE'
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-sm'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#405FFA] text-[#D9FCED] border border-[#09BBC8] shadow-[0_0_15px_rgba(9,187,200,0.35)]'
+                  : 'text-[#D9FCED]/60 hover:text-[#D9FCED]'
               }`}
             >
               <Table className="w-3.5 h-3.5" />
@@ -162,9 +162,9 @@ export default function Documents() {
             </button>
           </div>
 
-          <div className="flex items-center gap-2 text-xs font-mono bg-slate-900/80 px-3.5 py-2 rounded-xl border border-white/10">
-            <Shield className="w-4 h-4 text-emerald-400" />
-            <span className="font-bold text-white">{documents.length} Files</span>
+          <div className="flex items-center gap-2 text-xs font-mono bg-[#3B3664]/40 px-3.5 py-2 rounded-xl border border-[#09BBC8]/20 text-[#D9FCED]">
+            <Shield className="w-4 h-4 text-[#09BBC8]" />
+            <span className="font-bold">{documents.length} Files</span>
           </div>
         </div>
       </div>
@@ -180,18 +180,18 @@ export default function Documents() {
       )}
 
       {/* Ingestion Pipeline File Uploader */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-[#060D1E]/95 border border-cyan-500/30 shadow-2xl backdrop-blur-2xl">
-        <div className="flex items-center justify-between pb-6 border-b border-white/10">
+      <div className="p-6 sm:p-8 rounded-3xl bg-[#3B3664]/30 border border-[#09BBC8]/25 shadow-2xl backdrop-blur-xl">
+        <div className="flex items-center justify-between pb-6 border-b border-[#09BBC8]/20">
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2.5">
-              <FileUp className="w-6 h-6 text-cyan-400" />
+            <h2 className="text-xl sm:text-2xl font-black text-[#D9FCED] tracking-tight flex items-center gap-2.5">
+              <FileUp className="w-6 h-6 text-[#09BBC8]" />
               Secure Ingestion Pipeline
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
+            <p className="text-xs sm:text-sm text-[#D9FCED]/70 mt-0.5">
               Extracts text, calculates semantic embeddings, and tags deterministic clearance metadata.
             </p>
           </div>
-          <span className="hidden sm:inline-block text-xs font-mono px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+          <span className="hidden sm:inline-block text-xs font-mono px-3 py-1 rounded-full bg-[#09BBC8]/10 text-[#D9FCED] border border-[#09BBC8]/30">
             AUTO-CHUNKING ACTIVE
           </span>
         </div>
@@ -200,23 +200,23 @@ export default function Documents() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
             {/* File Dropzone (md:col-span-6) */}
             <div className="md:col-span-6">
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-bold text-[#D9FCED]/80 uppercase tracking-wider mb-2">
                 Document File (PDF, TXT, DOCX)
               </label>
-              <div className="relative border-2 border-dashed border-white/15 hover:border-cyan-400/50 rounded-2xl p-6 text-center bg-[#091326]/60 transition-colors cursor-pointer group">
+              <div className="relative border-2 border-dashed border-[#09BBC8]/25 hover:border-[#09BBC8]/60 rounded-2xl p-6 text-center bg-[#3B3664]/20 transition-colors cursor-pointer group">
                 <input
                   type="file"
                   onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
                   className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                 />
                 <div className="flex flex-col items-center justify-center space-y-2">
-                  <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform shadow-md">
+                  <div className="w-12 h-12 rounded-xl bg-[#09BBC8]/10 border border-[#09BBC8]/30 flex items-center justify-center text-[#09BBC8] group-hover:scale-110 transition-transform shadow-md">
                     <Upload className="w-6 h-6" />
                   </div>
-                  <div className="text-sm font-bold text-white">
+                  <div className="text-sm font-bold text-[#D9FCED]">
                     {file ? file.name : 'Choose a file or drag & drop here'}
                   </div>
-                  <div className="text-xs text-slate-400 font-mono">
+                  <div className="text-xs text-[#D9FCED]/60 font-mono">
                     {file ? `${(file.size / 1024).toFixed(1)} KB` : 'Maximum file size 25MB'}
                   </div>
                 </div>
@@ -226,8 +226,8 @@ export default function Documents() {
             {/* Classification & Department (md:col-span-6) */}
             <div className="md:col-span-6 space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                  <Tag className="w-3.5 h-3.5 text-cyan-400" />
+                <label className="block text-xs font-bold text-[#D9FCED]/80 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <Tag className="w-3.5 h-3.5 text-[#09BBC8]" />
                   Security Classification Tier
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -238,29 +238,29 @@ export default function Documents() {
                       onClick={() => setClassification(c.value)}
                       className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                         classification === c.value
-                          ? 'border-cyan-400 bg-cyan-950/40 text-cyan-300 shadow-md ring-1 ring-cyan-400/30'
-                          : 'border-white/10 bg-slate-900/60 text-slate-400 hover:text-white hover:border-white/20'
+                          ? 'border-[#09BBC8] bg-[#405FFA]/30 text-[#D9FCED] shadow-md ring-1 ring-[#09BBC8]/40'
+                          : 'border-[#09BBC8]/15 bg-[#3B3664]/30 text-[#D9FCED]/60 hover:text-[#D9FCED] hover:border-[#09BBC8]/30'
                       }`}
                     >
                       <div className="text-xs font-bold">{c.label}</div>
-                      <div className="text-[10px] text-slate-400 truncate mt-0.5">{c.desc}</div>
+                      <div className="text-[10px] text-[#D9FCED]/50 truncate mt-0.5">{c.desc}</div>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                  <Building className="w-3.5 h-3.5 text-cyan-400" />
+                <label className="block text-xs font-bold text-[#D9FCED]/80 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <Building className="w-3.5 h-3.5 text-[#09BBC8]" />
                   Owning Department
                 </label>
                 <select
                   value={department}
                   onChange={(e) => setDepartment(e.target.value)}
-                  className="w-full bg-[#091326] border border-white/15 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400 font-sans"
+                  className="w-full bg-[#3B3664]/40 border border-[#09BBC8]/25 rounded-xl px-4 py-3 text-sm text-[#D9FCED] focus:outline-none focus:border-[#09BBC8] font-sans"
                 >
                   {DEPARTMENTS.map((dept) => (
-                    <option key={dept} value={dept}>
+                    <option key={dept} value={dept} className="bg-[#07240F] text-[#D9FCED]">
                       {dept} Department
                     </option>
                   ))}
@@ -278,8 +278,8 @@ export default function Documents() {
           )}
 
           {success && (
-            <div className="p-4 rounded-xl bg-emerald-950/50 border border-emerald-500/40 text-emerald-300 text-sm flex items-start gap-3">
-              <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5 text-emerald-400" />
+            <div className="p-4 rounded-xl bg-emerald-950/50 border border-emerald-500/40 text-[#D9FCED] text-sm flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5 text-[#09BBC8]" />
               <span>{success}</span>
             </div>
           )}
@@ -298,9 +298,9 @@ export default function Documents() {
             <button
               type="submit"
               disabled={loading || !file}
-              className="py-3.5 px-6 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-cyan-500/25 flex items-center gap-2 transition-all disabled:opacity-40 cursor-pointer self-end"
+              className="py-3.5 px-6 bg-[#405FFA] hover:bg-[#405FFA]/90 text-[#D9FCED] font-bold text-sm rounded-xl shadow-lg shadow-[#405FFA]/30 hover:shadow-[0_0_24px_rgba(9,187,200,0.6)] flex items-center gap-2 transition-all disabled:opacity-40 cursor-pointer self-end"
             >
-              <FileUp className="w-4 h-4" />
+              <FileUp className="w-4 h-4 text-[#D9FCED]" />
               <span>Ingest & Quarantine Document</span>
             </button>
           </div>
@@ -308,26 +308,26 @@ export default function Documents() {
       </div>
 
       {/* Filtered Document Inventory Table */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-[#060D1E]/95 border border-white/10 shadow-2xl backdrop-blur-2xl space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl bg-[#3B3664]/30 border border-[#09BBC8]/25 shadow-2xl backdrop-blur-xl space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-black text-[#D9FCED] tracking-tight">
               Ingested Document Inventory
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400">
+            <p className="text-xs sm:text-sm text-[#D9FCED]/70">
               Real-time records currently indexed in the scoped vector database
             </p>
           </div>
 
           {/* Search Bar */}
           <div className="relative w-full sm:w-72">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#D9FCED]/50 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search filename or dept..."
-              className="w-full bg-[#091326] border border-white/15 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+              className="w-full bg-[#3B3664]/40 border border-[#09BBC8]/25 rounded-xl pl-10 pr-4 py-2.5 text-sm text-[#D9FCED] placeholder-[#D9FCED]/40 focus:outline-none focus:border-[#09BBC8]"
             />
           </div>
         </div>
@@ -340,8 +340,8 @@ export default function Documents() {
               onClick={() => setSelectedFilter(filter)}
               className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold uppercase transition-all cursor-pointer ${
                 selectedFilter === filter
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-sm'
-                  : 'bg-slate-900/60 text-slate-400 hover:text-white border border-white/10'
+                  ? 'bg-[#405FFA] text-[#D9FCED] border border-[#09BBC8] shadow-[0_0_12px_rgba(9,187,200,0.4)]'
+                  : 'bg-[#3B3664]/40 text-[#D9FCED]/60 hover:text-[#D9FCED] border border-[#09BBC8]/20'
               }`}
             >
               {filter}
@@ -353,7 +353,7 @@ export default function Documents() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-white/10 text-xs font-mono uppercase tracking-wider text-slate-400 bg-slate-900/40">
+              <tr className="border-b border-[#09BBC8]/20 text-xs font-mono uppercase tracking-wider text-[#D9FCED]/70 bg-[#3B3664]/40">
                 <th className="py-3 px-4">Document Title</th>
                 <th className="py-3 px-4">Clearance Tier</th>
                 <th className="py-3 px-4">Department</th>
@@ -362,7 +362,7 @@ export default function Documents() {
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-[#09BBC8]/10">
               {filteredDocs.map((doc, idx) => {
                 const canDelete =
                   currentUser.role === 'ADMIN' ||
@@ -372,9 +372,9 @@ export default function Documents() {
                 const uploadTimestamp = doc.uploadedAt || doc.uploadDate;
 
                 return (
-                  <tr key={`doc-row-${doc.id || idx}`} className="hover:bg-white/5 transition-colors">
-                    <td className="py-3.5 px-4 font-bold text-white flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
+                  <tr key={`doc-row-${doc.id || idx}`} className="hover:bg-[#09BBC8]/5 transition-colors">
+                    <td className="py-3.5 px-4 font-bold text-[#D9FCED] flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-[#09BBC8]/10 border border-[#09BBC8]/20 flex items-center justify-center text-[#09BBC8] shrink-0">
                         <FileText className="w-4 h-4" />
                       </div>
                       <span className="truncate max-w-xs" title={docTitle}>{docTitle}</span>
@@ -383,24 +383,24 @@ export default function Documents() {
                       <span
                         className={`text-[11px] font-mono font-bold px-2.5 py-1 rounded-md border ${
                           doc.classification === 'RESTRICTED'
-                            ? 'bg-red-500/10 text-red-300 border-red-500/30'
+                            ? 'bg-red-500/15 text-red-300 border-red-500/40'
                             : doc.classification === 'CONFIDENTIAL'
-                            ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                            ? 'bg-amber-500/15 text-amber-300 border-amber-500/40'
                             : doc.classification === 'INTERNAL'
-                            ? 'bg-blue-500/10 text-blue-300 border-blue-500/30'
-                            : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                            ? 'bg-blue-500/15 text-blue-300 border-blue-500/40'
+                            : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40'
                         }`}
                       >
                         {doc.classification}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 text-slate-300 font-mono text-xs">
+                    <td className="py-3.5 px-4 text-[#D9FCED]/70 font-mono text-xs">
                       {doc.department || 'General'}
                     </td>
-                    <td className="py-3.5 px-4 text-cyan-300 font-mono text-xs">
+                    <td className="py-3.5 px-4 text-[#09BBC8] font-mono text-xs">
                       {doc.chunkCount || 3} Chunks
                     </td>
-                    <td className="py-3.5 px-4 text-slate-400 text-xs font-mono">
+                    <td className="py-3.5 px-4 text-[#D9FCED]/50 text-xs font-mono">
                       {uploadTimestamp ? new Date(uploadTimestamp).toLocaleDateString() : 'Active'}
                     </td>
                     <td className="py-3.5 px-4 text-right">
@@ -421,7 +421,7 @@ export default function Documents() {
 
               {filteredDocs.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-slate-500 text-sm">
+                  <td colSpan={6} className="py-8 text-center text-[#D9FCED]/40 text-sm">
                     No documents found matching the filter criteria.
                   </td>
                 </tr>

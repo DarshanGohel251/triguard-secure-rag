@@ -208,17 +208,17 @@ export default function Ask() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-5.5rem)] -m-6 lg:-m-8 bg-[#020612] text-slate-100 font-sans overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-5.5rem)] -m-6 lg:-m-8 bg-transparent text-[#D9FCED] font-sans overflow-hidden">
       {/* Top AI Command Bar */}
-      <div className="h-16 px-6 bg-[#040A1A]/95 border-b border-white/10 flex items-center justify-between shrink-0 shadow-lg backdrop-blur-xl">
+      <div className="h-16 px-6 bg-[#3B3664]/35 border-b border-[#09BBC8]/20 flex items-center justify-between shrink-0 shadow-lg backdrop-blur-xl">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-md">
+          <div className="w-9 h-9 rounded-xl bg-[#09BBC8]/15 border border-[#09BBC8]/30 flex items-center justify-center text-[#09BBC8] shadow-md">
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-base sm:text-lg font-black text-white tracking-wide flex items-center gap-2">
+            <h1 className="text-base sm:text-lg font-black text-[#D9FCED] tracking-wide flex items-center gap-2">
               TriGuard AI Intelligence Workspace
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-mono">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#405FFA]/20 text-[#D9FCED] border border-[#09BBC8]/30 font-mono">
                 gemini-flash
               </span>
             </h1>
@@ -227,11 +227,11 @@ export default function Ask() {
 
         <div className="flex items-center gap-3">
           {/* Active Clearance Badge */}
-          <div className="hidden sm:flex items-center gap-2.5 text-xs text-slate-300 bg-slate-900/80 px-3.5 py-1.5 rounded-xl border border-white/10">
-            <Fingerprint className="w-4 h-4 text-emerald-400" />
-            <span className="text-slate-400">Clearance:</span>
-            <span className="font-bold text-white">{currentUser.name}</span>
-            <span className="text-[11px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono border border-cyan-500/30">
+          <div className="hidden sm:flex items-center gap-2.5 text-xs text-[#D9FCED] bg-[#3B3664]/40 px-3.5 py-1.5 rounded-xl border border-[#09BBC8]/30 shadow-sm">
+            <Fingerprint className="w-4 h-4 text-[#09BBC8]" />
+            <span className="text-[#D9FCED]/70">Clearance:</span>
+            <span className="font-bold text-[#D9FCED]">{currentUser.name}</span>
+            <span className="text-[11px] px-2 py-0.5 rounded bg-[#405FFA]/25 text-[#D9FCED] font-mono border border-[#09BBC8]/30">
               {currentUser.role}
             </span>
           </div>
@@ -493,7 +493,7 @@ export default function Ask() {
           </div>
 
           {/* Prominent Question Composer */}
-          <div className="p-4 sm:p-6 bg-[#040A1A]/95 border-t border-white/10 shrink-0 shadow-2xl backdrop-blur-xl">
+          <div className="p-4 sm:p-6 bg-[#3B3664]/40 border-t border-[#09BBC8]/25 shrink-0 shadow-2xl backdrop-blur-2xl">
             <form onSubmit={handleFormSubmit} className="max-w-4xl mx-auto relative">
               <input
                 type="text"
@@ -501,27 +501,27 @@ export default function Ask() {
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Ask about corporate policy, financial records, engineering specifications..."
                 disabled={loading}
-                className="w-full bg-[#081329] border border-cyan-500/30 rounded-2xl pl-5 pr-32 py-4 text-base text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all font-sans shadow-inner"
+                className="w-full bg-[#3B3664]/60 border border-[#09BBC8]/40 rounded-2xl pl-5 pr-32 py-4 text-base text-[#D9FCED] placeholder-[#D9FCED]/70 focus:outline-none focus:border-[#09BBC8] focus:ring-2 focus:ring-[#09BBC8]/30 transition-all font-sans shadow-inner"
               />
               <button
                 type="submit"
                 disabled={loading || !query.trim()}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-cyan-500/25 flex items-center gap-2 transition-all disabled:opacity-40 cursor-pointer"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 px-5 py-2.5 bg-[#405FFA] hover:bg-[#526ffa] text-[#D9FCED] font-bold text-sm rounded-xl shadow-[0_0_20px_rgba(64,95,250,0.5)] hover:shadow-[0_0_28px_rgba(9,187,200,0.75)] border border-[#09BBC8]/40 hover:border-[#09BBC8] flex items-center gap-2 transition-all disabled:opacity-40 cursor-pointer"
               >
                 {loading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin text-[#D9FCED]" />
                 ) : (
                   <>
                     <span>Ask RAG</span>
-                    <Send className="w-4 h-4" />
+                    <Send className="w-4 h-4 text-[#09BBC8]" />
                   </>
                 )}
               </button>
             </form>
-            <div className="max-w-4xl mx-auto mt-2 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+            <div className="max-w-4xl mx-auto mt-2.5 flex items-center justify-between text-xs text-[#D9FCED]/85 font-mono font-medium">
               <span>Press Enter to query • Automatic pre-retrieval clearance gate</span>
-              <span className="text-cyan-400 flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5" /> Zero-Leak Active
+              <span className="text-[#09BBC8] flex items-center gap-1.5 font-bold">
+                <ShieldCheck className="w-4 h-4 text-[#09BBC8]" /> Zero-Leak Active
               </span>
             </div>
           </div>
@@ -529,10 +529,10 @@ export default function Ask() {
 
         {/* RIGHT PANEL: Evidence Inspector & Retrieval Decision Trace (Collapsible) */}
         {showInspector && (
-          <aside className="w-96 bg-[#040A1A] border-l border-white/10 flex flex-col shrink-0 hidden lg:flex shadow-2xl">
+          <aside className="w-96 bg-[#3B3664]/30 border-l border-[#09BBC8]/20 flex flex-col shrink-0 hidden lg:flex shadow-2xl backdrop-blur-xl">
             {/* Inspector Tab Switcher */}
-            <div className="h-16 px-4 border-b border-white/10 flex items-center justify-between bg-[#061024]/60 shrink-0">
-              <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-white/10 w-full">
+            <div className="h-16 px-4 border-b border-[#09BBC8]/20 flex items-center justify-between bg-[#3B3664]/40 shrink-0">
+              <div className="flex items-center gap-1 bg-[#3B3664]/60 p-1 rounded-xl border border-[#09BBC8]/20 w-full">
                 <button
                   onClick={() => setActiveInspectorTab('trace')}
                   className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold font-mono transition-all cursor-pointer ${

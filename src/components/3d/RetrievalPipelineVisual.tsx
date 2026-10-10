@@ -9,7 +9,6 @@ import {
   ChevronRight,
   ChevronDown,
   CheckCircle2,
-  AlertTriangle,
   XCircle,
   Clock,
   Zap
@@ -119,13 +118,13 @@ export default function RetrievalPipelineVisual({
 
   const getStageState = (stageId: number) => {
     if (status === 'INJECTION_BLOCKED') {
-      if (stageId < 2) return 'PASSED';
-      if (stageId === 2 || stageId === 4) return 'BLOCKED';
+      if (stageId === 1 || stageId === 2) return 'PASSED';
+      if (stageId === 4) return 'BLOCKED';
       return 'SKIPPED';
     }
     if (status === 'RESTRICTED') {
-      if (stageId < 3) return 'PASSED';
-      if (stageId === 3) return 'RESTRICTED';
+      if (stageId < 2) return 'PASSED';
+      if (stageId === 2) return 'BLOCKED';
       return 'SKIPPED';
     }
     if (status === 'IDLE') return 'STANDBY';
@@ -142,31 +141,31 @@ export default function RetrievalPipelineVisual({
     switch (stageId) {
       case 1:
         return decisionTrace.identity ? (
-          <span className="text-cyan-300 font-mono truncate max-w-[180px]">{decisionTrace.identity}</span>
+          <span className="text-[#09BBC8] font-mono truncate max-w-[180px]">{decisionTrace.identity}</span>
         ) : null;
       case 2:
         return decisionTrace.permissionScope ? (
-          <span className="text-emerald-400 font-mono truncate max-w-[180px]">{decisionTrace.permissionScope}</span>
+          <span className="text-[#D9FCED] font-mono truncate max-w-[180px]">{decisionTrace.permissionScope}</span>
         ) : null;
       case 3:
         return decisionTrace.candidatesScored !== undefined ? (
-          <span className="text-cyan-300 font-mono">
+          <span className="text-[#09BBC8] font-mono">
             {decisionTrace.candidatesScored} Scored ({decisionTrace.authorizedChunksRetrieved ?? 0} In-Scope)
           </span>
         ) : null;
       case 4:
         return decisionTrace.restrictedChunksBlocked !== undefined ? (
-          <span className="text-emerald-400 font-mono">
+          <span className="text-[#09BBC8] font-mono">
             {decisionTrace.restrictedChunksBlocked} Excluded (Zero Leak)
           </span>
         ) : null;
       case 5:
         return (
-          <span className="text-purple-300 font-mono">{decisionTrace.llmModel || 'gemini-2.5-flash'}</span>
+          <span className="text-[#D9FCED] font-mono">{decisionTrace.llmModel || 'gemini-flash'}</span>
         );
       case 6:
         return decisionTrace.citationsValidated !== undefined ? (
-          <span className="text-emerald-400 font-mono">{decisionTrace.citationsValidated} Grounded Citations</span>
+          <span className="text-[#09BBC8] font-mono">{decisionTrace.citationsValidated} Grounded Citations</span>
         ) : null;
       default:
         return null;
@@ -183,52 +182,52 @@ export default function RetrievalPipelineVisual({
     return (
       <div className="w-full flex flex-col gap-3 font-sans">
         {/* Compact Timeline Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-white/10">
+        <div className="flex items-center justify-between pb-3 border-b border-[#09BBC8]/20">
           <div className="flex items-center gap-2">
             <div
               className={`w-2.5 h-2.5 rounded-full ${
                 status === 'AUTHORIZED'
-                  ? 'bg-emerald-400 animate-pulse'
+                  ? 'bg-[#09BBC8] animate-pulse'
                   : status === 'INJECTION_BLOCKED'
                   ? 'bg-red-400'
                   : status === 'RESTRICTED'
                   ? 'bg-amber-400'
-                  : 'bg-cyan-400'
+                  : 'bg-[#405FFA]'
               }`}
             />
-            <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+            <span className="text-xs font-bold text-[#D9FCED] uppercase tracking-wider font-mono">
               6-Stage Decision Rail
             </span>
           </div>
           {decisionTrace?.executionTimeMs !== undefined && (
-            <span className="text-[11px] font-mono text-cyan-300 bg-cyan-950/50 border border-cyan-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
-              <Clock className="w-3 h-3 text-cyan-400" />
+            <span className="text-[11px] font-mono text-[#D9FCED] bg-[#405FFA]/30 border border-[#09BBC8]/30 px-2 py-0.5 rounded-full flex items-center gap-1">
+              <Clock className="w-3 h-3 text-[#09BBC8]" />
               {decisionTrace.executionTimeMs} ms
             </span>
           )}
         </div>
 
         {/* Vertical Pipeline Sequence */}
-        <div className="relative pl-6 space-y-3 before:absolute before:left-2.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-gradient-to-b before:from-cyan-500/60 before:via-blue-500/40 before:to-emerald-500/50">
+        <div className="relative pl-6 space-y-3 before:absolute before:left-2.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-gradient-to-b before:from-[#09BBC8]/60 before:via-[#405FFA]/40 before:to-[#09BBC8]/50">
           {PIPELINE_STAGES.map((s) => {
             const Icon = s.icon;
             const state = getStageState(s.id);
             const isExpanded = expandedStageId === s.id;
             const metric = getStageMetric(s.id);
 
-            let nodeClass = 'border-slate-700 bg-slate-900 text-slate-500';
-            let cardBorder = 'border-white/10 bg-[#071126]/70';
+            let nodeClass = 'border-[#3B3664] bg-[#07240F] text-[#D9FCED]/40';
+            let cardBorder = 'border-[#09BBC8]/15 bg-[#3B3664]/30';
             let statusBadge = (
-              <span className="text-[10px] text-slate-500 font-mono px-2 py-0.5 rounded bg-slate-900 border border-white/5">
+              <span className="text-[10px] text-[#D9FCED]/40 font-mono px-2 py-0.5 rounded bg-[#3B3664]/40 border border-[#09BBC8]/10">
                 STANDBY
               </span>
             );
 
             if (state === 'PASSED') {
-              nodeClass = 'border-cyan-400 bg-cyan-950 text-cyan-300 shadow-[0_0_12px_rgba(0,240,255,0.4)]';
-              cardBorder = 'border-cyan-500/30 bg-[#07132B]/90 hover:border-cyan-400/50';
+              nodeClass = 'border-[#09BBC8] bg-[#3B3664] text-[#D9FCED] shadow-[0_0_12px_rgba(9,187,200,0.4)]';
+              cardBorder = 'border-[#09BBC8]/30 bg-[#3B3664]/40 hover:border-[#09BBC8]/60';
               statusBadge = (
-                <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded">
+                <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-[#09BBC8] bg-[#09BBC8]/15 border border-[#09BBC8]/30 px-2 py-0.5 rounded">
                   <CheckCircle2 className="w-3 h-3" /> PASS
                 </span>
               );
@@ -240,19 +239,11 @@ export default function RetrievalPipelineVisual({
                   <XCircle className="w-3 h-3" /> BLOCKED
                 </span>
               );
-            } else if (state === 'RESTRICTED') {
-              nodeClass = 'border-amber-500 bg-amber-950 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.4)]';
-              cardBorder = 'border-amber-500/40 bg-amber-950/30 shadow-[0_0_15px_rgba(245,158,11,0.2)]';
-              statusBadge = (
-                <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-amber-400 bg-amber-500/15 border border-amber-500/40 px-2 py-0.5 rounded">
-                  <AlertTriangle className="w-3 h-3" /> FILTERED
-                </span>
-              );
             } else if (state === 'SKIPPED') {
-              nodeClass = 'border-slate-800 bg-slate-950 text-slate-600 opacity-60';
-              cardBorder = 'border-slate-800/80 bg-slate-950/40 opacity-60';
+              nodeClass = 'border-[#3B3664]/50 bg-[#07240F]/60 text-[#D9FCED]/30 opacity-50';
+              cardBorder = 'border-[#09BBC8]/10 bg-[#3B3664]/15 opacity-50';
               statusBadge = (
-                <span className="text-[10px] text-slate-600 font-mono px-2 py-0.5 rounded bg-slate-950">SKIPPED</span>
+                <span className="text-[10px] text-[#D9FCED]/40 font-mono px-2 py-0.5 rounded bg-[#3B3664]/20">SKIPPED</span>
               );
             }
 
@@ -369,15 +360,15 @@ export default function RetrievalPipelineVisual({
           const state = getStageState(s.id);
           const isSelected = selectedStageId === s.id;
 
-          let cardBorder = 'border-white/10 bg-[#071126]/60 text-slate-400';
-          let statusBadge = <span className="text-[10px] text-slate-500 font-mono">STANDBY</span>;
+          let cardBorder = 'border-[#09BBC8]/15 bg-[#3B3664]/30 text-[#D9FCED]/60';
+          let statusBadge = <span className="text-[10px] text-[#D9FCED]/40 font-mono">STANDBY</span>;
 
           if (state === 'PASSED') {
             cardBorder = isSelected
-              ? 'border-cyan-400 bg-cyan-950/50 text-cyan-300 shadow-[0_0_25px_rgba(0,240,255,0.3)] ring-1 ring-cyan-400/40'
-              : 'border-cyan-500/30 bg-[#08152e] text-slate-200 hover:border-cyan-400/50';
+              ? 'border-[#09BBC8] bg-[#405FFA]/30 text-[#D9FCED] shadow-[0_0_25px_rgba(9,187,200,0.35)] ring-1 ring-[#09BBC8]/50'
+              : 'border-[#09BBC8]/30 bg-[#3B3664]/40 text-[#D9FCED] hover:border-[#09BBC8]/60';
             statusBadge = (
-              <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-400">
+              <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-[#09BBC8]">
                 <CheckCircle2 className="w-3 h-3" /> VERIFIED
               </span>
             );
@@ -388,16 +379,9 @@ export default function RetrievalPipelineVisual({
                 <XCircle className="w-3 h-3" /> BLOCKED
               </span>
             );
-          } else if (state === 'RESTRICTED') {
-            cardBorder = 'border-amber-500 bg-amber-950/40 text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.3)]';
-            statusBadge = (
-              <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-amber-400">
-                <AlertTriangle className="w-3 h-3" /> FILTERED
-              </span>
-            );
           } else if (state === 'SKIPPED') {
-            cardBorder = 'border-slate-800 bg-slate-950/40 text-slate-600 opacity-60';
-            statusBadge = <span className="text-[10px] text-slate-600 font-mono">SKIPPED</span>;
+            cardBorder = 'border-[#3B3664]/40 bg-[#07240F]/40 text-[#D9FCED]/30 opacity-50';
+            statusBadge = <span className="text-[10px] text-[#D9FCED]/30 font-mono">SKIPPED</span>;
           }
 
           return (
