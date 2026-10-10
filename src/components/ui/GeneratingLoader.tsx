@@ -46,14 +46,14 @@ export const GeneratingLoader: React.FC<GeneratingLoaderProps> = ({
       role="status"
       aria-label={`${text} response`}
       aria-live="polite"
-      className={`triguard-loader-wrapper relative overflow-hidden rounded-2xl border border-[#253346] bg-[#141C2B]/95 shadow-[0_0_30px_rgba(56,189,248,0.18)] backdrop-blur-xl ${sizeStyles.container} ${className}`}
+      className={`triguard-loader-wrapper relative overflow-hidden rounded-2xl border border-cyan-500/30 bg-[#040A1A]/95 shadow-[0_0_30px_rgba(0,229,255,0.18)] backdrop-blur-xl ${sizeStyles.container} ${className}`}
     >
       {/* 1. Ambient Animated Radial Light Gradient Layer */}
       <div
         className="pointer-events-none absolute inset-0 -z-10 opacity-70 animate-triguard-radial-pulse"
         style={{
           background:
-            'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(56, 189, 248, 0.22) 0%, rgba(37, 99, 235, 0.16) 45%, transparent 75%)'
+            'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(0, 229, 255, 0.22) 0%, rgba(139, 92, 246, 0.16) 45%, transparent 75%)'
         }}
       />
 
@@ -62,7 +62,7 @@ export const GeneratingLoader: React.FC<GeneratingLoaderProps> = ({
         className="pointer-events-none absolute inset-0 -z-10 opacity-30 animate-triguard-scanline"
         style={{
           backgroundImage:
-            'linear-gradient(180deg, transparent 0%, rgba(56, 189, 248, 0.35) 50%, transparent 100%)',
+            'linear-gradient(180deg, transparent 0%, rgba(0, 240, 255, 0.35) 50%, transparent 100%)',
           backgroundSize: '100% 200%'
         }}
       />
@@ -72,7 +72,7 @@ export const GeneratingLoader: React.FC<GeneratingLoaderProps> = ({
         className="pointer-events-none absolute inset-0 -z-10 opacity-15"
         style={{
           backgroundImage:
-            'linear-gradient(rgba(56,189,248,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(56,189,248,0.15) 1px, transparent 1px)',
+            'linear-gradient(rgba(0,229,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.15) 1px, transparent 1px)',
           backgroundSize: '16px 16px'
         }}
       />
@@ -81,13 +81,13 @@ export const GeneratingLoader: React.FC<GeneratingLoaderProps> = ({
       <div className="flex items-center gap-3">
         {/* Glowing Status Indicator Core */}
         <div className="relative flex items-center justify-center w-3 h-3">
-          <span className="absolute w-3 h-3 rounded-full bg-[#38BDF8]/40 animate-ping" />
-          <span className="relative w-2 h-2 rounded-full bg-[#38BDF8] shadow-[0_0_8px_#38BDF8]" />
+          <span className="absolute w-3 h-3 rounded-full bg-cyan-400/40 animate-ping" />
+          <span className="relative w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#00f0ff]" />
         </div>
 
         {/* Text Container with Staggered Keyframe Animation */}
         <div className="flex items-center">
-          <span className={`font-mono font-extrabold uppercase text-[#F8FAFC] ${sizeStyles.letter} flex select-none`}>
+          <span className={`font-mono font-extrabold uppercase text-white ${sizeStyles.letter} flex select-none`}>
             {letters.map((char, index) => (
               <span
                 key={index}
@@ -104,18 +104,18 @@ export const GeneratingLoader: React.FC<GeneratingLoaderProps> = ({
             ))}
           </span>
 
-          {/* Restrained Cobalt/Sky Trailing Dot Pulse */}
+          {/* Restrained Violet/Cyan Trailing Dot Pulse */}
           <span className="ml-1 inline-flex gap-1">
             <span
-              className="w-1 h-1 rounded-full bg-[#38BDF8] animate-pulse"
+              className="w-1 h-1 rounded-full bg-cyan-400 animate-pulse"
               style={{ animationDuration: '0.8s', animationDelay: '0s' }}
             />
             <span
-              className="w-1 h-1 rounded-full bg-[#2563EB] animate-pulse"
+              className="w-1 h-1 rounded-full bg-sky-300 animate-pulse"
               style={{ animationDuration: '0.8s', animationDelay: '0.2s' }}
             />
             <span
-              className="w-1 h-1 rounded-full bg-[#059669] animate-pulse"
+              className="w-1 h-1 rounded-full bg-violet-400 animate-pulse"
               style={{ animationDuration: '0.8s', animationDelay: '0.4s' }}
             />
           </span>
@@ -124,8 +124,8 @@ export const GeneratingLoader: React.FC<GeneratingLoaderProps> = ({
 
       {/* 5. Stage Subtitle (if supplied) */}
       {subtitle && (
-        <div className={`mt-1.5 pl-6 font-mono text-slate-300 truncate flex items-center gap-1.5 ${sizeStyles.sub}`}>
-          <span className="text-[#38BDF8]">▸</span>
+        <div className={`mt-1.5 pl-6 font-mono text-slate-400 truncate flex items-center gap-1.5 ${sizeStyles.sub}`}>
+          <span className="text-cyan-400/80">▸</span>
           <span>{subtitle}</span>
         </div>
       )}

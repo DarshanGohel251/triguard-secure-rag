@@ -27,7 +27,7 @@ export default function DefenseEngine3D({
 
     // Scene setup
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x0B0F17, 0.04);
+    scene.fog = new THREE.FogExp2(0x020612, 0.04);
 
     const width = container.clientWidth || 400;
     const h = typeof height === 'number' ? height : container.clientHeight || 380;
@@ -43,12 +43,12 @@ export default function DefenseEngine3D({
     container.appendChild(renderer.domElement);
 
     // Color definitions based on status
-    const primaryColor = status === 'secure' ? 0x38bdf8 : status === 'warning' ? 0xf59e0b : 0xef4444;
-    const secondaryColor = 0x2563eb;
-    const accentColor = 0x38bdf8;
+    const primaryColor = status === 'secure' ? 0x00f0ff : status === 'warning' ? 0xf59e0b : 0xef4444;
+    const secondaryColor = 0x0066ff;
+    const accentColor = 0x8b5cf6;
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0x141C2B, 1.2);
+    const ambientLight = new THREE.AmbientLight(0x0a1428, 1.2);
     scene.add(ambientLight);
 
     const coreLight = new THREE.PointLight(primaryColor, 3.5, 12);
@@ -363,9 +363,9 @@ export default function DefenseEngine3D({
           {/* Layer Selector Chips */}
           <div className="flex items-center justify-center gap-2 px-2">
             {[
-              { id: 1, label: 'L1: RBAC Shield', icon: Shield },
-              { id: 2, label: 'L2: Vector Sandbox', icon: Lock },
-              { id: 3, label: 'L3: AI Quantum Core', icon: Cpu }
+              { id: 1, label: 'L1: RBAC Shield', icon: Shield, color: 'text-cyan-400 border-cyan-500/40' },
+              { id: 2, label: 'L2: Vector Sandbox', icon: Lock, color: 'text-blue-400 border-blue-500/40' },
+              { id: 3, label: 'L3: AI Quantum Core', icon: Cpu, color: 'text-purple-400 border-purple-500/40' }
             ].map((layer) => {
               const Icon = layer.icon;
               const isSelected = activeLayer === layer.id;
@@ -375,8 +375,8 @@ export default function DefenseEngine3D({
                   onClick={() => setActiveLayer(layer.id)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer border ${
                     isSelected
-                      ? 'bg-[#2563EB]/25 text-[#38BDF8] border-[#38BDF8] shadow-[0_0_15px_rgba(56,189,248,0.25)]'
-                      : 'bg-[#0B0F17] text-slate-400 border-[#253346] hover:text-[#F8FAFC]'
+                      ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400 shadow-[0_0_15px_rgba(0,240,255,0.25)]'
+                      : 'bg-slate-900/80 text-slate-400 border-white/10 hover:text-white hover:border-white/20'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -388,22 +388,22 @@ export default function DefenseEngine3D({
 
           {/* Telemetry Deep-Dive Drawer */}
           {layerTelemetry && (
-            <div className="mx-2 p-3 rounded-xl bg-[#141C2B] border border-[#253346] text-left backdrop-blur-md transition-all shadow-xl">
+            <div className="mx-2 p-3 rounded-xl bg-[#060E21]/90 border border-cyan-500/25 text-left backdrop-blur-md transition-all shadow-xl">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#F8FAFC] flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-[#38BDF8]" />
+                <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                   {layerTelemetry.title}
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#2563EB]/20 border border-[#38BDF8]/40 text-[#38BDF8]">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/30 text-cyan-300">
                   {layerTelemetry.badge}
                 </span>
               </div>
               <p className="text-[11px] text-slate-300 mt-1 leading-relaxed">
                 {layerTelemetry.desc}
               </p>
-              <div className="mt-2 pt-2 border-t border-[#253346] flex items-center justify-between text-[10px] font-mono text-slate-400">
-                <span>Telemetry: <span className="text-[#059669] font-bold">{layerTelemetry.metrics}</span></span>
-                <span className="text-[#38BDF8] flex items-center gap-1 font-semibold">
+              <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-slate-400">
+                <span>Telemetry: <span className="text-emerald-400">{layerTelemetry.metrics}</span></span>
+                <span className="text-cyan-400 flex items-center gap-1">
                   <Eye className="w-3 h-3" /> Real-time Verified
                 </span>
               </div>

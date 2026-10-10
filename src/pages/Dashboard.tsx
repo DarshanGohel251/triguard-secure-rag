@@ -123,20 +123,20 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col gap-8 max-w-7xl mx-auto font-sans pb-12">
       {/* Hero Welcome & 3D Defense Engine Centerpiece */}
-      <div className="relative rounded-3xl bg-[#141C2B] border border-[#253346] p-8 sm:p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_35px_rgba(56,189,248,0.12)] overflow-hidden">
+      <div className="relative rounded-3xl bg-gradient-to-r from-[#061024] via-[#040C1D] to-[#020612] border border-cyan-500/30 p-8 sm:p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_35px_rgba(0,229,255,0.15)] overflow-hidden">
         {/* Ambient Halo */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#38BDF8]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Left Text & Quick Actions (lg:col-span-7) */}
           <div className="lg:col-span-7 space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#38BDF8]/10 border border-[#38BDF8]/30 text-[#38BDF8] text-xs font-mono font-semibold uppercase tracking-wider">
-                <Shield className="w-3.5 h-3.5 text-[#38BDF8]" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono font-semibold uppercase tracking-wider">
+                <Shield className="w-3.5 h-3.5 text-cyan-400" />
                 TriGuard Apex Command Center
               </div>
               {diagnostics && (
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#059669]/15 border border-[#059669]/30 text-[#10b981] text-xs font-mono font-bold">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono">
                   <span>Engine: {diagnostics.ragEngineStatus || 'ACTIVE'}</span>
                   <span>•</span>
                   <span>{diagnostics.embeddingModel || 'text-embedding-004'}</span>
@@ -144,7 +144,7 @@ export default function Dashboard() {
               )}
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#F8FAFC] tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
               Welcome, {user.name || 'Security Operator'}
             </h1>
             <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-xl">
@@ -154,7 +154,7 @@ export default function Dashboard() {
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <Link
                 to="/ask"
-                className="px-5 py-3 rounded-xl bg-[#2563EB] hover:bg-[#1d4ed8] text-[#F8FAFC] font-bold text-sm shadow-lg shadow-[#2563EB]/25 flex items-center gap-2 transition-all cursor-pointer"
+                className="px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 flex items-center gap-2 transition-all cursor-pointer"
               >
                 <MessageSquare className="w-4 h-4" />
                 <span>Launch Ask TriGuard</span>
@@ -162,9 +162,9 @@ export default function Dashboard() {
               </Link>
               <Link
                 to="/documents"
-                className="px-5 py-3 rounded-xl bg-[#0B0F17] hover:bg-[#1A2438] border border-[#253346] hover:border-[#38BDF8]/40 text-[#F8FAFC] font-semibold text-sm flex items-center gap-2 transition-all cursor-pointer"
+                className="px-5 py-3 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 hover:border-cyan-400/40 text-slate-200 hover:text-white font-semibold text-sm flex items-center gap-2 transition-all cursor-pointer"
               >
-                <FileText className="w-4 h-4 text-[#38BDF8]" />
+                <FileText className="w-4 h-4 text-cyan-400" />
                 <span>Spatial Knowledge Base</span>
               </Link>
             </div>
@@ -172,7 +172,7 @@ export default function Dashboard() {
 
           {/* Right: Signature 3D Defense Engine Centerpiece (lg:col-span-5) */}
           <div className="lg:col-span-5 flex justify-center">
-            <div className="w-full max-w-md bg-[#0B0F17] border border-[#253346] rounded-2xl p-4 shadow-2xl backdrop-blur-md">
+            <div className="w-full max-w-md bg-[#040A1A]/80 border border-cyan-500/20 rounded-2xl p-4 shadow-2xl backdrop-blur-md">
               <DefenseEngine3D status="secure" height={320} interactive={true} />
             </div>
           </div>
@@ -182,48 +182,48 @@ export default function Dashboard() {
       {/* Primary KPI Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Stat 1: Documents Ingested */}
-        <div className="p-6 rounded-2xl bg-[#141C2B] border border-[#253346] hover:border-[#38BDF8]/40 transition-all shadow-xl group">
+        <div className="p-6 rounded-2xl bg-[#060D1E]/90 border border-white/10 hover:border-cyan-400/30 transition-all shadow-xl group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Indexed Documents</span>
-            <div className="w-10 h-10 rounded-xl bg-[#38BDF8]/10 border border-[#38BDF8]/20 flex items-center justify-center text-[#38BDF8] group-hover:scale-110 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
               <FileText className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl sm:text-4xl font-black text-[#F8FAFC] mt-4 tracking-tight">
+          <div className="text-3xl sm:text-4xl font-black text-white mt-4 tracking-tight">
             {stats.documents}
           </div>
           <div className="text-xs text-slate-400 mt-1 flex items-center gap-1.5 font-mono">
-            <Database className="w-3.5 h-3.5 text-[#38BDF8]" />
+            <Database className="w-3.5 h-3.5 text-cyan-400" />
             <span>{stats.chunks} vector chunks indexed</span>
           </div>
         </div>
 
         {/* Stat 2: Authorized Queries */}
-        <div className="p-6 rounded-2xl bg-[#141C2B] border border-[#253346] hover:border-[#059669]/40 transition-all shadow-xl group">
+        <div className="p-6 rounded-2xl bg-[#060D1E]/90 border border-white/10 hover:border-emerald-500/30 transition-all shadow-xl group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Authorized Queries</span>
-            <div className="w-10 h-10 rounded-xl bg-[#059669]/10 border border-[#059669]/20 flex items-center justify-center text-[#059669] group-hover:scale-110 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
               <CheckCircle2 className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl sm:text-4xl font-black text-[#F8FAFC] mt-4 tracking-tight">
+          <div className="text-3xl sm:text-4xl font-black text-white mt-4 tracking-tight">
             {stats.queries}
           </div>
-          <div className="text-xs text-[#059669] mt-1 flex items-center gap-1.5 font-mono font-semibold">
+          <div className="text-xs text-emerald-400 mt-1 flex items-center gap-1.5 font-mono">
             <Sparkles className="w-3.5 h-3.5" />
             <span>100% Grounded in evidence</span>
           </div>
         </div>
 
         {/* Stat 3: Policy Blocks */}
-        <div className="p-6 rounded-2xl bg-[#141C2B] border border-[#253346] hover:border-amber-500/40 transition-all shadow-xl group">
+        <div className="p-6 rounded-2xl bg-[#060D1E]/90 border border-white/10 hover:border-amber-500/30 transition-all shadow-xl group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Policy Access Denied</span>
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
               <Lock className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl sm:text-4xl font-black text-[#F8FAFC] mt-4 tracking-tight">
+          <div className="text-3xl sm:text-4xl font-black text-white mt-4 tracking-tight">
             {stats.blocked}
           </div>
           <div className="text-xs text-amber-400 mt-1 flex items-center gap-1.5 font-mono">
@@ -233,17 +233,17 @@ export default function Dashboard() {
         </div>
 
         {/* Stat 4: Security Events / Injections Intercepted */}
-        <div className="p-6 rounded-2xl bg-[#141C2B] border border-[#253346] hover:border-[#EF4444]/40 transition-all shadow-xl group">
+        <div className="p-6 rounded-2xl bg-[#060D1E]/90 border border-white/10 hover:border-red-500/30 transition-all shadow-xl group">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Threats Intercepted</span>
-            <div className="w-10 h-10 rounded-xl bg-[#EF4444]/10 border border-[#EF4444]/20 flex items-center justify-center text-[#EF4444] group-hover:scale-110 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 group-hover:scale-110 transition-transform">
               <ShieldAlert className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl sm:text-4xl font-black text-[#F8FAFC] mt-4 tracking-tight">
+          <div className="text-3xl sm:text-4xl font-black text-white mt-4 tracking-tight">
             {stats.securityEvents}
           </div>
-          <div className="text-xs text-[#EF4444] mt-1 flex items-center gap-1.5 font-mono font-semibold">
+          <div className="text-xs text-red-400 mt-1 flex items-center gap-1.5 font-mono">
             <Radio className="w-3.5 h-3.5 animate-pulse" />
             <span>Prompt Firewall Active</span>
           </div>
@@ -256,10 +256,10 @@ export default function Dashboard() {
       {/* Query Traffic Chart & Recent Security Audit Feed */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* 7-Day Query Volume Area Chart (lg:col-span-7) */}
-        <div className="lg:col-span-7 p-6 sm:p-7 rounded-2xl bg-[#141C2B] border border-[#253346] shadow-xl flex flex-col justify-between">
+        <div className="lg:col-span-7 p-6 sm:p-7 rounded-2xl bg-[#060D1E]/90 border border-white/10 shadow-xl flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-lg sm:text-xl font-bold text-[#F8FAFC] tracking-wide">
+              <h2 className="text-lg sm:text-xl font-bold text-white tracking-wide">
                 Retrieval Query Traffic
               </h2>
               <p className="text-xs text-slate-400">
@@ -267,12 +267,12 @@ export default function Dashboard() {
               </p>
             </div>
             <div className="flex items-center gap-4 text-xs font-mono">
-              <span className="flex items-center gap-1.5 text-[#38BDF8]">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#38BDF8]" />
+              <span className="flex items-center gap-1.5 text-cyan-400">
+                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400" />
                 Authorized
               </span>
-              <span className="flex items-center gap-1.5 text-[#EF4444]">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#EF4444]" />
+              <span className="flex items-center gap-1.5 text-amber-400">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
                 Blocked
               </span>
             </div>
@@ -283,23 +283,23 @@ export default function Dashboard() {
               <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="colorAuth" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#38BDF8" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#38BDF8" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#00E5FF" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#00E5FF" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="colorBlocked" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#EF4444" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#EF4444" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#F59E0B" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis
                   dataKey="name"
-                  stroke="#94A3B8"
+                  stroke="#64748b"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
                 />
                 <YAxis
-                  stroke="#94A3B8"
+                  stroke="#64748b"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
@@ -307,17 +307,17 @@ export default function Dashboard() {
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#141C2B',
-                    borderColor: '#253346',
+                    backgroundColor: '#091326',
+                    borderColor: 'rgba(255,255,255,0.15)',
                     borderRadius: '12px',
-                    color: '#F8FAFC',
+                    color: '#fff',
                     fontSize: '12px'
                   }}
                 />
                 <Area
                   type="monotone"
                   dataKey="authorized"
-                  stroke="#38BDF8"
+                  stroke="#00E5FF"
                   strokeWidth={2}
                   fillOpacity={1}
                   fill="url(#colorAuth)"
@@ -325,7 +325,7 @@ export default function Dashboard() {
                 <Area
                   type="monotone"
                   dataKey="blocked"
-                  stroke="#EF4444"
+                  stroke="#F59E0B"
                   strokeWidth={2}
                   fillOpacity={1}
                   fill="url(#colorBlocked)"
@@ -336,16 +336,16 @@ export default function Dashboard() {
         </div>
 
         {/* Recent Audit & Threat Activity (lg:col-span-5) */}
-        <div className="lg:col-span-5 p-6 sm:p-7 rounded-2xl bg-[#141C2B] border border-[#253346] shadow-xl flex flex-col justify-between">
+        <div className="lg:col-span-5 p-6 sm:p-7 rounded-2xl bg-[#060D1E]/90 border border-white/10 shadow-xl flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg sm:text-xl font-bold text-[#F8FAFC] tracking-wide flex items-center gap-2">
-                <Activity className="w-5 h-5 text-[#38BDF8]" />
+              <h2 className="text-lg sm:text-xl font-bold text-white tracking-wide flex items-center gap-2">
+                <Activity className="w-5 h-5 text-cyan-400" />
                 Live Security Feed
               </h2>
               <Link
                 to="/audit"
-                className="text-xs font-mono text-[#38BDF8] hover:text-sky-300 flex items-center gap-1 font-bold"
+                className="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
               >
                 View Ledger <ArrowRight className="w-3 h-3" />
               </Link>
@@ -355,15 +355,15 @@ export default function Dashboard() {
               {activities.map((act, idx) => (
                 <div
                   key={`act-${act.id || idx}`}
-                  className="p-3 rounded-xl bg-[#0B0F17] border border-[#253346] hover:border-[#38BDF8]/40 flex items-start gap-3 transition-colors"
+                  className="p-3 rounded-xl bg-slate-900/60 border border-white/5 hover:border-white/15 flex items-start gap-3 transition-colors"
                 >
                   <div
                     className={`p-2 rounded-lg shrink-0 mt-0.5 ${
                       act.type === 'EVENT'
-                        ? 'bg-[#EF4444]/10 text-[#EF4444] border border-[#EF4444]/20'
+                        ? 'bg-red-500/10 text-red-400 border border-red-500/20'
                         : act.type === 'DENY'
                         ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                        : 'bg-[#059669]/10 text-[#10b981] border border-[#059669]/20'
+                        : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                     }`}
                   >
                     {act.type === 'EVENT' ? (
@@ -377,10 +377,10 @@ export default function Dashboard() {
 
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs sm:text-sm font-bold text-[#F8FAFC] truncate">
+                      <span className="text-xs sm:text-sm font-bold text-white truncate">
                         {act.title}
                       </span>
-                      <span className="text-[10px] font-mono text-slate-400 shrink-0 ml-2">
+                      <span className="text-[10px] font-mono text-slate-500 shrink-0 ml-2">
                         {new Date(act.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
