@@ -311,22 +311,42 @@ public class RagService {
                 "Authorized context constructed with " + verifiedContextChunks.size() + " verified chunks. Zero leaks." + (completionResult.isFallback() ? " (Resilient Fallback Mode Active)" : "")
         ));
 
+        String status = "AUTHORIZED";
+        String answerText = answer;
+        List<String> completedStages = List.of("IDENTITY_VERIFIED", "POLICY_EVALUATED", "RETRIEVAL_CONSTRAINED", "CONTEXT_AUTHORIZED", "ANSWER_GENERATED", "CITATIONS_VALIDATED");
+        String traceDecision = "ALLOW_VERIFIED";
+        String engineModel = "gemini-flash-latest";
+
+        if (completionResult.isFallback()) {
+            if (isCached) {
+                status = "AUTHORIZED";
+                traceDecision = "ALLOW_VERIFIED_FALLBACK";
+                engineModel = "resilient-fallback-cache";
+            } else {
+                status = "AI_PROVIDER_ERROR";
+                answerText = "Authorized evidence was retrieved, but the AI service could not generate a response. Retry the request when the service is available.";
+                traceDecision = "DEGRADED_SYNTHESIS";
+                engineModel = "resilient-fallback-engine (synthesis-unavailable)";
+                completedStages = List.of("IDENTITY_VERIFIED", "POLICY_EVALUATED", "RETRIEVAL_CONSTRAINED", "CONTEXT_AUTHORIZED");
+            }
+        }
+
         DecisionTraceDto trace = new DecisionTraceDto(
                 user.getEmail() + " (" + user.getRole().name() + " - " + user.getDepartment() + ")",
                 identityScope,
-                completionResult.isFallback() ? "ALLOW_VERIFIED_FALLBACK" : "ALLOW_VERIFIED",
+                traceDecision,
                 allChunks.size(),
                 verifiedContextChunks.size(),
                 restrictedChunksBlocked,
                 true,
-                completionResult.isFallback() ? "resilient-fallback-engine" : "gemini-flash-latest",
+                engineModel,
                 citations.size(),
                 System.currentTimeMillis() - startTime,
-                List.of("IDENTITY_VERIFIED", "POLICY_EVALUATED", "RETRIEVAL_CONSTRAINED", "CONTEXT_AUTHORIZED", "ANSWER_GENERATED", "CITATIONS_VALIDATED"),
-                "AUTHORIZED"
+                completedStages,
+                status
         );
 
-        return new QueryResponse(answer, citations, trace, requestId, "AUTHORIZED", responseMode, fallbackReason, isCached);
+        return new QueryResponse(answerText, citations, trace, requestId, status, responseMode, fallbackReason, isCached);
     }
 
     /**
