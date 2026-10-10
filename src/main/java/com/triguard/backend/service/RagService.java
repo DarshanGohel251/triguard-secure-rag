@@ -394,9 +394,14 @@ public class RagService {
 
     private boolean isRestrictedProbeQuery(String query, boolean restrictedDeptMatch) {
         String lower = query.toLowerCase();
-        return (restrictedDeptMatch && (lower.contains("salary") || lower.contains("confidential"))) ||
+        return lower.contains("salary") ||
                 lower.contains("confidential") ||
-                lower.contains("restricted clearance") ||
-                lower.contains("classified");
+                lower.contains("restricted") ||
+                lower.contains("classified") ||
+                lower.contains("bonus") ||
+                lower.contains("compensation") ||
+                lower.contains("payroll") ||
+                lower.contains("executive") ||
+                restrictedDeptMatch;
     }
 }
