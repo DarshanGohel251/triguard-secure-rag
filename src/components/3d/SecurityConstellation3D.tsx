@@ -37,7 +37,7 @@ export default function SecurityConstellation3D({
 
     // Three.js Scene Setup
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x030712, 0.04);
+    scene.fog = new THREE.FogExp2(0x0b0f17, 0.04);
 
     const width = container.clientWidth || 500;
     const h = typeof height === 'number' ? height : container.clientHeight || 420;
@@ -52,6 +52,14 @@ export default function SecurityConstellation3D({
     renderer.toneMappingExposure = 1.3;
     container.appendChild(renderer.domElement);
 
+    // Ambient Lighting
+    const ambientLight = new THREE.AmbientLight(0x141c2b, 1.8);
+    scene.add(ambientLight);
+
+    const coreLight = new THREE.PointLight(0x38bdf8, 2.5, 12);
+    coreLight.position.set(0, 0, 0);
+    scene.add(coreLight);
+
     // Master Group for Constellation
     const constellationGroup = new THREE.Group();
     scene.add(constellationGroup);
@@ -59,8 +67,8 @@ export default function SecurityConstellation3D({
     // Central Security Core Anchor
     const coreGeo = new THREE.OctahedronGeometry(0.5, 0);
     const coreMat = new THREE.MeshStandardMaterial({
-      color: 0x00f0ff,
-      emissive: 0x00f0ff,
+      color: 0x38bdf8,
+      emissive: 0x2563eb,
       emissiveIntensity: 0.8,
       roughness: 0.2
     });
@@ -70,7 +78,7 @@ export default function SecurityConstellation3D({
     // Concentric Radar Range Rings
     [2.0, 3.2, 4.4].forEach((radius) => {
       const ringGeo = new THREE.TorusGeometry(radius, 0.012, 12, 72);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.12 });
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0x253346, transparent: true, opacity: 0.5 });
       const ring = new THREE.Mesh(ringGeo, ringMat);
       ring.rotation.x = Math.PI / 2;
       constellationGroup.add(ring);
@@ -85,7 +93,7 @@ export default function SecurityConstellation3D({
     realEvents.forEach((ev, idx) => {
       const isInjection = ev.type === 'PROMPT_INJECTION';
       const isDeny = ev.decision === 'DENY' || ev.type === 'UNAUTHORIZED_RETRIEVAL';
-      const color = isInjection ? 0xef4444 : isDeny ? 0xf59e0b : 0x00f0ff;
+      const color = isInjection ? 0xef4444 : isDeny ? 0xef4444 : 0x059669;
 
       // Distribute nodes in a spherical constellation shell
       const phi = Math.acos(-1 + (2 * idx) / Math.max(realEvents.length, 1));
@@ -116,9 +124,9 @@ export default function SecurityConstellation3D({
       const lineGeo = new THREE.BufferGeometry();
       lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(pointsPositions, 3));
       const lineMat = new THREE.LineBasicMaterial({
-        color: 0x00f0ff,
+        color: 0x38bdf8,
         transparent: true,
-        opacity: 0.22
+        opacity: 0.28
       });
       const lines = new THREE.Line(lineGeo, lineMat);
       constellationGroup.add(lines);
@@ -226,36 +234,36 @@ export default function SecurityConstellation3D({
   }, [realEvents, height]);
 
   return (
-    <div className="w-full bg-[#050C1B]/95 border border-cyan-500/25 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden backdrop-blur-2xl">
+    <div className="w-full bg-[#141C2B] border border-[#253346] rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden backdrop-blur-2xl">
       {/* Background Cyber Glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(239,68,68,0.06),transparent_70%)] pointer-events-none" />
 
       {/* Header */}
-      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-white/10 gap-4">
+      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-[#253346] gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono uppercase tracking-wider mb-2">
-            <Radio className="w-3.5 h-3.5 animate-pulse text-red-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EF4444]/15 border border-[#EF4444]/30 text-[#EF4444] text-xs font-mono uppercase tracking-wider mb-2">
+            <Radio className="w-3.5 h-3.5 animate-pulse text-[#EF4444]" />
             3D Security Event Constellation • Spatial Telemetry
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-black text-[#F8FAFC] tracking-tight">
             Security Threat Constellation
           </h2>
-          <p className="text-sm text-slate-300 mt-1 max-w-2xl">
+          <p className="text-sm text-slate-400 mt-1 max-w-2xl">
             Spatial node visualization mapping prompt injection intercept vectors and unauthorized retrieval attempts.
           </p>
         </div>
 
         {/* Counter Pills */}
         <div className="flex items-center gap-3 shrink-0">
-          <div className="px-4 py-2 rounded-xl bg-red-950/50 border border-red-500/30 text-left">
-            <div className="text-[10px] font-mono uppercase text-red-400">Blocked Injections</div>
-            <div className="text-xl font-black text-white">
+          <div className="px-4 py-2 rounded-xl bg-[#0B0F17] border border-[#EF4444]/40 text-left">
+            <div className="text-[10px] font-mono uppercase text-[#EF4444]">Blocked Injections</div>
+            <div className="text-xl font-black text-[#F8FAFC]">
               {events.filter((e) => e.type === 'PROMPT_INJECTION').length}
             </div>
           </div>
-          <div className="px-4 py-2 rounded-xl bg-amber-950/50 border border-amber-500/30 text-left">
-            <div className="text-[10px] font-mono uppercase text-amber-400">Denied Probes</div>
-            <div className="text-xl font-black text-white">
+          <div className="px-4 py-2 rounded-xl bg-[#0B0F17] border border-[#253346] text-left">
+            <div className="text-[10px] font-mono uppercase text-slate-400">Denied Probes</div>
+            <div className="text-xl font-black text-[#F8FAFC]">
               {events.filter((e) => e.type !== 'PROMPT_INJECTION' || e.decision === 'DENY').length}
             </div>
           </div>
@@ -265,46 +273,46 @@ export default function SecurityConstellation3D({
       {/* 3D Scene + Constellation Node Inspector */}
       <div className="relative z-10 mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
         {/* WebGL Canvas (lg:col-span-8) */}
-        <div className="lg:col-span-8 relative rounded-2xl bg-[#030814]/80 border border-white/10 overflow-hidden shadow-inner">
+        <div className="lg:col-span-8 relative rounded-2xl bg-[#0B0F17] border border-[#253346] overflow-hidden shadow-inner">
           <div ref={mountRef} className="w-full" style={{ height }} />
 
           {/* Viewport HUD */}
-          <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[11px] font-mono text-slate-400 bg-slate-950/80 border border-white/10 px-3.5 py-1.5 rounded-xl backdrop-blur-md">
+          <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[11px] font-mono text-slate-400 bg-[#0B0F17]/90 border border-[#253346] px-3.5 py-1.5 rounded-xl backdrop-blur-md">
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1.5 text-red-400">
-                <span className="w-2 h-2 rounded-full bg-red-400" /> Prompt Injections
+              <span className="flex items-center gap-1.5 text-[#EF4444]">
+                <span className="w-2 h-2 rounded-full bg-[#EF4444]" /> Prompt Injections
               </span>
-              <span className="flex items-center gap-1.5 text-amber-400">
-                <span className="w-2 h-2 rounded-full bg-amber-400" /> Policy Denied
+              <span className="flex items-center gap-1.5 text-[#EF4444]">
+                <span className="w-2 h-2 rounded-full bg-[#EF4444]" /> Policy Denied
               </span>
-              <span className="flex items-center gap-1.5 text-cyan-400">
-                <span className="w-2 h-2 rounded-full bg-cyan-400" /> Authorized
+              <span className="flex items-center gap-1.5 text-[#059669]">
+                <span className="w-2 h-2 rounded-full bg-[#059669]" /> Authorized
               </span>
             </div>
             <span className="text-slate-500 hidden sm:inline">Click star to inspect payload</span>
           </div>
 
           {hoveredEvent && (
-            <div className="absolute top-3 left-4 px-3 py-1 rounded-lg bg-red-950/80 border border-red-500/40 text-red-300 text-xs font-mono backdrop-blur-md">
+            <div className="absolute top-3 left-4 px-3 py-1 rounded-lg bg-[#141C2B]/90 border border-[#EF4444]/40 text-[#EF4444] text-xs font-mono backdrop-blur-md">
               Target: {hoveredEvent.type} • {hoveredEvent.username || hoveredEvent.userEmail}
             </div>
           )}
         </div>
 
         {/* Selected Incident Inspector (lg:col-span-4) */}
-        <div className="lg:col-span-4 p-5 sm:p-6 rounded-2xl bg-[#060D1E]/95 border border-red-500/30 shadow-2xl flex flex-col justify-between h-full min-h-[360px]">
+        <div className="lg:col-span-4 p-5 sm:p-6 rounded-2xl bg-[#141C2B] border border-[#253346] shadow-2xl flex flex-col justify-between h-full min-h-[360px]">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#253346] mb-4">
               <span className="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold flex items-center gap-1.5">
-                <Crosshair className="w-4 h-4 text-red-400" />
+                <Crosshair className="w-4 h-4 text-[#EF4444]" />
                 Constellation Node
               </span>
               {selectedEvent && (
                 <span
                   className={`text-[10px] font-mono font-bold px-2.5 py-0.5 rounded border ${
                     selectedEvent.type === 'PROMPT_INJECTION'
-                      ? 'bg-red-500/10 text-red-300 border-red-500/40'
-                      : 'bg-amber-500/10 text-amber-300 border-amber-500/40'
+                      ? 'bg-[#EF4444]/15 text-[#EF4444] border-[#EF4444]/40'
+                      : 'bg-[#2563EB]/15 text-[#38BDF8] border-[#2563EB]/40'
                   }`}
                 >
                   {selectedEvent.type || 'EVENT'}
@@ -316,22 +324,22 @@ export default function SecurityConstellation3D({
               <div className="space-y-4">
                 <div>
                   <div className="text-xs text-slate-400 font-mono">Origin Identity:</div>
-                  <div className="text-base font-bold text-white flex items-center gap-2 mt-0.5">
-                    <User className="w-4 h-4 text-cyan-400" />
+                  <div className="text-base font-bold text-[#F8FAFC] flex items-center gap-2 mt-0.5">
+                    <User className="w-4 h-4 text-[#38BDF8]" />
                     <span>{selectedEvent.username || selectedEvent.userEmail || 'Unknown Caller'}</span>
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-slate-900/90 border border-white/10 text-xs space-y-1.5">
+                <div className="p-3.5 rounded-xl bg-[#0B0F17] border border-[#253346] text-xs space-y-1.5">
                   <div className="text-slate-400 font-mono text-[10px] uppercase">Payload / Query Content:</div>
-                  <div className="text-slate-200 font-mono text-xs bg-black/40 p-2.5 rounded-lg border border-white/5 break-words max-h-28 overflow-y-auto">
+                  <div className="text-slate-200 font-mono text-xs bg-[#0B0F17] p-2.5 rounded-lg border border-[#253346] break-words max-h-28 overflow-y-auto">
                     "{selectedEvent.details || 'Blocked malicious attempt.'}"
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-xs flex items-center justify-between">
+                <div className="p-3 rounded-xl bg-[#059669]/10 border border-[#059669]/30 text-xs flex items-center justify-between">
                   <span className="text-slate-300 font-mono">Enforcement:</span>
-                  <span className="text-emerald-400 font-bold font-mono flex items-center gap-1">
+                  <span className="text-[#059669] font-bold font-mono flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" /> INTERCEPTED & QUARANTINED
                   </span>
                 </div>
@@ -340,8 +348,8 @@ export default function SecurityConstellation3D({
                   <Clock className="w-3.5 h-3.5 text-slate-500" />
                   <span>
                     {selectedEvent.timestamp
-                      ? new Date(selectedEvent.timestamp).toLocaleString()
-                      : 'Real-time telemetry'}
+                       ? new Date(selectedEvent.timestamp).toLocaleString()
+                       : 'Real-time telemetry'}
                   </span>
                 </div>
               </div>
@@ -352,7 +360,7 @@ export default function SecurityConstellation3D({
             )}
           </div>
 
-          <div className="pt-4 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-500">
+          <div className="pt-4 border-t border-[#253346] flex items-center justify-between text-[11px] font-mono text-slate-500">
             <span>CONSTELLATION: SPATIAL 3D</span>
             <span>{events.length} LOGGED</span>
           </div>

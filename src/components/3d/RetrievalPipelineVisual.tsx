@@ -216,43 +216,43 @@ export default function RetrievalPipelineVisual({
             const isExpanded = expandedStageId === s.id;
             const metric = getStageMetric(s.id);
 
-            let nodeClass = 'border-slate-700 bg-slate-900 text-slate-500';
-            let cardBorder = 'border-white/10 bg-[#071126]/70';
+            let nodeClass = 'border-[#253346] bg-[#0B0F17] text-slate-500';
+            let cardBorder = 'border-[#253346] bg-[#0B0F17]';
             let statusBadge = (
-              <span className="text-[10px] text-slate-500 font-mono px-2 py-0.5 rounded bg-slate-900 border border-white/5">
+              <span className="text-[10px] text-slate-400 font-mono px-2 py-0.5 rounded bg-[#141C2B] border border-[#253346]">
                 STANDBY
               </span>
             );
 
             if (state === 'PASSED') {
-              nodeClass = 'border-cyan-400 bg-cyan-950 text-cyan-300 shadow-[0_0_12px_rgba(0,240,255,0.4)]';
-              cardBorder = 'border-cyan-500/30 bg-[#07132B]/90 hover:border-cyan-400/50';
+              nodeClass = 'border-[#38BDF8] bg-[#141C2B] text-[#38BDF8] shadow-[0_0_12px_rgba(56,189,248,0.4)]';
+              cardBorder = 'border-[#38BDF8]/40 bg-[#141C2B] hover:border-[#38BDF8]';
               statusBadge = (
-                <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded">
+                <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-[#059669] bg-[#059669]/15 border border-[#059669]/30 px-2 py-0.5 rounded">
                   <CheckCircle2 className="w-3 h-3" /> PASS
                 </span>
               );
             } else if (state === 'BLOCKED') {
-              nodeClass = 'border-red-500 bg-red-950 text-red-300 shadow-[0_0_12px_rgba(239,68,68,0.5)] animate-pulse';
-              cardBorder = 'border-red-500/40 bg-red-950/30 shadow-[0_0_15px_rgba(239,68,68,0.2)]';
+              nodeClass = 'border-[#EF4444] bg-[#141C2B] text-[#EF4444] shadow-[0_0_12px_rgba(239,68,68,0.5)] animate-pulse';
+              cardBorder = 'border-[#EF4444]/40 bg-[#EF4444]/10 shadow-[0_0_15px_rgba(239,68,68,0.2)]';
               statusBadge = (
-                <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-red-400 bg-red-500/15 border border-red-500/40 px-2 py-0.5 rounded">
+                <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-[#EF4444] bg-[#EF4444]/15 border border-[#EF4444]/40 px-2 py-0.5 rounded">
                   <XCircle className="w-3 h-3" /> BLOCKED
                 </span>
               );
             } else if (state === 'RESTRICTED') {
-              nodeClass = 'border-amber-500 bg-amber-950 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.4)]';
-              cardBorder = 'border-amber-500/40 bg-amber-950/30 shadow-[0_0_15px_rgba(245,158,11,0.2)]';
+              nodeClass = 'border-amber-500 bg-[#141C2B] text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.4)]';
+              cardBorder = 'border-amber-500/40 bg-amber-950/20 shadow-[0_0_15px_rgba(245,158,11,0.2)]';
               statusBadge = (
                 <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-amber-400 bg-amber-500/15 border border-amber-500/40 px-2 py-0.5 rounded">
                   <AlertTriangle className="w-3 h-3" /> FILTERED
                 </span>
               );
             } else if (state === 'SKIPPED') {
-              nodeClass = 'border-slate-800 bg-slate-950 text-slate-600 opacity-60';
-              cardBorder = 'border-slate-800/80 bg-slate-950/40 opacity-60';
+              nodeClass = 'border-[#253346] bg-[#0B0F17] text-slate-600 opacity-60';
+              cardBorder = 'border-[#253346] bg-[#0B0F17] opacity-60';
               statusBadge = (
-                <span className="text-[10px] text-slate-600 font-mono px-2 py-0.5 rounded bg-slate-950">SKIPPED</span>
+                <span className="text-[10px] text-slate-500 font-mono px-2 py-0.5 rounded bg-[#0B0F17]">SKIPPED</span>
               );
             }
 
@@ -315,18 +315,18 @@ export default function RetrievalPipelineVisual({
   // HORIZONTAL / SPACIOUS GRID WORKFLOW LAYOUT (Main Views)
   // -----------------------------------------------------------
   return (
-    <div className="w-full bg-[#050C1B]/95 border border-cyan-500/25 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden backdrop-blur-2xl font-sans">
+    <div className="w-full bg-[#141C2B] border border-[#253346] rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden backdrop-blur-2xl font-sans">
       {/* Background Cyber Grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,240,255,0.08),transparent_70%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(56,189,248,0.08),transparent_70%)] pointer-events-none" />
 
       {/* Header Bar */}
-      <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-white/10 gap-4">
+      <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#253346] gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-wider mb-2">
-            <Zap className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#38BDF8]/10 border border-[#38BDF8]/30 text-[#38BDF8] text-xs font-mono uppercase tracking-wider mb-2">
+            <Zap className="w-3.5 h-3.5 text-[#38BDF8]" />
             Deterministic RAG Verification Architecture
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-black text-[#F8FAFC] tracking-tight">
             6-Stage Deterministic Decision Pipeline
           </h2>
           <p className="text-sm text-slate-300 mt-1 max-w-2xl">
@@ -339,12 +339,12 @@ export default function RetrievalPipelineVisual({
           <span
             className={`px-3.5 py-1.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider border shadow-md ${
               status === 'AUTHORIZED'
-                ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40'
+                ? 'bg-[#059669]/15 text-[#10b981] border-[#059669]/40'
                 : status === 'RESTRICTED'
                 ? 'bg-amber-500/15 text-amber-300 border-amber-500/40'
                 : status === 'INJECTION_BLOCKED'
-                ? 'bg-red-500/15 text-red-300 border-red-500/40'
-                : 'bg-slate-800 text-slate-300 border-slate-700'
+                ? 'bg-[#EF4444]/15 text-[#EF4444] border-[#EF4444]/40'
+                : 'bg-slate-800 text-slate-300 border-[#253346]'
             }`}
           >
             {status === 'AUTHORIZED' && '✓ PIPELINE VERIFIED'}
@@ -354,8 +354,8 @@ export default function RetrievalPipelineVisual({
             {status === 'ERROR' && '✕ PIPELINE FAULT'}
           </span>
           {decisionTrace?.executionTimeMs !== undefined && (
-            <span className="text-xs font-mono text-cyan-300 bg-cyan-950/60 border border-cyan-500/30 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
-              <Clock className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="text-xs font-mono text-[#38BDF8] bg-[#2563EB]/15 border border-[#2563EB]/30 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+              <Clock className="w-3.5 h-3.5 text-[#38BDF8]" />
               {decisionTrace.executionTimeMs} ms
             </span>
           )}
@@ -369,34 +369,34 @@ export default function RetrievalPipelineVisual({
           const state = getStageState(s.id);
           const isSelected = selectedStageId === s.id;
 
-          let cardBorder = 'border-white/10 bg-[#071126]/60 text-slate-400';
+          let cardBorder = 'border-[#253346] bg-[#0B0F17] text-slate-400';
           let statusBadge = <span className="text-[10px] text-slate-500 font-mono">STANDBY</span>;
 
           if (state === 'PASSED') {
             cardBorder = isSelected
-              ? 'border-cyan-400 bg-cyan-950/50 text-cyan-300 shadow-[0_0_25px_rgba(0,240,255,0.3)] ring-1 ring-cyan-400/40'
-              : 'border-cyan-500/30 bg-[#08152e] text-slate-200 hover:border-cyan-400/50';
+              ? 'border-[#38BDF8] bg-[#1A2438] text-[#38BDF8] shadow-[0_0_25px_rgba(56,189,248,0.3)] ring-1 ring-[#38BDF8]/50'
+              : 'border-[#38BDF8]/40 bg-[#0B0F17] text-slate-200 hover:border-[#38BDF8]';
             statusBadge = (
-              <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-400">
+              <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-[#059669]">
                 <CheckCircle2 className="w-3 h-3" /> VERIFIED
               </span>
             );
           } else if (state === 'BLOCKED') {
-            cardBorder = 'border-red-500 bg-red-950/40 text-red-300 shadow-[0_0_20px_rgba(239,68,68,0.35)] animate-pulse';
+            cardBorder = 'border-[#EF4444]/40 bg-[#EF4444]/10 text-[#EF4444] shadow-[0_0_20px_rgba(239,68,68,0.25)] animate-pulse';
             statusBadge = (
-              <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-red-400">
+              <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-[#EF4444]">
                 <XCircle className="w-3 h-3" /> BLOCKED
               </span>
             );
           } else if (state === 'RESTRICTED') {
-            cardBorder = 'border-amber-500 bg-amber-950/40 text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.3)]';
+            cardBorder = 'border-amber-500/40 bg-amber-950/20 text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.2)]';
             statusBadge = (
               <span className="flex items-center gap-1 text-[10px] font-mono font-bold text-amber-400">
                 <AlertTriangle className="w-3 h-3" /> FILTERED
               </span>
             );
           } else if (state === 'SKIPPED') {
-            cardBorder = 'border-slate-800 bg-slate-950/40 text-slate-600 opacity-60';
+            cardBorder = 'border-[#253346] bg-[#0B0F17] text-slate-600 opacity-60';
             statusBadge = <span className="text-[10px] text-slate-600 font-mono">SKIPPED</span>;
           }
 
@@ -409,17 +409,17 @@ export default function RetrievalPipelineVisual({
               <div>
                 {/* Top Badge & Stage Icon */}
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[11px] font-mono font-extrabold text-cyan-400">
+                  <span className="text-[11px] font-mono font-extrabold text-[#38BDF8]">
                     {s.number}
                   </span>
                   {statusBadge}
                 </div>
 
-                <div className="w-8 h-8 rounded-xl bg-black/40 border border-white/5 flex items-center justify-center text-cyan-400 mb-2.5 group-hover:scale-110 transition-transform">
+                <div className="w-8 h-8 rounded-xl bg-[#141C2B] border border-[#253346] flex items-center justify-center text-[#38BDF8] mb-2.5 group-hover:scale-110 transition-transform">
                   <Icon className="w-4 h-4" />
                 </div>
 
-                <div className="text-xs sm:text-sm font-bold text-white group-hover:text-cyan-300 transition-colors leading-snug">
+                <div className="text-xs sm:text-sm font-bold text-[#F8FAFC] group-hover:text-[#38BDF8] transition-colors leading-snug">
                   {s.title}
                 </div>
                 <div className="text-[11px] text-slate-400 mt-1 leading-snug line-clamp-2">
@@ -440,20 +440,20 @@ export default function RetrievalPipelineVisual({
 
       {/* Interactive Deep-Dive Drawer for Selected Stage */}
       {interactive && selectedStage && (
-        <div className="relative z-10 mt-6 p-5 sm:p-6 rounded-2xl bg-[#060D1E]/95 border border-cyan-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-2xl backdrop-blur-xl">
+        <div className="relative z-10 mt-6 p-5 sm:p-6 rounded-2xl bg-[#0B0F17] border border-[#253346] flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-2xl backdrop-blur-xl">
           <div className="flex items-start gap-4">
-            <div className="p-3 rounded-2xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 shrink-0 mt-0.5 shadow-md">
+            <div className="p-3 rounded-2xl bg-[#2563EB]/15 border border-[#2563EB]/30 text-[#38BDF8] shrink-0 mt-0.5 shadow-md">
               <selectedStage.icon className="w-6 h-6" />
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-base font-bold text-white">
+                <span className="text-base font-bold text-[#F8FAFC]">
                   Stage {selectedStage.number}: {selectedStage.title}
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/30 text-cyan-300">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#2563EB]/15 border border-[#38BDF8]/40 text-[#38BDF8]">
                   {selectedStage.defenseLayer}
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-slate-300">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#141C2B] text-slate-300 border border-[#253346]">
                   State: {selectedState}
                 </span>
               </div>
@@ -464,29 +464,29 @@ export default function RetrievalPipelineVisual({
           </div>
 
           {/* Real Telemetry Output */}
-          <div className="flex items-center gap-3 shrink-0 self-end md:self-auto bg-slate-900/80 px-4 py-2.5 rounded-xl border border-white/10">
+          <div className="flex items-center gap-3 shrink-0 self-end md:self-auto bg-[#141C2B] px-4 py-2.5 rounded-xl border border-[#253346]">
             {selectedStage.id === 1 && decisionTrace?.identity && (
               <div className="text-right">
                 <div className="text-[10px] text-slate-400 uppercase font-mono">Verified Subject</div>
-                <div className="text-xs font-bold text-cyan-300">{decisionTrace.identity}</div>
+                <div className="text-xs font-bold text-[#38BDF8]">{decisionTrace.identity}</div>
               </div>
             )}
             {selectedStage.id === 2 && decisionTrace?.permissionScope && (
               <div className="text-right">
                 <div className="text-[10px] text-slate-400 uppercase font-mono">Clearance Scope</div>
-                <div className="text-xs font-bold text-emerald-400">{decisionTrace.permissionScope}</div>
+                <div className="text-xs font-bold text-[#059669]">{decisionTrace.permissionScope}</div>
               </div>
             )}
             {selectedStage.id === 3 && decisionTrace?.candidatesScored !== undefined && (
               <div className="text-right">
                 <div className="text-[10px] text-slate-400 uppercase font-mono">Scoped Candidates</div>
-                <div className="text-xs font-bold text-cyan-300">{decisionTrace.candidatesScored} Scored</div>
+                <div className="text-xs font-bold text-[#38BDF8]">{decisionTrace.candidatesScored} Scored</div>
               </div>
             )}
             {selectedStage.id === 4 && decisionTrace?.restrictedChunksBlocked !== undefined && (
               <div className="text-right">
                 <div className="text-[10px] text-slate-400 uppercase font-mono">Zero-Leak Guard</div>
-                <div className="text-xs font-bold text-emerald-400">
+                <div className="text-xs font-bold text-[#059669]">
                   {decisionTrace.restrictedChunksBlocked} Excluded
                 </div>
               </div>
@@ -494,7 +494,7 @@ export default function RetrievalPipelineVisual({
             {selectedStage.id === 5 && (
               <div className="text-right">
                 <div className="text-[10px] text-slate-400 uppercase font-mono">Synthesis Engine</div>
-                <div className="text-xs font-bold text-purple-300">
+                <div className="text-xs font-bold text-[#38BDF8]">
                   {decisionTrace?.llmModel || 'gemini-2.5-flash'}
                 </div>
               </div>
@@ -502,7 +502,7 @@ export default function RetrievalPipelineVisual({
             {selectedStage.id === 6 && decisionTrace?.citationsValidated !== undefined && (
               <div className="text-right">
                 <div className="text-[10px] text-slate-400 uppercase font-mono">Grounded Proofs</div>
-                <div className="text-xs font-bold text-emerald-400">
+                <div className="text-xs font-bold text-[#059669]">
                   {decisionTrace.citationsValidated} Page Citations
                 </div>
               </div>

@@ -54,7 +54,7 @@ export default function SpatialKnowledgeVault3D({
 
     // Scene & Camera
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x020713, 0.035);
+    scene.fog = new THREE.FogExp2(0x0b0f17, 0.035);
 
     const width = container.clientWidth || 500;
     const h = typeof height === 'number' ? height : container.clientHeight || 420;
@@ -71,14 +71,14 @@ export default function SpatialKnowledgeVault3D({
     container.appendChild(renderer.domElement);
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0x0a162e, 1.4);
+    const ambientLight = new THREE.AmbientLight(0x141c2b, 1.6);
     scene.add(ambientLight);
 
-    const vaultCoreLight = new THREE.PointLight(0x00f0ff, 3.0, 14);
+    const vaultCoreLight = new THREE.PointLight(0x38bdf8, 3.2, 14);
     vaultCoreLight.position.set(0, 0, 0);
     scene.add(vaultCoreLight);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    const dirLight = new THREE.DirectionalLight(0xf8fafc, 1.2);
     dirLight.position.set(6, 8, 8);
     scene.add(dirLight);
 
@@ -89,7 +89,7 @@ export default function SpatialKnowledgeVault3D({
     // Central Multi-Tiered Vault Core Structure
     const corePillarGeo = new THREE.CylinderGeometry(0.5, 0.7, 3.2, 16);
     const corePillarMat = new THREE.MeshStandardMaterial({
-      color: 0x051329,
+      color: 0x141c2b,
       metalness: 0.8,
       roughness: 0.2,
       wireframe: true
@@ -99,22 +99,22 @@ export default function SpatialKnowledgeVault3D({
 
     // Core Quantum Luminous Ring
     const coreRingGeo = new THREE.TorusGeometry(0.9, 0.04, 16, 64);
-    const coreRingMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.8 });
+    const coreRingMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.85 });
     const coreRing = new THREE.Mesh(coreRingGeo, coreRingMat);
     coreRing.rotation.x = Math.PI / 2;
     vaultGroup.add(coreRing);
 
     // Floating Concentric Spatial Rings (Representing Security Classification Tiers)
     const tiers = [
-      { r: 2.2, color: 0x10b981, label: 'PUBLIC' },
-      { r: 3.1, color: 0x00f0ff, label: 'INTERNAL' },
-      { r: 4.0, color: 0xf59e0b, label: 'CONFIDENTIAL' },
+      { r: 2.2, color: 0x059669, label: 'PUBLIC' },
+      { r: 3.1, color: 0x38bdf8, label: 'INTERNAL' },
+      { r: 4.0, color: 0x2563eb, label: 'CONFIDENTIAL' },
       { r: 4.8, color: 0xef4444, label: 'RESTRICTED' }
     ];
 
     tiers.forEach((t) => {
       const ringGeo = new THREE.TorusGeometry(t.r, 0.015, 12, 80);
-      const ringMat = new THREE.MeshBasicMaterial({ color: t.color, transparent: true, opacity: 0.25 });
+      const ringMat = new THREE.MeshBasicMaterial({ color: t.color, transparent: true, opacity: 0.28 });
       const ring = new THREE.Mesh(ringGeo, ringMat);
       ring.rotation.x = Math.PI / 2;
       vaultGroup.add(ring);
@@ -127,17 +127,17 @@ export default function SpatialKnowledgeVault3D({
     if (docsToRender.length > 0) {
       docsToRender.forEach((doc, idx) => {
         const c = (doc.classification || 'INTERNAL').toUpperCase();
-        let tierColor = 0x00f0ff;
+        let tierColor = 0x38bdf8;
         let radius = 3.1;
 
         if (c === 'RESTRICTED') {
           tierColor = 0xef4444;
           radius = 4.8;
         } else if (c === 'CONFIDENTIAL') {
-          tierColor = 0xf59e0b;
+          tierColor = 0x2563eb;
           radius = 4.0;
         } else if (c === 'PUBLIC') {
-          tierColor = 0x10b981;
+          tierColor = 0x059669;
           radius = 2.2;
         }
 
@@ -272,30 +272,30 @@ export default function SpatialKnowledgeVault3D({
   }, [docsToRender, height]);
 
   return (
-    <div className="w-full bg-[#050C1B]/95 border border-cyan-500/25 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden backdrop-blur-2xl">
-      {/* Background Cyber Grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,240,255,0.08),transparent_70%)] pointer-events-none" />
+    <div className="w-full bg-[#141C2B] border border-[#253346] rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden backdrop-blur-2xl">
+      {/* Background Subtle Gradient */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(56,189,248,0.06),transparent_70%)] pointer-events-none" />
 
       {/* Header Bar */}
-      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-white/10 gap-4">
+      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-[#253346] gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono uppercase tracking-wider mb-2">
-            <Layers className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2563EB]/15 border border-[#38BDF8]/30 text-[#38BDF8] text-xs font-mono uppercase tracking-wider mb-2">
+            <Layers className="w-3.5 h-3.5 text-[#38BDF8]" />
             3D Spatial Knowledge Vault • Hardware Accelerated WebGL
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-black text-[#F8FAFC] tracking-tight">
             Spatial Knowledge Vault
           </h2>
-          <p className="text-sm text-slate-300 mt-1 max-w-2xl">
+          <p className="text-sm text-slate-400 mt-1 max-w-2xl">
             Dimensional spatial visualization of classified document partitions orbiting the cryptographic knowledge core.
           </p>
         </div>
 
         {/* Clearance Scope Badge */}
-        <div className="flex items-center gap-3 bg-slate-900/80 border border-white/10 px-4 py-2.5 rounded-2xl shrink-0">
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+        <div className="flex items-center gap-3 bg-[#0B0F17] border border-[#253346] px-4 py-2.5 rounded-2xl shrink-0">
+          <div className="w-2.5 h-2.5 rounded-full bg-[#059669] animate-pulse" />
           <div className="flex flex-col text-xs font-mono">
-            <span className="font-bold text-white">Clearance: {userRole}</span>
+            <span className="font-bold text-[#F8FAFC]">Clearance: {userRole}</span>
             <span className="text-slate-400 text-[11px]">Scope: {userDept} Dept</span>
           </div>
         </div>
@@ -304,23 +304,23 @@ export default function SpatialKnowledgeVault3D({
       {/* 3D Scene Viewport & Real-Time Document Inspector */}
       <div className="relative z-10 mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
         {/* 3D WebGL Canvas (lg:col-span-8) */}
-        <div className="lg:col-span-8 relative rounded-2xl bg-[#030814]/80 border border-white/10 overflow-hidden shadow-inner">
+        <div className="lg:col-span-8 relative rounded-2xl bg-[#0B0F17] border border-[#253346] overflow-hidden shadow-inner">
           <div ref={mountRef} className="w-full" style={{ height }} />
 
           {/* Interactive Legend in Viewport Bottom */}
-          <div className="absolute bottom-3 left-4 right-4 flex flex-wrap items-center justify-between text-[11px] font-mono text-slate-400 bg-slate-950/80 border border-white/10 px-3.5 py-1.5 rounded-xl backdrop-blur-md">
+          <div className="absolute bottom-3 left-4 right-4 flex flex-wrap items-center justify-between text-[11px] font-mono text-slate-400 bg-[#0B0F17]/90 border border-[#253346] px-3.5 py-1.5 rounded-xl backdrop-blur-md">
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1.5 text-emerald-400">
-                <span className="w-2 h-2 rounded-full bg-emerald-400" /> Public
+              <span className="flex items-center gap-1.5 text-[#059669]">
+                <span className="w-2 h-2 rounded-full bg-[#059669]" /> Public
               </span>
-              <span className="flex items-center gap-1.5 text-cyan-400">
-                <span className="w-2 h-2 rounded-full bg-cyan-400" /> Internal
+              <span className="flex items-center gap-1.5 text-[#38BDF8]">
+                <span className="w-2 h-2 rounded-full bg-[#38BDF8]" /> Internal
               </span>
-              <span className="flex items-center gap-1.5 text-amber-400">
-                <span className="w-2 h-2 rounded-full bg-amber-400" /> Confidential
+              <span className="flex items-center gap-1.5 text-[#2563EB]">
+                <span className="w-2 h-2 rounded-full bg-[#2563EB]" /> Confidential
               </span>
-              <span className="flex items-center gap-1.5 text-red-400">
-                <span className="w-2 h-2 rounded-full bg-red-400" /> Restricted
+              <span className="flex items-center gap-1.5 text-[#EF4444]">
+                <span className="w-2 h-2 rounded-full bg-[#EF4444]" /> Restricted
               </span>
             </div>
             <span className="text-slate-500 hidden sm:inline">Click 3D slab to inspect</span>
@@ -328,30 +328,30 @@ export default function SpatialKnowledgeVault3D({
 
           {/* Hover Banner */}
           {hoveredDoc && (
-            <div className="absolute top-3 left-4 px-3 py-1 rounded-lg bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-mono backdrop-blur-md">
+            <div className="absolute top-3 left-4 px-3 py-1 rounded-lg bg-[#141C2B]/90 border border-[#38BDF8]/40 text-[#38BDF8] text-xs font-mono backdrop-blur-md">
               Hovering: {hoveredDoc.name || hoveredDoc.filename} ({hoveredDoc.classification})
             </div>
           )}
         </div>
 
         {/* Selected Document Metadata Inspector (lg:col-span-4) */}
-        <div className="lg:col-span-4 p-5 sm:p-6 rounded-2xl bg-[#060D1E]/95 border border-cyan-500/30 shadow-2xl flex flex-col justify-between h-full min-h-[360px]">
+        <div className="lg:col-span-4 p-5 sm:p-6 rounded-2xl bg-[#141C2B] border border-[#253346] shadow-2xl flex flex-col justify-between h-full min-h-[360px]">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#253346] mb-4">
               <span className="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold flex items-center gap-1.5">
-                <FileText className="w-4 h-4 text-cyan-400" />
+                <FileText className="w-4 h-4 text-[#38BDF8]" />
                 Vault Inspector
               </span>
               {selectedDoc && (
                 <span
                   className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${
                     selectedDoc.classification === 'RESTRICTED'
-                      ? 'bg-red-500/10 text-red-300 border-red-500/30'
+                      ? 'bg-[#EF4444]/15 text-[#EF4444] border-[#EF4444]/30'
                       : selectedDoc.classification === 'CONFIDENTIAL'
-                      ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                      ? 'bg-[#2563EB]/15 text-[#38BDF8] border-[#2563EB]/30'
                       : selectedDoc.classification === 'INTERNAL'
-                      ? 'bg-blue-500/10 text-blue-300 border-blue-500/30'
-                      : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                      ? 'bg-[#38BDF8]/15 text-[#38BDF8] border-[#38BDF8]/30'
+                      : 'bg-[#059669]/15 text-[#059669] border-[#059669]/30'
                   }`}
                 >
                   {selectedDoc.classification || 'INTERNAL'}
@@ -362,23 +362,23 @@ export default function SpatialKnowledgeVault3D({
             {selectedDoc ? (
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-base font-bold text-white leading-snug break-words">
+                  <h3 className="text-base font-bold text-[#F8FAFC] leading-snug break-words">
                     {selectedDoc.name || selectedDoc.filename || 'Untitled Document'}
                   </h3>
                   <div className="text-xs text-slate-400 mt-1 font-mono">
-                    Owning Department: <span className="text-cyan-300">{selectedDoc.department || 'General'}</span>
+                    Owning Department: <span className="text-[#38BDF8]">{selectedDoc.department || 'General'}</span>
                   </div>
                 </div>
 
                 {/* Authorization Status */}
-                <div className="p-3 rounded-xl bg-slate-900/80 border border-white/10 text-xs flex items-center justify-between">
+                <div className="p-3 rounded-xl bg-[#0B0F17] border border-[#253346] text-xs flex items-center justify-between">
                   <span className="text-slate-400 font-mono">Clearance Status:</span>
                   {isAuthorized(selectedDoc.classification) ? (
-                    <span className="flex items-center gap-1 text-emerald-400 font-bold font-mono">
+                    <span className="flex items-center gap-1 text-[#059669] font-bold font-mono">
                       <CheckCircle2 className="w-3.5 h-3.5" /> AUTHORIZED
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1 text-red-400 font-bold font-mono">
+                    <span className="flex items-center gap-1 text-[#EF4444] font-bold font-mono">
                       <Lock className="w-3.5 h-3.5" /> ACCESS DENIED
                     </span>
                   )}
@@ -386,13 +386,13 @@ export default function SpatialKnowledgeVault3D({
 
                 {/* Vector Metrics */}
                 <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-                  <div className="p-3 rounded-xl bg-slate-900/60 border border-white/5">
+                  <div className="p-3 rounded-xl bg-[#0B0F17] border border-[#253346]">
                     <div className="text-slate-500 text-[10px] uppercase">Vector Chunks</div>
-                    <div className="text-base font-black text-white mt-0.5">{selectedDoc.chunkCount || 3}</div>
+                    <div className="text-base font-black text-[#F8FAFC] mt-0.5">{selectedDoc.chunkCount || 3}</div>
                   </div>
-                  <div className="p-3 rounded-xl bg-slate-900/60 border border-white/5">
+                  <div className="p-3 rounded-xl bg-[#0B0F17] border border-[#253346]">
                     <div className="text-slate-500 text-[10px] uppercase">Partition</div>
-                    <div className="text-xs font-bold text-cyan-300 mt-1">Scoped L2</div>
+                    <div className="text-xs font-bold text-[#38BDF8] mt-1">Scoped L2</div>
                   </div>
                 </div>
 
@@ -409,7 +409,7 @@ export default function SpatialKnowledgeVault3D({
             )}
           </div>
 
-          <div className="pt-4 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-500">
+          <div className="pt-4 border-t border-[#253346] flex items-center justify-between text-[11px] font-mono text-slate-500">
             <span>VAULT ENGINE: SPATIAL 3D</span>
             <span>{documents.length} ENROLLED</span>
           </div>

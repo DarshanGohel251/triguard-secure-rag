@@ -55,11 +55,11 @@ export default function Security() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono uppercase tracking-wider mb-2">
-            <Radio className="w-3.5 h-3.5 animate-pulse text-red-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EF4444]/10 border border-[#EF4444]/30 text-[#EF4444] text-xs font-mono uppercase tracking-wider mb-2">
+            <Radio className="w-3.5 h-3.5 animate-pulse text-[#EF4444]" />
             Autonomous Threat Interception Gateway
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-black text-[#F8FAFC] tracking-tight">
             Threat Detection & Security Center
           </h1>
           <p className="text-sm sm:text-base text-slate-300 mt-1 max-w-2xl">
@@ -70,9 +70,9 @@ export default function Security() {
         <button
           onClick={fetchSecurityEvents}
           disabled={loading}
-          className="px-4 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 hover:border-red-500/40 text-slate-300 hover:text-white text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer self-start sm:self-auto"
+          className="px-4 py-2.5 rounded-xl bg-[#141C2B] hover:bg-[#1A2438] border border-[#253346] hover:border-[#38BDF8]/40 text-[#F8FAFC] text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer self-start sm:self-auto"
         >
-          <RefreshCw className={`w-4 h-4 text-cyan-400 ${loading ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`w-4 h-4 text-[#38BDF8] ${loading ? 'animate-spin' : ''}`} />
           <span>Refresh Telemetry</span>
         </button>
       </div>
@@ -82,24 +82,24 @@ export default function Security() {
 
       {/* KPI Threat Overview Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div className="p-6 rounded-2xl bg-[#060D1E]/95 border border-red-500/30 shadow-xl">
+        <div className="p-6 rounded-2xl bg-[#141C2B] border border-[#EF4444]/30 shadow-xl">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-red-400 uppercase tracking-wider">
+            <span className="text-xs font-bold text-[#EF4444] uppercase tracking-wider">
               Prompt Injections Intercepted
             </span>
-            <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400">
+            <div className="w-10 h-10 rounded-xl bg-[#EF4444]/10 border border-[#EF4444]/30 flex items-center justify-center text-[#EF4444]">
               <Flame className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl sm:text-4xl font-black text-white mt-4 tracking-tight">
+          <div className="text-3xl sm:text-4xl font-black text-[#F8FAFC] mt-4 tracking-tight">
             {stats.injections}
           </div>
-          <div className="text-xs text-red-400 mt-1 font-mono">
+          <div className="text-xs text-[#EF4444] mt-1 font-mono font-semibold">
             Direct override & system prompt exfiltration attempts
           </div>
         </div>
 
-        <div className="p-6 rounded-2xl bg-[#060D1E]/95 border border-amber-500/30 shadow-xl">
+        <div className="p-6 rounded-2xl bg-[#141C2B] border border-amber-500/30 shadow-xl">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
               Unauthorized Retrieval Probes
@@ -108,7 +108,7 @@ export default function Security() {
               <Lock className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl sm:text-4xl font-black text-white mt-4 tracking-tight">
+          <div className="text-3xl sm:text-4xl font-black text-[#F8FAFC] mt-4 tracking-tight">
             {stats.probes}
           </div>
           <div className="text-xs text-amber-400 mt-1 font-mono">
@@ -116,29 +116,29 @@ export default function Security() {
           </div>
         </div>
 
-        <div className="p-6 rounded-2xl bg-[#060D1E]/95 border border-emerald-500/30 shadow-xl">
+        <div className="p-6 rounded-2xl bg-[#141C2B] border border-[#059669]/30 shadow-xl">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
+            <span className="text-xs font-bold text-[#059669] uppercase tracking-wider">
               Defense Gate Status
             </span>
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <div className="w-10 h-10 rounded-xl bg-[#059669]/10 border border-[#059669]/30 flex items-center justify-center text-[#059669]">
               <ShieldCheck className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl sm:text-4xl font-black text-white mt-4 tracking-tight">
+          <div className="text-3xl sm:text-4xl font-black text-[#F8FAFC] mt-4 tracking-tight">
             Active
           </div>
-          <div className="text-xs text-emerald-400 mt-1 font-mono">
+          <div className="text-xs text-[#059669] mt-1 font-mono font-semibold">
             100% Pre-retrieval enforcement guaranteed
           </div>
         </div>
       </div>
 
       {/* Incident Log Ledger */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-[#060D1E]/95 border border-white/10 shadow-2xl backdrop-blur-2xl space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl bg-[#141C2B] border border-[#253346] shadow-2xl backdrop-blur-2xl space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-black text-[#F8FAFC] tracking-tight">
               Intercepted Security Incidents
             </h2>
             <p className="text-xs sm:text-sm text-slate-400">
@@ -154,7 +154,7 @@ export default function Security() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search user or payload..."
-              className="w-full bg-[#091326] border border-white/15 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-red-400"
+              className="w-full bg-[#0B0F17] border border-[#253346] rounded-xl pl-10 pr-4 py-2.5 text-sm text-[#F8FAFC] placeholder-slate-500 focus:outline-none focus:border-[#38BDF8]"
             />
           </div>
         </div>
@@ -167,8 +167,8 @@ export default function Security() {
               onClick={() => setFilterType(f)}
               className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold uppercase transition-all cursor-pointer ${
                 filterType === f
-                  ? 'bg-red-500/20 text-red-300 border border-red-500/40 shadow-sm'
-                  : 'bg-slate-900/60 text-slate-400 hover:text-white border border-white/10'
+                  ? 'bg-[#2563EB]/25 text-[#38BDF8] border border-[#38BDF8]/40 shadow-sm'
+                  : 'bg-[#0B0F17] text-slate-400 hover:text-[#F8FAFC] border border-[#253346]'
               }`}
             >
               {f.replace('_', ' ')}
@@ -180,7 +180,7 @@ export default function Security() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-white/10 text-xs font-mono uppercase tracking-wider text-slate-400 bg-slate-900/40">
+              <tr className="border-b border-[#253346] text-xs font-mono uppercase tracking-wider text-slate-300 bg-[#0B0F17]">
                 <th className="py-3 px-4">Threat Classification</th>
                 <th className="py-3 px-4">Origin Identity</th>
                 <th className="py-3 px-4">Payload Snippet</th>
@@ -188,21 +188,21 @@ export default function Security() {
                 <th className="py-3 px-4">Timestamp</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-[#253346]">
               {filteredEvents.map((ev, idx) => (
-                <tr key={`sec-ev-${ev.id || idx}`} className="hover:bg-white/5 transition-colors">
+                <tr key={`sec-ev-${ev.id || idx}`} className="hover:bg-[#1A2438] transition-colors">
                   <td className="py-3.5 px-4 font-mono">
                     <span
                       className={`text-xs font-bold px-2.5 py-1 rounded-md border ${
                         ev.type === 'PROMPT_INJECTION'
-                          ? 'bg-red-500/10 text-red-300 border-red-500/30'
+                          ? 'bg-[#EF4444]/15 text-[#EF4444] border-[#EF4444]/30'
                           : 'bg-amber-500/10 text-amber-300 border-amber-500/30'
                       }`}
                     >
                       {ev.type}
                     </span>
                   </td>
-                  <td className="py-3.5 px-4 font-bold text-white flex items-center gap-2">
+                  <td className="py-3.5 px-4 font-bold text-[#F8FAFC] flex items-center gap-2">
                     <User className="w-3.5 h-3.5 text-slate-400" />
                     <span>{ev.username}</span>
                   </td>
@@ -210,7 +210,7 @@ export default function Security() {
                     {ev.details}
                   </td>
                   <td className="py-3.5 px-4">
-                    <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                    <span className="text-[11px] font-mono text-[#059669] bg-[#059669]/15 px-2 py-0.5 rounded border border-[#059669]/30 font-bold">
                       INTERCEPTED & BLOCKED
                     </span>
                   </td>
