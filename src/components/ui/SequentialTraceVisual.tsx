@@ -43,6 +43,56 @@ export default function SequentialTraceVisual({
     }
   };
 
+  const getStatusBadge = () => {
+    if (!isComplete) {
+      return {
+        label: 'EVALUATING DEFENSE RINGS...',
+        className: 'bg-[#405FFA]/20 text-[#09BBC8] border-[#09BBC8]/40 animate-pulse',
+      };
+    }
+    switch (status) {
+      case 'AUTHORIZED':
+        if (isFallback) {
+          return {
+            label: 'RESILIENT • CACHED PASS',
+            className: 'bg-amber-500/15 text-amber-300 border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]',
+          };
+        }
+        return {
+          label: 'VERIFIED • PASS',
+          className: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 shadow-[0_0_10px_rgba(16,185,129,0.2)]',
+        };
+      case 'AI_PROVIDER_ERROR':
+        return {
+          label: 'DEGRADED • SYNTHESIS UNAVAILABLE',
+          className: 'bg-amber-500/15 text-amber-300 border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]',
+        };
+      case 'RESTRICTED':
+        return {
+          label: 'ACCESS RESTRICTED • ZERO LEAK',
+          className: 'bg-amber-500/15 text-amber-300 border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]',
+        };
+      case 'NO_INFO':
+        return {
+          label: 'INSUFFICIENT EVIDENCE • ABSTENTION',
+          className: 'bg-sky-500/15 text-sky-300 border-sky-500/40',
+        };
+      case 'INJECTION_BLOCKED':
+        return {
+          label: 'INJECTION INTERCEPTED • BLOCKED',
+          className: 'bg-rose-500/15 text-rose-300 border-rose-500/40 shadow-[0_0_10px_rgba(244,63,94,0.2)]',
+        };
+      case 'ERROR':
+      default:
+        return {
+          label: 'CONNECTION FAULT',
+          className: 'bg-rose-500/15 text-rose-300 border-rose-500/40 shadow-[0_0_10px_rgba(244,63,94,0.2)]',
+        };
+    }
+  };
+
+  const statusBadge = getStatusBadge();
+
   return (
     <div className="rounded-2xl bg-[#080D16]/90 border border-[#09BBC8]/30 p-4 space-y-4 shadow-xl">
       {/* Top Header */}
@@ -54,15 +104,9 @@ export default function SequentialTraceVisual({
           </span>
         </div>
         <span
-          className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
-            isComplete
-              ? status === 'AUTHORIZED'
-                ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40'
-                : 'bg-rose-500/15 text-rose-300 border-rose-500/40'
-              : 'bg-[#405FFA]/20 text-[#09BBC8] border-[#09BBC8]/40 animate-pulse'
-          }`}
+          className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${statusBadge.className}`}
         >
-          {isComplete ? (status === 'AUTHORIZED' ? 'VERIFIED • PASS' : status) : 'EVALUATING DEFENSE RINGS...'}
+          {statusBadge.label}
         </span>
       </div>
 

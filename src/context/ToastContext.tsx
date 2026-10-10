@@ -16,6 +16,7 @@ interface ToastContextValue {
   success: (message: string, title?: string) => void;
   error: (message: string, title?: string) => void;
   info: (message: string, title?: string) => void;
+  warning: (message: string, title?: string) => void;
   security: (message: string, title?: string) => void;
 }
 
@@ -58,6 +59,13 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     [showToast]
   );
 
+  const warning = useCallback(
+    (message: string, title = 'System Advisory') => {
+      showToast({ type: 'warning', title, message });
+    },
+    [showToast]
+  );
+
   const info = useCallback(
     (message: string, title = 'Notice') => {
       showToast({ type: 'info', title, message });
@@ -73,7 +81,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <ToastContext.Provider value={{ showToast, success, error, info, security }}>
+    <ToastContext.Provider value={{ showToast, success, error, info, warning, security }}>
       {children}
       {/* Toast Notification Container */}
       <div

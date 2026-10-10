@@ -48,17 +48,24 @@ export function useSequentialReveal(
         prev.map((s, idx) => {
           if (idx < currentIdx) {
             // Previously passed
-            return { ...s, status: 'passed' };
+            return {
+              ...s,
+              status: (isFallback || finalStatus === 'AI_PROVIDER_ERROR') && s.id === 5 ? 'fallback' : 'passed',
+            };
           }
           if (idx === currentIdx) {
             // Check if final stage or blocked
-            if (finalStatus === 'INJECTION_BLOCKED' && s.id === 1) {
-              return { ...s, status: 'blocked' };
+            if ((finalStatus === 'INJECTION_BLOCKED' || finalStatus === 'ERROR') && s.id === 1) {
+              return {
+                ...s,
+                status: 'blocked',
+                description: finalStatus === 'ERROR' ? 'Upstream gateway connection unavailable' : s.description,
+              };
             }
             if (finalStatus === 'RESTRICTED' && s.id === 2) {
               return { ...s, status: 'blocked' };
             }
-            if (isFallback && s.id === 5) {
+            if ((isFallback || finalStatus === 'AI_PROVIDER_ERROR') && s.id === 5) {
               return { ...s, status: 'fallback' };
             }
             return { ...s, status: 'running' };
@@ -68,10 +75,18 @@ export function useSequentialReveal(
       );
 
       // Check if blocked early
-      if (finalStatus === 'INJECTION_BLOCKED' && currentIdx === 0) {
+      if ((finalStatus === 'INJECTION_BLOCKED' || finalStatus === 'ERROR') && currentIdx === 0) {
         setTimeout(() => {
           setStages((prev) =>
-            prev.map((s, idx) => (idx === 0 ? { ...s, status: 'blocked' } : s))
+            prev.map((s, idx) =>
+              idx === 0
+                ? {
+                    ...s,
+                    status: 'blocked',
+                    description: finalStatus === 'ERROR' ? 'Upstream gateway connection unavailable' : s.description,
+                  }
+                : s
+            )
           );
         }, minStageDelayMs);
         return;
@@ -96,7 +111,7 @@ export function useSequentialReveal(
         setStages((prev) =>
           prev.map((s) => ({
             ...s,
-            status: isFallback && s.id === 5 ? 'fallback' : 'passed',
+            status: (isFallback || finalStatus === 'AI_PROVIDER_ERROR') && s.id === 5 ? 'fallback' : 'passed',
           }))
         );
       }

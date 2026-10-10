@@ -103,6 +103,7 @@ export default function Ask() {
   const [searchParams] = useSearchParams();
 
   const [query, setQuery] = useState('');
+  const [lastQuery, setLastQuery] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [activeInspectorTab, setActiveInspectorTab] = useState<'evidence' | 'trace'>('trace');
@@ -143,6 +144,7 @@ export default function Ask() {
   const executeQuery = async (queryText: string) => {
     if (!queryText.trim() || loading) return;
 
+    setLastQuery(queryText.trim());
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
@@ -181,6 +183,8 @@ export default function Ask() {
         toast.security('Prompt injection attempt blocked by security firewall!', 'Threat Intercepted');
       } else if (data.status === 'RESTRICTED') {
         toast.security('Access restricted: Confidential records withheld by RBAC.', 'Zero-Leakage Active');
+      } else if (data.status === 'AI_PROVIDER_ERROR') {
+        toast.warning('Authorized retrieval succeeded, but upstream AI provider is unavailable.', 'Degraded Service');
       } else if (data.mode === 'fallback') {
         toast.info('Response synthesized via air-gapped demo cache.', 'Resilient Fallback Mode');
       } else {
@@ -193,6 +197,7 @@ export default function Ask() {
         setActiveInspectorTab('trace');
       }
     } catch (error: any) {
+      console.error('[TriGuard Query Error]', error);
       const errData = error?.response?.data;
       const errorMsg = errData?.message || errData?.error || 'Upstream connection error to TriGuard Intelligence.';
       const reqId = errData?.requestId || 'N/A';
@@ -204,14 +209,13 @@ export default function Ask() {
         status: 'ERROR',
         requestId: reqId,
         executionTimeMs: Date.now() - startTime,
-        mode: 'fallback',
-        fallbackReason: 'Connection Error'
+        mode: 'error',
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
       setSelectedMessageId(assistantMessage.id);
       setActiveInspectorTab('trace');
-      toast.error(errorMsg, 'Query Failed');
+      // Duplicate toast.error(errorMsg) omitted: error is already clearly rendered in the primary message bubble
     } finally {
       setLoading(false);
     }
@@ -439,6 +443,8 @@ export default function Ask() {
                             ? 'bg-sky-500/15 text-sky-300 border-sky-500/40'
                             : msg.status === 'RESTRICTED'
                             ? 'bg-amber-500/15 text-amber-300 border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
+                            : msg.status === 'AI_PROVIDER_ERROR'
+                            ? 'bg-amber-500/15 text-amber-300 border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
                             : msg.status === 'INJECTION_BLOCKED'
                             ? 'bg-rose-500/15 text-rose-300 border-rose-500/40 shadow-[0_0_10px_rgba(244,63,94,0.2)]'
                             : 'bg-rose-500/15 text-rose-300 border-rose-500/40'
@@ -448,13 +454,21 @@ export default function Ask() {
                         {msg.status === 'NO_INFO' && 'ℹ INSUFFICIENT EVIDENCE'}
                         {msg.status === 'RESTRICTED' && '🔒 ACCESS RESTRICTED'}
                         {msg.status === 'INJECTION_BLOCKED' && '🛡 INJECTION INTERCEPTED'}
-                        {msg.status === 'AI_PROVIDER_ERROR' && '⚡ DEGRADED FAILOVER'}
-                        {msg.status === 'ERROR' && '✕ RECALIBRATING'}
+                        {msg.status === 'AI_PROVIDER_ERROR' && '⚡ AI SYNTHESIS UNAVAILABLE'}
+                        {msg.status === 'ERROR' && '✕ CONNECTION FAULT'}
                       </span>
                     </div>
 
-                    {/* Resilient Fallback Badge */}
-                    {msg.mode === 'fallback' && (
+                    {/* Degraded Badge for Case A (AI Provider failure with authorized retrieval) */}
+                    {msg.status === 'AI_PROVIDER_ERROR' && (
+                      <div className="mt-3.5 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/35 text-amber-300 text-xs font-mono font-medium shadow-[0_0_10px_rgba(245,158,11,0.15)]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                        <span>DEGRADED SERVICE • RETRIEVAL SUCCEEDED</span>
+                      </div>
+                    )}
+
+                    {/* Resilient Fallback Badge for Cached Mode */}
+                    {msg.status !== 'AI_PROVIDER_ERROR' && msg.mode === 'fallback' && (
                       <div className="mt-3.5 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-200 text-xs font-mono font-bold shadow-[0_0_15px_rgba(245,158,11,0.25)]">
                         <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                         <span>RESILIENT CACHED MODE • AIR-GAPPED VERIFICATION</span>
@@ -466,17 +480,63 @@ export default function Ask() {
                       </div>
                     )}
 
-                    {/* Answer Content with Smooth Typing Reveal */}
-                    <div className="mt-4 text-base sm:text-lg text-[#F8FAFC] leading-relaxed font-normal">
-                      <TypingReveal text={msg.content} />
-                    </div>
+                    {/* Answer Content */}
+                    {msg.status === 'AI_PROVIDER_ERROR' ? (
+                      <div className="mt-4 p-4.5 rounded-2xl bg-amber-950/20 border border-amber-500/30 text-amber-100">
+                        <div className="text-base sm:text-lg font-bold text-amber-300 mb-1.5 flex items-center gap-2">
+                          <Radio className="w-4 h-4 text-amber-400" />
+                          AI Synthesis Unavailable
+                        </div>
+                        <p className="text-sm sm:text-base text-[#D9FCED]/85 leading-relaxed">
+                          Authorized evidence was retrieved, but the AI service could not generate a response. Retry the request when the service is available.
+                        </p>
+                        <div className="mt-3.5 pt-3 border-t border-amber-500/20 flex flex-wrap items-center justify-between gap-2">
+                          <span className="text-xs font-mono text-amber-300/70">
+                            Status: Degraded Failover (Evidence Preserved)
+                          </span>
+                          <button
+                            onClick={() => executeQuery(lastQuery || 'How many days of paid time off does the company leave policy allow for employees?')}
+                            className="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-400/40 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                          >
+                            <RotateCcw className="w-3.5 h-3.5" />
+                            <span>Retry Request</span>
+                          </button>
+                        </div>
+                      </div>
+                    ) : msg.status === 'ERROR' ? (
+                      <div className="mt-4 p-4.5 rounded-2xl bg-rose-950/20 border border-rose-500/30 text-rose-100">
+                        <div className="text-base sm:text-lg font-bold text-rose-300 mb-1.5 flex items-center gap-2">
+                          <ShieldAlert className="w-4 h-4 text-rose-400" />
+                          Connection Failure
+                        </div>
+                        <p className="text-sm sm:text-base text-[#D9FCED]/85 leading-relaxed">
+                          {msg.content}
+                        </p>
+                        <div className="mt-3.5 pt-3 border-t border-rose-500/20 flex flex-wrap items-center justify-between gap-2">
+                          <span className="text-xs font-mono text-rose-300/70">
+                            Request ID: {msg.requestId || 'N/A'} • Upstream Service
+                          </span>
+                          <button
+                            onClick={() => executeQuery(lastQuery || 'How many days of paid time off does the company leave policy allow for employees?')}
+                            className="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-500/40 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                          >
+                            <RotateCcw className="w-3.5 h-3.5" />
+                            <span>Retry Request</span>
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="mt-4 text-base sm:text-lg text-[#F8FAFC] leading-relaxed font-normal">
+                        <TypingReveal text={msg.content} />
+                      </div>
+                    )}
 
                     {/* Citations Footer Chips */}
-                    {msg.status === 'AUTHORIZED' && msg.citations && msg.citations.length > 0 && (
+                    {(msg.status === 'AUTHORIZED' || msg.status === 'AI_PROVIDER_ERROR') && msg.citations && msg.citations.length > 0 && (
                       <div className="mt-6 pt-4 border-t border-[#09BBC8]/15 flex flex-wrap items-center gap-2">
                         <span className="text-xs font-mono text-[#D9FCED]/60 font-semibold flex items-center gap-1.5">
                           <FileText className="w-3.5 h-3.5 text-[#09BBC8]" />
-                          Validated Sources ({msg.citations.length}):
+                          {msg.status === 'AI_PROVIDER_ERROR' ? 'Retrieved Authorized Evidence' : 'Validated Sources'} ({msg.citations.length}):
                         </span>
                         {msg.citations.map((c, i) => (
                           <span
@@ -507,25 +567,32 @@ export default function Ask() {
 
           {/* Prominent Question Composer */}
           <div className="p-4 sm:p-6 bg-[#0E1726]/90 border-t border-[#09BBC8]/25 shrink-0 shadow-2xl backdrop-blur-2xl">
-            <form onSubmit={handleFormSubmit} className="max-w-4xl mx-auto relative">
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Ask about corporate leave policy, finance records, compensation, engineering specifications..."
-                disabled={loading}
-                className="w-full bg-[#080D16]/90 border border-[#09BBC8]/35 focus:border-[#09BBC8] rounded-2xl pl-5 pr-36 py-4 text-base text-[#F8FAFC] placeholder-[#D9FCED]/45 focus:outline-none focus:ring-2 focus:ring-[#09BBC8]/30 transition-all font-sans shadow-inner"
-              />
-              <MagneticButton
-                type="submit"
-                disabled={loading || !query.trim()}
-                variant="primary"
-                size="md"
-                className="absolute right-2.5 top-1/2 -translate-y-1/2"
-                icon={<Send className="w-4 h-4 text-[#09BBC8]" />}
-              >
-                {loading ? 'Evaluating...' : 'Ask RAG'}
-              </MagneticButton>
+            <form
+              onSubmit={handleFormSubmit}
+              className="max-w-4xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 bg-[#080D16]/90 border border-[#09BBC8]/35 focus-within:border-[#09BBC8] focus-within:ring-2 focus-within:ring-[#09BBC8]/30 rounded-2xl p-2 sm:p-2.5 transition-all shadow-inner"
+            >
+              <div className="flex-1 min-w-0 flex items-center">
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Ask about corporate leave policy, finance records, compensation, engineering specifications..."
+                  disabled={loading}
+                  className="w-full bg-transparent px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base text-[#F8FAFC] placeholder-[#D9FCED]/45 focus:outline-none font-sans"
+                />
+              </div>
+              <div className="shrink-0 flex items-center justify-end">
+                <MagneticButton
+                  type="submit"
+                  disabled={loading || !query.trim()}
+                  variant="primary"
+                  size="md"
+                  className="w-full sm:w-auto h-11 px-5 whitespace-nowrap shadow-[0_0_20px_rgba(64,95,250,0.45)] hover:shadow-[0_0_25px_rgba(9,187,200,0.6)]"
+                  icon={<Send className="w-4 h-4 text-[#09BBC8]" />}
+                >
+                  {loading ? 'Evaluating...' : 'Ask RAG'}
+                </MagneticButton>
+              </div>
             </form>
             <div className="max-w-4xl mx-auto mt-2.5 flex items-center justify-between text-xs text-[#D9FCED]/80 font-mono font-medium">
               <span>Press Enter to query • Automatic pre-retrieval clearance gate</span>
@@ -571,7 +638,25 @@ export default function Ask() {
                 <div className="space-y-4">
                   <div className="text-xs font-mono uppercase tracking-wider text-[#D9FCED]/70 font-bold flex items-center justify-between">
                     <span>Pipeline Decision Rail</span>
-                    <span className="text-[#09BBC8]">{activeMessage?.status || 'STANDBY'}</span>
+                    <span
+                      className={
+                        activeMessage?.status === 'AUTHORIZED'
+                          ? 'text-emerald-400'
+                          : activeMessage?.status === 'AI_PROVIDER_ERROR' || activeMessage?.status === 'RESTRICTED'
+                          ? 'text-amber-400'
+                          : activeMessage?.status === 'NO_INFO'
+                          ? 'text-sky-400'
+                          : activeMessage?.status === 'INJECTION_BLOCKED' || activeMessage?.status === 'ERROR'
+                          ? 'text-rose-400'
+                          : 'text-[#09BBC8]'
+                      }
+                    >
+                      {activeMessage?.status === 'AI_PROVIDER_ERROR'
+                        ? 'DEGRADED SYNTHESIS'
+                        : activeMessage?.status === 'ERROR'
+                        ? 'CONNECTION FAULT'
+                        : activeMessage?.status || 'STANDBY'}
+                    </span>
                   </div>
 
                   <SequentialTraceVisual
