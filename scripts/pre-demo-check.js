@@ -14,7 +14,7 @@ async function fetchJson(url, options = {}) {
       path: u.pathname + u.search,
       method: options.method || 'GET',
       headers: options.headers || {},
-      timeout: 5000,
+      timeout: options.timeout || 12000,
     };
 
     const req = http.request(reqOptions, (res) => {
