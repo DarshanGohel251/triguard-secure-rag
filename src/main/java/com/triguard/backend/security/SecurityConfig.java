@@ -71,7 +71,15 @@ public class SecurityConfig {
         ));
         configuration.setAllowedOriginPatterns(Arrays.asList(
                 "http://localhost:[*]",
-                "http://127.0.0.1:[*]"
+                "http://127.0.0.1:[*]",
+                "https://*.vercel.app",
+                "https://*.trycloudflare.com",
+                "https://*.ngrok-free.app",
+                "https://*.ngrok.io",
+                "https://*.loca.lt",
+                "https://*.onrender.com",
+                "https://*.railway.app",
+                "*"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
