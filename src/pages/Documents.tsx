@@ -11,10 +11,12 @@ import {
   Tag,
   Building,
   Layers,
-  Trash2
+  Trash2,
+  Box,
+  Table
 } from 'lucide-react';
 import api from '../services/api';
-import DocumentSecuritySpace from '../components/3d/DocumentSecuritySpace';
+import SpatialKnowledgeVault3D, { type DocumentAsset } from '../components/3d/SpatialKnowledgeVault3D';
 
 const CLASSIFICATIONS = [
   { value: 'PUBLIC', label: 'Public', desc: 'Accessible by all authenticated personas', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' },
@@ -26,7 +28,7 @@ const CLASSIFICATIONS = [
 const DEPARTMENTS = ['General', 'Finance', 'HR', 'IT', 'Sales', 'Engineering'];
 
 export default function Documents() {
-  const [documents, setDocuments] = useState<any[]>([]);
+  const [documents, setDocuments] = useState<DocumentAsset[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const [classification, setClassification] = useState('INTERNAL');
   const [department, setDepartment] = useState('General');
@@ -35,6 +37,7 @@ export default function Documents() {
   const [success, setSuccess] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('ALL');
+  const [viewMode, setViewMode] = useState<'3D' | 'TABLE'>('3D');
 
   const currentUser = useMemo(() => {
     try {
@@ -106,10 +109,10 @@ export default function Documents() {
     return documents.filter((doc) => {
       const title = (doc.name || doc.filename || '').toLowerCase();
       const dept = (doc.department || '').toLowerCase();
-      const classification = (doc.classification || '').toLowerCase();
+      const c = (doc.classification || '').toLowerCase();
       const term = searchTerm.toLowerCase();
 
-      const matchesSearch = title.includes(term) || dept.includes(term) || classification.includes(term);
+      const matchesSearch = title.includes(term) || dept.includes(term) || c.includes(term);
       const matchesFilter = selectedFilter === 'ALL' || doc.classification === selectedFilter;
       return matchesSearch && matchesFilter;
     });
@@ -125,29 +128,59 @@ export default function Documents() {
             Classified Multi-Modal Knowledge Store
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-            Knowledge Base & Document Quarantine
+            Knowledge Base & Spatial Vault
           </h1>
           <p className="text-sm sm:text-base text-slate-300 mt-1 max-w-2xl">
-            Ingest and partition enterprise knowledge assets into cryptographically isolated security tiers.
+            Ingest, quarantine, and partition enterprise knowledge assets into hardware-isolated vector clearance rings.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-mono bg-slate-900/80 px-4 py-2 rounded-xl border border-white/10 self-start sm:self-auto">
-          <Shield className="w-4 h-4 text-emerald-400" />
-          <span className="text-slate-400">Total Enrolled:</span>
-          <span className="font-bold text-white text-sm">{documents.length} Files</span>
+        {/* View Switcher & Counter */}
+        <div className="flex items-center gap-3 self-start sm:self-auto">
+          <div className="flex items-center bg-slate-900/90 p-1 rounded-xl border border-white/10">
+            <button
+              onClick={() => setViewMode('3D')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                viewMode === '3D'
+                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-sm'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Box className="w-3.5 h-3.5" />
+              <span>3D Vault</span>
+            </button>
+            <button
+              onClick={() => setViewMode('TABLE')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                viewMode === 'TABLE'
+                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-sm'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Table className="w-3.5 h-3.5" />
+              <span>Table</span>
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs font-mono bg-slate-900/80 px-3.5 py-2 rounded-xl border border-white/10">
+            <Shield className="w-4 h-4 text-emerald-400" />
+            <span className="font-bold text-white">{documents.length} Files</span>
+          </div>
         </div>
       </div>
 
-      {/* 3D Interactive Document Security Space */}
-      <DocumentSecuritySpace
-        documents={documents}
-        userRole={currentUser.role}
-        userDept={currentUser.department}
-      />
+      {/* Experience B: Spatial Knowledge Vault 3D */}
+      {viewMode === '3D' && (
+        <SpatialKnowledgeVault3D
+          documents={documents}
+          userRole={currentUser.role}
+          userDept={currentUser.department}
+          height={400}
+        />
+      )}
 
-      {/* Ingestion Console & File Uploader */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-[#060D1E]/90 border border-cyan-500/25 shadow-2xl backdrop-blur-xl">
+      {/* Ingestion Pipeline File Uploader */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-[#060D1E]/95 border border-cyan-500/30 shadow-2xl backdrop-blur-2xl">
         <div className="flex items-center justify-between pb-6 border-b border-white/10">
           <div>
             <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2.5">
@@ -165,7 +198,7 @@ export default function Documents() {
 
         <form onSubmit={handleUpload} className="mt-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-            {/* File Dropzone / Selector (md:col-span-6) */}
+            {/* File Dropzone (md:col-span-6) */}
             <div className="md:col-span-6">
               <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
                 Document File (PDF, TXT, DOCX)
@@ -177,7 +210,7 @@ export default function Documents() {
                   className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                 />
                 <div className="flex flex-col items-center justify-center space-y-2">
-                  <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform shadow-md">
                     <Upload className="w-6 h-6" />
                   </div>
                   <div className="text-sm font-bold text-white">
@@ -190,7 +223,7 @@ export default function Documents() {
               </div>
             </div>
 
-            {/* Classification & Department Config (md:col-span-6) */}
+            {/* Classification & Department (md:col-span-6) */}
             <div className="md:col-span-6 space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
@@ -205,7 +238,7 @@ export default function Documents() {
                       onClick={() => setClassification(c.value)}
                       className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                         classification === c.value
-                          ? 'border-cyan-400 bg-cyan-950/40 text-cyan-300 shadow-md'
+                          ? 'border-cyan-400 bg-cyan-950/40 text-cyan-300 shadow-md ring-1 ring-cyan-400/30'
                           : 'border-white/10 bg-slate-900/60 text-slate-400 hover:text-white hover:border-white/20'
                       }`}
                     >
@@ -224,7 +257,7 @@ export default function Documents() {
                 <select
                   value={department}
                   onChange={(e) => setDepartment(e.target.value)}
-                  className="w-full bg-[#091326] border border-white/15 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400"
+                  className="w-full bg-[#091326] border border-white/15 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400 font-sans"
                 >
                   {DEPARTMENTS.map((dept) => (
                     <option key={dept} value={dept}>
@@ -255,7 +288,7 @@ export default function Documents() {
             <button
               type="submit"
               disabled={loading || !file}
-              className="py-3.5 px-6 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition-all disabled:opacity-40 cursor-pointer"
+              className="py-3.5 px-6 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-cyan-500/25 flex items-center gap-2 transition-all disabled:opacity-40 cursor-pointer"
             >
               {loading ? (
                 <>
@@ -274,14 +307,14 @@ export default function Documents() {
       </div>
 
       {/* Filtered Document Inventory Table */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-[#060D1E]/90 border border-white/10 shadow-2xl backdrop-blur-xl space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl bg-[#060D1E]/95 border border-white/10 shadow-2xl backdrop-blur-2xl space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
               Ingested Document Inventory
             </h2>
             <p className="text-xs sm:text-sm text-slate-400">
-              Corpus records currently indexed in the scoped vector database
+              Real-time records currently indexed in the scoped vector database
             </p>
           </div>
 
@@ -306,7 +339,7 @@ export default function Documents() {
               onClick={() => setSelectedFilter(filter)}
               className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold uppercase transition-all cursor-pointer ${
                 selectedFilter === filter
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
+                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-sm'
                   : 'bg-slate-900/60 text-slate-400 hover:text-white border border-white/10'
               }`}
             >
@@ -333,12 +366,12 @@ export default function Documents() {
                 const canDelete =
                   currentUser.role === 'ADMIN' ||
                   currentUser.role === 'HR_MANAGER' ||
-                  (doc.owner && doc.owner.email === currentUser.email);
+                  currentUser.role === 'DEPARTMENT_MANAGER';
                 const docTitle = doc.name || doc.filename || 'Untitled Document';
                 const uploadTimestamp = doc.uploadedAt || doc.uploadDate;
 
                 return (
-                  <tr key={doc.id || idx} className="hover:bg-white/5 transition-colors">
+                  <tr key={`doc-row-${doc.id || idx}`} className="hover:bg-white/5 transition-colors">
                     <td className="py-3.5 px-4 font-bold text-white flex items-center gap-2.5">
                       <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
                         <FileText className="w-4 h-4" />
@@ -370,9 +403,9 @@ export default function Documents() {
                       {uploadTimestamp ? new Date(uploadTimestamp).toLocaleDateString() : 'Active'}
                     </td>
                     <td className="py-3.5 px-4 text-right">
-                      {canDelete && (
+                      {canDelete && doc.id && (
                         <button
-                          onClick={() => handleDeleteDocument(doc.id, docTitle)}
+                          onClick={() => handleDeleteDocument(doc.id!, docTitle)}
                           className="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 border border-red-500/30 text-red-400 hover:text-red-300 transition-colors cursor-pointer inline-flex items-center gap-1 text-xs"
                           title="Purge document & embeddings"
                         >

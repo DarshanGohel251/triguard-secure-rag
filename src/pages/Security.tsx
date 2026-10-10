@@ -9,10 +9,10 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import api from '../services/api';
-import SecurityThreatRadar from '../components/3d/SecurityThreatRadar';
+import SecurityConstellation3D, { type SecurityEventData } from '../components/3d/SecurityConstellation3D';
 
 export default function Security() {
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<SecurityEventData[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('ALL');
   const [loading, setLoading] = useState(false);
@@ -63,7 +63,7 @@ export default function Security() {
             Threat Detection & Security Center
           </h1>
           <p className="text-sm sm:text-base text-slate-300 mt-1 max-w-2xl">
-            Live telemetry of intercepted prompt injection attacks, exfiltration attempts, and unauthorized retrieval probes.
+            Live multi-vector spatial interception of prompt injection attacks, exfiltration commands, and unauthorized retrieval probes.
           </p>
         </div>
 
@@ -77,12 +77,12 @@ export default function Security() {
         </button>
       </div>
 
-      {/* 3D Experience D: Security Threat Radar */}
-      <SecurityThreatRadar events={events} />
+      {/* Experience D: Security Constellation 3D */}
+      <SecurityConstellation3D events={events} height={400} />
 
       {/* KPI Threat Overview Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div className="p-6 rounded-2xl bg-[#060D1E]/90 border border-red-500/30 shadow-xl">
+        <div className="p-6 rounded-2xl bg-[#060D1E]/95 border border-red-500/30 shadow-xl">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-red-400 uppercase tracking-wider">
               Prompt Injections Intercepted
@@ -99,7 +99,7 @@ export default function Security() {
           </div>
         </div>
 
-        <div className="p-6 rounded-2xl bg-[#060D1E]/90 border border-amber-500/30 shadow-xl">
+        <div className="p-6 rounded-2xl bg-[#060D1E]/95 border border-amber-500/30 shadow-xl">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
               Unauthorized Retrieval Probes
@@ -116,7 +116,7 @@ export default function Security() {
           </div>
         </div>
 
-        <div className="p-6 rounded-2xl bg-[#060D1E]/90 border border-emerald-500/30 shadow-xl">
+        <div className="p-6 rounded-2xl bg-[#060D1E]/95 border border-emerald-500/30 shadow-xl">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
               Defense Gate Status
@@ -135,7 +135,7 @@ export default function Security() {
       </div>
 
       {/* Incident Log Ledger */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-[#060D1E]/90 border border-white/10 shadow-2xl backdrop-blur-xl space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl bg-[#060D1E]/95 border border-white/10 shadow-2xl backdrop-blur-2xl space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
@@ -190,7 +190,7 @@ export default function Security() {
             </thead>
             <tbody className="divide-y divide-white/5">
               {filteredEvents.map((ev, idx) => (
-                <tr key={ev.id || idx} className="hover:bg-white/5 transition-colors">
+                <tr key={`sec-ev-${ev.id || idx}`} className="hover:bg-white/5 transition-colors">
                   <td className="py-3.5 px-4 font-mono">
                     <span
                       className={`text-xs font-bold px-2.5 py-1 rounded-md border ${
@@ -223,7 +223,7 @@ export default function Security() {
               {filteredEvents.length === 0 && (
                 <tr>
                   <td colSpan={5} className="py-8 text-center text-slate-500 text-sm">
-                    No threat events matching filter criteria.
+                    No threat events matching filter criteria. System integrity optimal.
                   </td>
                 </tr>
               )}

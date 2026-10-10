@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import api from '../services/api';
 import TriGuardLogo from '../components/brand/TriGuardLogo';
-import HeroSecurityCore from '../components/3d/HeroSecurityCore';
+import DefenseEngine3D from '../components/3d/DefenseEngine3D';
 
 const DEMO_PERSONAS = [
   {
@@ -92,24 +92,24 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#040814] text-slate-100 flex flex-col justify-center relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-[#020612] text-slate-100 flex flex-col justify-center relative overflow-hidden font-sans">
       {/* Ambient Cyber Grid & Glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(0,229,255,0.12),transparent_70%)] pointer-events-none" />
-      <div className="cyber-grid absolute inset-0 opacity-40 pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(0,240,255,0.12),transparent_70%)] pointer-events-none" />
+      <div className="cyber-grid absolute inset-0 opacity-30 pointer-events-none" />
       <div className="absolute -top-32 -left-32 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl w-full mx-auto px-6 py-12 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-        {/* Left Column: Brand, 3D Hero Security Core & Enterprise Mission */}
+        {/* Left Column: Brand, 3D Defense Engine Hero & Mission */}
         <div className="lg:col-span-6 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
           <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono font-semibold uppercase tracking-wider shadow-lg">
             <ShieldCheck className="w-4 h-4 text-cyan-400" />
             Enterprise Security Gateway • PS-01 Multi-Modal RAG
           </div>
 
-          {/* 3D Hero Security Core Component */}
-          <div className="py-2">
-            <HeroSecurityCore status="secure" size="lg" showTelemetry={true} />
+          {/* 3D Defense Engine Centerpiece */}
+          <div className="w-full max-w-md bg-[#040A1A]/80 border border-cyan-500/25 rounded-3xl p-4 shadow-2xl backdrop-blur-xl">
+            <DefenseEngine3D status="secure" height={300} interactive={false} />
           </div>
 
           <div className="space-y-3">
@@ -121,28 +121,28 @@ export default function Login() {
               </span>
             </h1>
             <p className="mt-4 text-base sm:text-lg text-slate-300 max-w-xl leading-relaxed">
-              TriGuard provides deterministic pre-retrieval access control, vector scope isolation, and zero unauthorized context leakage for enterprise generative AI.
+              TriGuard Apex delivers deterministic pre-retrieval access control, vector scope boundary isolation, and zero unauthorized context leakage for enterprise AI.
             </p>
           </div>
 
           {/* Value Props Matrix */}
           <div className="grid grid-cols-2 gap-4 w-full max-w-lg pt-2">
-            <div className="p-4 rounded-2xl bg-[#071126]/80 border border-cyan-500/20 backdrop-blur-md">
+            <div className="p-4 rounded-2xl bg-[#061024]/85 border border-cyan-500/20 backdrop-blur-md shadow-lg">
               <div className="text-cyan-400 text-sm font-bold uppercase tracking-wider flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4" />
                 Zero-Leak Context
               </div>
               <div className="text-slate-300 text-xs sm:text-sm mt-1">
-                Deterministic pre-retrieval RBAC partition filter
+                Deterministic pre-retrieval RBAC partition boundary filter
               </div>
             </div>
-            <div className="p-4 rounded-2xl bg-[#071126]/80 border border-emerald-500/20 backdrop-blur-md">
+            <div className="p-4 rounded-2xl bg-[#061024]/85 border border-emerald-500/20 backdrop-blur-md shadow-lg">
               <div className="text-emerald-400 text-sm font-bold uppercase tracking-wider flex items-center gap-2">
                 <Sparkles className="w-4 h-4" />
                 Grounded Citations
               </div>
               <div className="text-slate-300 text-xs sm:text-sm mt-1">
-                Gemini 2.5 synthesis with verifiable page coordinates
+                Gemini synthesis anchored strictly to validated page coordinates
               </div>
             </div>
           </div>
@@ -150,7 +150,7 @@ export default function Login() {
 
         {/* Right Column: Premium Authentication Card & 1-Click Persona Access */}
         <div className="lg:col-span-6 w-full max-w-lg mx-auto">
-          <div className="bg-[#071022]/90 border border-cyan-500/25 rounded-3xl p-8 sm:p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_30px_rgba(0,229,255,0.15)] backdrop-blur-2xl relative">
+          <div className="bg-[#040A1A]/95 border border-cyan-500/30 rounded-3xl p-8 sm:p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_35px_rgba(0,229,255,0.18)] backdrop-blur-2xl relative">
             <div className="flex items-center justify-between pb-6 border-b border-white/10">
               <div>
                 <h2 className="text-2xl font-black text-white tracking-tight">Identity Authentication</h2>
@@ -174,7 +174,7 @@ export default function Login() {
                     placeholder="employee@triguard.com"
                     required
                     disabled={loading}
-                    className="w-full bg-[#0B162C] border border-white/15 rounded-xl px-4 py-3.5 text-base text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all font-sans"
+                    className="w-full bg-[#081329] border border-white/15 rounded-xl px-4 py-3.5 text-base text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all font-sans"
                   />
                 </div>
               </div>
@@ -191,7 +191,7 @@ export default function Login() {
                     placeholder="••••••••"
                     required
                     disabled={loading}
-                    className="w-full bg-[#0B162C] border border-white/15 rounded-xl px-4 py-3.5 text-base text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all font-sans pr-12"
+                    className="w-full bg-[#081329] border border-white/15 rounded-xl px-4 py-3.5 text-base text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all font-sans pr-12"
                   />
                   <button
                     type="button"
@@ -249,7 +249,7 @@ export default function Login() {
                     type="button"
                     onClick={() => handleDemoSelect(persona.email)}
                     disabled={loading}
-                    className="p-3.5 rounded-2xl bg-slate-900/80 hover:bg-[#0c1833] border border-white/10 hover:border-cyan-400/40 text-left transition-all group cursor-pointer shadow-md"
+                    className="p-3.5 rounded-2xl bg-slate-900/80 hover:bg-[#07132B] border border-white/10 hover:border-cyan-400/40 text-left transition-all group cursor-pointer shadow-md"
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">

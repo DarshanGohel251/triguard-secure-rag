@@ -16,8 +16,7 @@ import {
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import api from '../services/api';
 import RetrievalPipelineVisual from '../components/3d/RetrievalPipelineVisual';
-import DocumentSecuritySpace from '../components/3d/DocumentSecuritySpace';
-import HeroSecurityCore from '../components/3d/HeroSecurityCore';
+import DefenseEngine3D from '../components/3d/DefenseEngine3D';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -31,7 +30,6 @@ export default function Dashboard() {
   const [diagnostics, setDiagnostics] = useState<any>(null);
   const [activities, setActivities] = useState<any[]>([]);
   const [chartData, setChartData] = useState<any[]>([]);
-  const [documents, setDocuments] = useState<any[]>([]);
 
   const user = useMemo(() => {
     try {
@@ -55,8 +53,6 @@ export default function Dashboard() {
         const allLogs = logsRes.data || [];
         const allEvents = eventsRes.data || [];
         const diagData = diagRes.data;
-
-        setDocuments(allDocs);
 
         const queries = allLogs.filter((l: any) => l.action === 'QUERY' && l.decision === 'ALLOW').length;
         const blocked = allLogs.filter((l: any) => l.action === 'QUERY' && l.decision === 'DENY').length;
@@ -126,17 +122,18 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col gap-8 max-w-7xl mx-auto font-sans pb-12">
-      {/* Hero Welcome & Command Center Header */}
-      <div className="relative rounded-3xl bg-gradient-to-r from-[#07132B] via-[#050C1B] to-[#030814] border border-cyan-500/25 p-8 sm:p-10 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.8),0_0_30px_rgba(0,229,255,0.12)] overflow-hidden">
-        {/* Ambient Glow */}
+      {/* Hero Welcome & 3D Defense Engine Centerpiece */}
+      <div className="relative rounded-3xl bg-gradient-to-r from-[#061024] via-[#040C1D] to-[#020612] border border-cyan-500/30 p-8 sm:p-10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_35px_rgba(0,229,255,0.15)] overflow-hidden">
+        {/* Ambient Halo */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-          <div className="space-y-3 max-w-2xl">
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          {/* Left Text & Quick Actions (lg:col-span-7) */}
+          <div className="lg:col-span-7 space-y-4">
             <div className="flex flex-wrap items-center gap-2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono font-semibold uppercase tracking-wider">
                 <Shield className="w-3.5 h-3.5 text-cyan-400" />
-                Defense-In-Depth Security Operations
+                TriGuard Apex Command Center
               </div>
               {diagnostics && (
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono">
@@ -146,17 +143,18 @@ export default function Dashboard() {
                 </div>
               )}
             </div>
+
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
               Welcome, {user.name || 'Security Operator'}
             </h1>
-            <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
-              TriGuard Enterprise Command Center. Deterministic pre-retrieval access control, vector partition isolation, and live prompt injection defense.
+            <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-xl">
+              Enterprise Defense Operations. Deterministic pre-retrieval access control, multi-tenant vector boundary isolation, and autonomous prompt injection firewall.
             </p>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <Link
                 to="/ask"
-                className="px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-sm shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition-all cursor-pointer"
+                className="px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 flex items-center gap-2 transition-all cursor-pointer"
               >
                 <MessageSquare className="w-4 h-4" />
                 <span>Launch Ask TriGuard</span>
@@ -167,14 +165,16 @@ export default function Dashboard() {
                 className="px-5 py-3 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 hover:border-cyan-400/40 text-slate-200 hover:text-white font-semibold text-sm flex items-center gap-2 transition-all cursor-pointer"
               >
                 <FileText className="w-4 h-4 text-cyan-400" />
-                <span>Manage Knowledge Base</span>
+                <span>Spatial Knowledge Base</span>
               </Link>
             </div>
           </div>
 
-          {/* Right Hero 3D Centerpiece */}
-          <div className="shrink-0 hidden lg:block">
-            <HeroSecurityCore status="secure" size="md" showTelemetry={false} />
+          {/* Right: Signature 3D Defense Engine Centerpiece (lg:col-span-5) */}
+          <div className="lg:col-span-5 flex justify-center">
+            <div className="w-full max-w-md bg-[#040A1A]/80 border border-cyan-500/20 rounded-2xl p-4 shadow-2xl backdrop-blur-md">
+              <DefenseEngine3D status="secure" height={320} interactive={true} />
+            </div>
           </div>
         </div>
       </div>
@@ -250,15 +250,8 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 3D Experience: Interactive Deterministic Pipeline */}
-      <RetrievalPipelineVisual activeStage={6} status="AUTHORIZED" />
-
-      {/* Interactive 3D Document Security Space */}
-      <DocumentSecuritySpace
-        documents={documents}
-        userRole={user.role || 'EMPLOYEE'}
-        userDept={user.department || 'Finance'}
-      />
+      {/* 6-Stage Deterministic Pipeline Trace */}
+      <RetrievalPipelineVisual activeStage={6} status="AUTHORIZED" layout="horizontal" />
 
       {/* Query Traffic Chart & Recent Security Audit Feed */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -361,7 +354,7 @@ export default function Dashboard() {
             <div className="space-y-3">
               {activities.map((act, idx) => (
                 <div
-                  key={act.id || idx}
+                  key={`act-${act.id || idx}`}
                   className="p-3 rounded-xl bg-slate-900/60 border border-white/5 hover:border-white/15 flex items-start gap-3 transition-colors"
                 >
                   <div

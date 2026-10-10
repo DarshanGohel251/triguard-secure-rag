@@ -8,9 +8,11 @@ import {
   Copy,
   CheckCheck,
   Lock,
-  CheckCircle2
+  CheckCircle2,
+  Sparkles
 } from 'lucide-react';
 import api from '../services/api';
+import SecurityConstellation3D, { type SecurityEventData } from '../components/3d/SecurityConstellation3D';
 
 export default function Audit() {
   const [logs, setLogs] = useState<any[]>([]);
@@ -19,6 +21,7 @@ export default function Audit() {
   const [decisionFilter, setDecisionFilter] = useState('ALL');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showConstellation, setShowConstellation] = useState(false);
 
   const fetchAuditLogs = async () => {
     setLoading(true);
@@ -64,6 +67,19 @@ export default function Audit() {
     return { total: logs.length, allows, denies };
   }, [logs]);
 
+  // Transform logs into constellation events if requested
+  const constellationEvents: SecurityEventData[] = useMemo(() => {
+    return logs.map((l) => ({
+      id: l.id,
+      type: l.action === 'QUERY' ? (l.decision === 'DENY' ? 'UNAUTHORIZED_RETRIEVAL' : 'QUERY') : l.action,
+      username: l.username || l.userEmail,
+      userEmail: l.userEmail,
+      details: l.details,
+      timestamp: l.timestamp,
+      decision: l.decision
+    }));
+  }, [logs]);
+
   return (
     <div className="flex flex-col gap-8 max-w-7xl mx-auto font-sans pb-12">
       {/* Page Header */}
@@ -81,19 +97,38 @@ export default function Audit() {
           </p>
         </div>
 
-        <button
-          onClick={fetchAuditLogs}
-          disabled={loading}
-          className="px-4 py-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 hover:border-cyan-400/40 text-slate-300 hover:text-white text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer self-start sm:self-auto"
-        >
-          <RefreshCw className={`w-4 h-4 text-cyan-400 ${loading ? 'animate-spin' : ''}`} />
-          <span>Refresh Ledger</span>
-        </button>
+        <div className="flex items-center gap-3 self-start sm:self-auto">
+          <button
+            onClick={() => setShowConstellation(!showConstellation)}
+            className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold border flex items-center gap-1.5 transition-all cursor-pointer ${
+              showConstellation
+                ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400 shadow-sm'
+                : 'bg-slate-900/80 text-slate-400 border-white/10 hover:text-white'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+            <span>{showConstellation ? 'Hide 3D Nodes' : '3D Event Nodes'}</span>
+          </button>
+
+          <button
+            onClick={fetchAuditLogs}
+            disabled={loading}
+            className="px-4 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 hover:border-cyan-400/40 text-slate-300 hover:text-white text-xs font-mono font-bold flex items-center gap-2 transition-all cursor-pointer"
+          >
+            <RefreshCw className={`w-4 h-4 text-cyan-400 ${loading ? 'animate-spin' : ''}`} />
+            <span>Refresh Ledger</span>
+          </button>
+        </div>
       </div>
+
+      {/* Optional 3D Security Constellation View */}
+      {showConstellation && (
+        <SecurityConstellation3D events={constellationEvents} height={380} />
+      )}
 
       {/* KPI Overview Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div className="p-6 rounded-2xl bg-[#060D1E]/90 border border-white/10 shadow-xl">
+        <div className="p-6 rounded-2xl bg-[#060D1E]/95 border border-white/10 shadow-xl">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
               Total Recorded Actions
@@ -110,7 +145,7 @@ export default function Audit() {
           </div>
         </div>
 
-        <div className="p-6 rounded-2xl bg-[#060D1E]/90 border border-emerald-500/30 shadow-xl">
+        <div className="p-6 rounded-2xl bg-[#060D1E]/95 border border-emerald-500/30 shadow-xl">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
               Authorized Decisions
@@ -127,7 +162,7 @@ export default function Audit() {
           </div>
         </div>
 
-        <div className="p-6 rounded-2xl bg-[#060D1E]/90 border border-amber-500/30 shadow-xl">
+        <div className="p-6 rounded-2xl bg-[#060D1E]/95 border border-amber-500/30 shadow-xl">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
               Blocked / Denied Decisions
@@ -146,7 +181,7 @@ export default function Audit() {
       </div>
 
       {/* Main Ledger Table & Filter Controls */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-[#060D1E]/90 border border-white/10 shadow-2xl backdrop-blur-xl space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl bg-[#060D1E]/95 border border-white/10 shadow-2xl backdrop-blur-2xl space-y-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="relative flex-1 max-w-md">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -198,7 +233,7 @@ export default function Audit() {
             </thead>
             <tbody className="divide-y divide-white/5">
               {filteredLogs.map((log, idx) => (
-                <tr key={log.id || idx} className="hover:bg-white/5 transition-colors">
+                <tr key={`audit-log-${log.id || idx}`} className="hover:bg-white/5 transition-colors">
                   <td className="py-3.5 px-4 font-mono">
                     <span
                       className={`text-xs font-bold px-2.5 py-1 rounded-md border flex items-center gap-1.5 w-fit ${

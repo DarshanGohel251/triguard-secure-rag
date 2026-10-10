@@ -10,18 +10,19 @@ import {
   UserCheck,
   Sparkles,
   Menu,
-  X
+  X,
+  ShieldCheck
 } from 'lucide-react';
 import { useState } from 'react';
 import api from '../../services/api';
 import TriGuardLogo from '../brand/TriGuardLogo';
 
 const NAV_ITEMS = [
-  { path: '/dashboard', label: 'Command Center', icon: LayoutDashboard, desc: 'Overview & Telemetry' },
-  { path: '/ask', label: 'Ask TriGuard', icon: MessageSquare, badge: 'AI RAG', desc: 'Secure Intelligence' },
-  { path: '/documents', label: 'Knowledge Base', icon: FileText, desc: 'Classified Corpus' },
-  { path: '/security', label: 'Threat Center', icon: ShieldAlert, desc: 'Firewall & Radar' },
-  { path: '/audit', label: 'Audit Ledger', icon: Activity, desc: 'Immutable Log' },
+  { path: '/dashboard', label: 'Command Center', icon: LayoutDashboard, desc: 'Overview & Defense Engine' },
+  { path: '/ask', label: 'Ask TriGuard', icon: MessageSquare, badge: 'AI RAG', desc: 'Secure AI Workspace' },
+  { path: '/documents', label: 'Knowledge Base', icon: FileText, desc: 'Spatial Vault & Ingestion' },
+  { path: '/security', label: 'Threat Center', icon: ShieldAlert, desc: 'Radar & Constellation' },
+  { path: '/audit', label: 'Audit Ledger', icon: Activity, desc: 'Immutable Log Trail' },
 ];
 
 const DEMO_PERSONAS = [
@@ -75,15 +76,15 @@ export default function Layout() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#040814] text-slate-100 font-sans overflow-hidden">
+    <div className="flex flex-col h-screen bg-[#020612] text-slate-100 font-sans overflow-hidden">
       {/* Top Enterprise Command Header */}
-      <header className="h-18 bg-[#060D1E] border-b border-white/10 flex items-center justify-between px-5 sm:px-8 shrink-0 z-30 shadow-lg">
-        {/* Left: Mobile Toggle & Brand Logo */}
+      <header className="h-18 bg-[#040A1A]/95 border-b border-white/10 flex items-center justify-between px-5 sm:px-8 shrink-0 z-30 shadow-2xl backdrop-blur-xl">
+        {/* Left: Mobile Toggle & Apex Brand Logo */}
         <div className="flex items-center gap-4 sm:gap-6">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
-            aria-label="Toggle mobile navigation"
+            aria-label="Toggle navigation drawer"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -92,33 +93,38 @@ export default function Layout() {
             <TriGuardLogo variant="horizontal" size="md" showSubtitle={true} />
           </Link>
 
-          {/* Mission & Problem Statement Tag */}
+          {/* Defense Architecture Tags */}
           <div className="hidden xl:flex items-center gap-2.5 text-slate-300 text-xs border-l border-white/10 pl-6 font-mono">
             <span className="flex items-center gap-1.5 text-cyan-400 font-bold">
-              <Sparkles className="w-3.5 h-3.5" />
+              <ShieldCheck className="w-4 h-4 text-cyan-400" />
               PS-01 RAG
             </span>
             <span className="text-slate-600">•</span>
             <span className="text-slate-400">Deterministic RBAC</span>
             <span className="text-slate-600">•</span>
             <span className="text-slate-400">Zero Leakage</span>
+            <span className="text-slate-600">•</span>
+            <span className="text-emerald-400 font-semibold flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Active
+            </span>
           </div>
         </div>
 
         {/* Right: Security Status Pill & Persona Switcher */}
         <div className="flex items-center gap-3 sm:gap-4">
           {/* Live Defense Status Badge */}
-          <div className="hidden lg:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-semibold">
+          <div className="hidden lg:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold shadow-sm">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            <span>PERIMETER SECURE</span>
+            <span>PERIMETER VERIFIED</span>
           </div>
 
-          {/* Quick Persona Switcher for Hackathon Live Demo */}
+          {/* 1-Click Persona Switcher for Hackathon Judges */}
           <div className="relative">
             <button
               onClick={() => setShowPersonaMenu(!showPersonaMenu)}
               disabled={switching}
-              className="flex items-center gap-3 px-3.5 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-white/10 hover:border-cyan-400/40 text-sm transition-all cursor-pointer shadow-md"
+              className="flex items-center gap-3 px-3.5 py-2 rounded-xl bg-slate-900/90 hover:bg-[#07132B] border border-cyan-500/30 hover:border-cyan-400 text-sm transition-all cursor-pointer shadow-lg"
             >
               <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
               <div className="flex flex-col text-left">
@@ -134,10 +140,10 @@ export default function Layout() {
 
             {/* Persona Switch Dropdown */}
             {showPersonaMenu && (
-              <div className="absolute right-0 mt-2 w-72 bg-[#091224] border border-cyan-500/30 rounded-2xl shadow-2xl p-2.5 z-50 backdrop-blur-2xl">
+              <div className="absolute right-0 mt-2 w-76 bg-[#060E21] border border-cyan-500/40 rounded-2xl shadow-2xl p-2.5 z-50 backdrop-blur-2xl">
                 <div className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-300 border-b border-white/10 flex items-center justify-between">
                   <span>Switch Live Persona</span>
-                  <span className="text-[10px] text-cyan-400 font-mono">1-Click Auth</span>
+                  <span className="text-[10px] text-cyan-400 font-mono">1-Click Real JWT</span>
                 </div>
                 <div className="space-y-1.5 mt-2">
                   {DEMO_PERSONAS.map((p) => (
@@ -146,7 +152,7 @@ export default function Layout() {
                       onClick={() => handleQuickSwitch(p.email)}
                       className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs flex flex-col gap-0.5 transition-all cursor-pointer ${
                         userObj.email === p.email
-                          ? 'bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/40'
+                          ? 'bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-400/40 shadow-sm'
                           : 'text-slate-300 hover:bg-white/5 hover:text-white'
                       }`}
                     >
@@ -165,7 +171,7 @@ export default function Layout() {
             )}
           </div>
 
-          {/* Logout Button */}
+          {/* Logout */}
           <button
             onClick={handleLogout}
             className="p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/10 transition-colors cursor-pointer"
@@ -179,13 +185,13 @@ export default function Layout() {
 
       {/* Main Workspace Body */}
       <div className="flex flex-1 overflow-hidden relative">
-        {/* Sidebar Navigation (Desktop) */}
+        {/* Sidebar Navigation */}
         <aside
-          className={`fixed inset-y-0 left-0 z-40 w-68 bg-[#060D1E] border-r border-white/10 flex flex-col transition-transform duration-300 md:static md:translate-x-0 ${
+          className={`fixed inset-y-0 left-0 z-40 w-68 bg-[#040A1A] border-r border-white/10 flex flex-col transition-transform duration-300 md:static md:translate-x-0 ${
             mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
-          {/* Mobile Close Button in Drawer Header */}
+          {/* Mobile Drawer Header */}
           <div className="p-4 border-b border-white/10 flex items-center justify-between md:hidden">
             <TriGuardLogo variant="horizontal" size="sm" />
             <button
@@ -199,7 +205,7 @@ export default function Layout() {
           {/* Navigation Links */}
           <nav className="flex-1 overflow-y-auto py-6 px-3">
             <div className="px-3 mb-2 text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">
-              Navigation
+              Command Modules
             </div>
             <ul className="space-y-1.5">
               {NAV_ITEMS.map((item) => {
@@ -212,7 +218,7 @@ export default function Layout() {
                       onClick={() => setMobileMenuOpen(false)}
                       className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
                         isActive
-                          ? 'bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border border-cyan-400/30 shadow-[0_0_20px_rgba(0,229,255,0.15)] font-bold'
+                          ? 'bg-gradient-to-r from-cyan-500/25 to-blue-600/25 text-cyan-300 border border-cyan-400/40 shadow-[0_0_20px_rgba(0,240,255,0.2)] font-bold'
                           : 'text-slate-300 hover:text-white hover:bg-white/5 border border-transparent'
                       }`}
                     >
@@ -224,7 +230,7 @@ export default function Layout() {
                         </div>
                       </div>
                       {item.badge && (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-400/20 text-cyan-300 border border-cyan-400/30">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-400/20 text-cyan-300 border border-cyan-400/40">
                           {item.badge}
                         </span>
                       )}
@@ -235,15 +241,15 @@ export default function Layout() {
             </ul>
           </nav>
 
-          {/* Sidebar Footer Security Architecture Card */}
-          <div className="p-4 border-t border-white/10 bg-[#040814]/80">
-            <div className="p-3.5 rounded-xl bg-slate-900/90 border border-white/10">
+          {/* Sidebar Footer: Model & Engine Badge */}
+          <div className="p-4 border-t border-white/10 bg-[#020612]/90">
+            <div className="p-3.5 rounded-xl bg-slate-900/90 border border-cyan-500/20 shadow-md">
               <div className="flex items-center justify-between text-cyan-400 text-xs font-bold mb-1.5">
                 <span className="flex items-center gap-1.5">
                   <Sparkles className="w-4 h-4 text-cyan-400" />
-                  Gemini 2.5 Active
+                  Gemini Active
                 </span>
-                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.2 rounded border border-emerald-500/20">
+                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.2 rounded border border-emerald-500/30">
                   ONLINE
                 </span>
               </div>
@@ -254,16 +260,16 @@ export default function Layout() {
           </div>
         </aside>
 
-        {/* Backdrop for Mobile Drawer */}
+        {/* Mobile Backdrop */}
         {mobileMenuOpen && (
           <div
             onClick={() => setMobileMenuOpen(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 md:hidden"
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 md:hidden"
           />
         )}
 
         {/* Dynamic Outlet Main Screen */}
-        <main className="flex-1 overflow-y-auto bg-[#040814] p-6 lg:p-8 relative">
+        <main className="flex-1 overflow-y-auto bg-[#020612] p-6 lg:p-8 relative">
           <Outlet />
         </main>
       </div>
