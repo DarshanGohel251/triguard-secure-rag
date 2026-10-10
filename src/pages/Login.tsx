@@ -70,7 +70,8 @@ export default function Login() {
       localStorage.setItem('user', JSON.stringify(response.data));
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Authentication rejected. Verify credentials or contact security administrator.');
+      const serverMsg = err?.response?.data?.message || (typeof err?.response?.data === 'string' ? err.response.data : '');
+      setError(serverMsg ? `${serverMsg} (Default password is "password")` : 'Authentication rejected. Default demo password is "password", or click a 1-click persona below.');
     } finally {
       setLoading(false);
     }
@@ -78,17 +79,20 @@ export default function Login() {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPass = password.trim();
+    if (!cleanEmail || !cleanPass) {
       setError('Please provide corporate email and password.');
       return;
     }
-    executeAuth(email, password);
+    executeAuth(cleanEmail, cleanPass);
   };
 
   const handleDemoSelect = (demoEmail: string) => {
-    setEmail(demoEmail);
+    const cleanEmail = demoEmail.trim().toLowerCase();
+    setEmail(cleanEmail);
     setPassword('password');
-    executeAuth(demoEmail, 'password');
+    executeAuth(cleanEmail, 'password');
   };
 
   return (
@@ -180,9 +184,14 @@ export default function Login() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#B8B5AB] uppercase tracking-wider mb-2">
-                  Password
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-xs font-bold text-[#B8B5AB] uppercase tracking-wider">
+                    Password
+                  </label>
+                  <span className="text-[11px] font-mono text-[#C9F36A] bg-[#C9F36A]/10 px-2 py-0.5 rounded border border-[#C9F36A]/30">
+                    Demo Password: password
+                  </span>
+                </div>
                 <div className="relative">
                   <input
                     type={showPassword ? 'text' : 'password'}
